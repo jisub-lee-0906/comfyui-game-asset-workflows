@@ -7,16 +7,16 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, anime_style, visual_novel, game_cg, 1girl, solo, [원본 캐릭터 핵심 특징:  {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, [원본 의상 디테일: {상의, 하의, 신발, 악세서리}], {카메라 구도}, {자연스러운 작은 연출}, {배경 테마 및 장소}, {시간대 및 조명}, depth_of_field
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, visual_novel, game_cg, 1girl, solo, [캐릭터 원본 특징: {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, [원본 의상 디테일: {상의}, {하의}, {신발}, {악세서리}], {카메라 구도}, {자연스러운 작은 연출}, {배경 테마 및 장소}, {시간대 및 조명}, depth_of_field
 
 ```
 
-*(※ 원본 캐릭터/의상 유지를 우선합니다. 캐릭터가 화면에 가깝게 나오도록 `{카메라 구도}`에는 `upper_body`, `waist_up`, `medium_shot`, `close-up` 등을 넣으면 됩니다.)*
+*(※ 원본 캐릭터/의상 유지를 우선합니다. 캐릭터가 화면에 가깝게 나오도록 `{카메라 구도}`에는 `upper_body`, `cowboy_shot`, `close-up` 등을 넣으면 됩니다. 실제 런타임에서는 `[]` 설명과 `{}` placeholder를 CSV 검증 태그로 치환합니다. 기본 negative에는 `close-up`을 넣지 않고, 너무 확대되는 개별 런타임에서만 추가합니다.)*
 
 **Negative prompt:**
 
 ```text
-modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field
+modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2)
 
 ```
 
@@ -24,10 +24,10 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 **1) 카메라 구도 (Camera Angle)**
 
-* **위에서 내려다보기:** `from_above, high_angle` (약해 보이거나 올려다보는 귀여운 연출)
+* **위에서 내려다보기:** `from_above` (약해 보이거나 올려다보는 귀여운 연출)
 * **아래서 올려다보기:** `from_below, low_angle` (웅장하거나 위압감 있는 연출)
-* **초근접/얼굴 중심:** `close-up, face_focus` (감정선이 극에 달했을 때)
-* **등장인물 어깨너머:** `over_the_shoulder` (플레이어와 마주 보는 듯한 1인칭 시점 연출)
+* **초근접/얼굴 중심:** `close-up` (감정선이 극에 달했을 때)
+* **1인칭 시점:** `pov` (플레이어와 마주 보는 듯한 시점 연출)
 
 **2) 상황 및 자연스러운 작은 연출 (Staging & Pose)**
 
@@ -43,10 +43,10 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 출처: 루트 `danbooru_tag.csv`. 아래 태그들은 README에 적기 전에 해당 CSV에 실제 존재하는지 확인했습니다. `pose_variations`가 제거되었으므로 특수 포즈/액션 일러스트는 이 workflow에서 처리하되, identity/outfit 보존이 중요할 때는 포즈 변화를 작게 유지합니다.
 
 - 구도/대상: `upper_body`, `cowboy_shot`, `close-up`, `portrait`, `1girl`, `solo`
-- 카메라: `from_above`, `from_below`, `dutch_angle`, `pov`
+- 카메라: `from_above`, `from_below`, `low_angle`, `dutch_angle`, `pov`
 - 작은 연출: `sitting`, `standing`, `leaning_forward`, `hand_on_own_chest`, `looking_at_viewer`
 - 표정: `smile`, `sad`, `surprised`, `blush`, `tears`, `serious`
-- 장소/조명: `classroom`, `bedroom`, `rooftop`, `street`, `park`, `library`, `sunset`, `night`, `window`
+- 장소/조명: `classroom`, `bedroom`, `rooftop`, `street`, `park`, `library`, `sunset`, `night`, `window`, `sunlight`
 
 Event CG 규칙: 큰 액션 태그는 의상/몸을 다시 그리게 만들 수 있습니다. 과한 동작을 시도하기 전에 카메라, 배경, 조명, 작은 손/몸 연출을 우선 사용합니다.
 

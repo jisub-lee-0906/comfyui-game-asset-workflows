@@ -5,7 +5,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}, {감정표현}, BREAK, depth_of_field, volumetric_lighting
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, [캐릭터 원본 특징: {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, BREAK, depth_of_field, volumetric_lighting
 
 ```
 

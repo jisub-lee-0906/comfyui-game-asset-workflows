@@ -78,7 +78,7 @@
         "2",
         0
       ],
-      "text": "masterpiece, best quality, amazing quality, 4k, very aesthetic, high resolution, ultra-detailed, absurdres, newest, anime style, cinematic visual novel event CG, same character as reference, preserve original face, preserve original facial features, preserve original hairstyle, preserve original hair color, preserve original eye color, preserve original school uniform design, preserve original outfit colors, preserve original body proportions, minimal character redesign, 1girl, solo, {캐릭터 핵심 특징}, {원본 의상 디테일}, {카메라 구도}, {원본 포즈를 크게 바꾸지 않는 자연스러운 작은 연출}, {감정표현}, {배경 테마 및 장소}, {시간대 및 조명}, small natural pose change only, coherent perspective, character integrated with background lighting, natural pose, depth of field, detailed background"
+      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, visual_novel, game_cg, 1girl, solo, [캐릭터 원본 특징: {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, [원본 의상 디테일: {상의}, {하의}, {신발}, {악세서리}], {카메라 구도}, {자연스러운 작은 연출}, {배경 테마 및 장소}, {시간대 및 조명}, depth_of_field"
     }
   },
   "10": {
@@ -88,7 +88,7 @@
         "2",
         0
       ],
-      "text": "different character, different face, different facial features, different hair, different hairstyle, different hair color, different eye color, different clothes, changed uniform, outfit redesign, different body type, changed body proportions, extreme action pose, acrobatics, large pose change, tiny character, far away character, empty room, crowd, multiple girls, duplicate person, bad hands, extra fingers, missing fingers, fewer digits, bad anatomy, long body, deformed, mutated, cropped head, lowres, blurry, text, watermark, signature, simple background, white background, (worst quality, bad quality:1.2)"
+      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2)"
     }
   },
   "11": {

@@ -5,7 +5,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, anime_style, scenery, no_humans, wide_shot, landscape, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, no_humans, wide_shot, landscape, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting
 
 ```
 
@@ -42,7 +42,7 @@ masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution,
 
 **[ 시간대 및 분위기 태그 ]**
 
-* **낮 (Day):** `day, sunlight, bright, clear_sky`
+* **낮 (Day):** `day, sunlight, clear_sky`
 * **노을/저녁 (Sunset):** `sunset, golden_hour, orange_sky, shadow`
 * **밤 (Night):** `night, starry_sky, moonlight, dark`
 * **새벽/비 (Atmosphere):** `morning, fog` 또는 `rain, overcast`
