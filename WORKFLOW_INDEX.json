@@ -1,6 +1,6 @@
 {
   "pack_name": "comfyui-game-asset-workflows",
-  "version": "2026-05-20-mmaudio-sfx-default",
+  "version": "2026-05-21-event-cg-final-no-ref-pose-lora",
   "root_wsl": "/home/jisub-lee/workspace/comfyui-game-asset-workflows",
   "root_windows_unc": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\jisub-lee\\workspace\\comfyui-game-asset-workflows",
   "comfyui_paths": {
@@ -279,17 +279,13 @@
       "folder": "scene_event_cg",
       "readme": "scene_event_cg/README.md",
       "api": "scene_event_cg/scene_event_cg_workflow_api.json",
-      "purpose": "Generate 16:9 character event CG from a character reference only; background is prompt-generated and a pose LoRA is applied for natural small staging.",
+      "purpose": "Generate 16:9 no-reference event CG; character/outfit consistency is prompt-driven by fixed hair/eye + white_serafuku outfit tags, with upper_body framing and pose LoRA enabled by default. Minor outfit drift is accepted for this final route; do not revert to PuLID/source-image by default.",
       "output_type": "opaque 16:9 event CG",
-      "requires_input_images": true,
-      "input_placeholders": [
-        "TEMPLATE_character_reference.png"
-      ],
+      "requires_input_images": false,
+      "input_placeholders": [],
       "primary_nodes": {
         "checkpoint": "1",
         "pose_lora": "100",
-        "character_reference": "3",
-        "pulid_apply": "8",
         "positive_prompt": "9",
         "negative_prompt": "10",
         "latent_size": "11",
@@ -297,12 +293,9 @@
         "save": "14"
       },
       "editable_fields": [
-        "3.inputs.image",
         "100.inputs.lora_name",
         "100.inputs.strength_model",
         "100.inputs.strength_clip",
-        "8.inputs.weight",
-        "8.inputs.end_at",
         "9.inputs.text",
         "10.inputs.text",
         "11.inputs.width",
@@ -324,16 +317,23 @@
         "cfg": 5.2,
         "denoise": 1.0,
         "latent_size": "1024x576",
-        "identity_reference": "PuLID Advanced weight=0.66 end_at=0.76",
+        "identity_reference": "none; no-ref txt2img, character consistency from explicit character/outfit tags",
         "scene_reference": "none; prompt-generated background from blank latent",
-        "direction": "preserve original character/outfit as much as possible; pose LoRA supports natural small event-CG staging"
+        "direction": "final no-reference event CG route; keep fixed hair/eye + white_serafuku outfit tags and upper_body framing; accept small outfit drift; vary only expression, small staging, background/time, and seed first; pose LoRA supports natural small staging; do not reintroduce PuLID/source image by default",
+        "canonical_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, medium_hair, straight_hair, brown_hair, green_eyes, school_uniform, white_serafuku, sailor_collar, blue_ribbon, pleated_skirt, upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, classroom, window, sunset, sunlight, BREAK, depth of field, volumetric lighting",
+        "canonical_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, (worst_quality, bad_quality:1.2), sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated",
+        "default_seed": 260521401,
+        "identity_anchor_tags": "medium_hair, straight_hair, brown_hair, green_eyes",
+        "outfit_anchor_tags": "school_uniform, white_serafuku, sailor_collar, blue_ribbon, pleated_skirt",
+        "framing_anchor_tags": "upper_body, straight-on, facing_viewer, looking_at_viewer",
+        "accepted_tradeoff": "minor outfit/color/layer drift is acceptable in exchange for cleaner no-ref composition and integrated background lighting"
       },
       "upstream": [
         "char_base",
         "char_outfit",
         "char_expression"
       ],
-      "status": "canonical_template_requires_character_reference_only_prompt_generated_background_pose_lora"
+      "status": "canonical_final_no_reference_txt2img_pose_lora_upper_body_white_serafuku_anchor_minor_outfit_drift_accepted"
     },
     {
       "order": 7,

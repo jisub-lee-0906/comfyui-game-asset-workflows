@@ -15,62 +15,6 @@
       "stop_at_clip_layer": -2
     }
   },
-  "3": {
-    "class_type": "LoadImage",
-    "inputs": {
-      "image": "TEMPLATE_character_reference.png"
-    },
-    "_meta": {
-      "title": "Character identity reference image"
-    }
-  },
-  "5": {
-    "class_type": "PulidModelLoader",
-    "inputs": {
-      "pulid_file": "ip-adapter_pulid_sdxl_fp16.safetensors"
-    }
-  },
-  "6": {
-    "class_type": "PulidEvaClipLoader",
-    "inputs": {}
-  },
-  "7": {
-    "class_type": "PulidInsightFaceLoader",
-    "inputs": {
-      "provider": "CUDA"
-    }
-  },
-  "8": {
-    "class_type": "ApplyPulidAdvanced",
-    "inputs": {
-      "model": [
-        "100",
-        0
-      ],
-      "pulid": [
-        "5",
-        0
-      ],
-      "eva_clip": [
-        "6",
-        0
-      ],
-      "face_analysis": [
-        "7",
-        0
-      ],
-      "image": [
-        "3",
-        0
-      ],
-      "weight": 0.66,
-      "projection": "ortho_v2",
-      "fidelity": 10,
-      "noise": 0.0,
-      "start_at": 0.0,
-      "end_at": 0.76
-    }
-  },
   "9": {
     "class_type": "CLIPTextEncode",
     "inputs": {
@@ -78,7 +22,10 @@
         "2",
         0
       ],
-      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, visual_novel, game_cg, 1girl, solo, [캐릭터 원본 특징: {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, [원본 의상 디테일: {상의}, {하의}, {신발}, {악세서리}], {카메라 구도}, {자연스러운 작은 연출}, {배경 테마 및 장소}, {시간대 및 조명}, depth_of_field"
+      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, medium_hair, straight_hair, brown_hair, green_eyes, school_uniform, white_serafuku, sailor_collar, blue_ribbon, pleated_skirt, upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, classroom, window, sunset, sunlight, BREAK, depth of field, volumetric lighting"
+    },
+    "_meta": {
+      "title": "Positive prompt: no-ref upper-body white-serafuku event CG baseline"
     }
   },
   "10": {
@@ -88,7 +35,10 @@
         "2",
         0
       ],
-      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2)"
+      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, (worst_quality, bad_quality:1.2), sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated"
+    },
+    "_meta": {
+      "title": "Negative prompt: compact creator/model block; no close-up default"
     }
   },
   "11": {
@@ -99,14 +49,14 @@
       "batch_size": 1
     },
     "_meta": {
-      "title": "Blank latent: generate event CG background from prompt, using only character reference"
+      "title": "Blank latent: no-reference txt2img event CG from prompt"
     }
   },
   "12": {
     "class_type": "KSampler",
     "inputs": {
       "model": [
-        "8",
+        "100",
         0
       ],
       "positive": [
@@ -121,12 +71,15 @@
         "11",
         0
       ],
-      "seed": 719260001,
+      "seed": 260521401,
       "steps": 30,
       "cfg": 5.2,
       "sampler_name": "euler_ancestral",
       "scheduler": "normal",
       "denoise": 1.0
+    },
+    "_meta": {
+      "title": "KSampler: LoRA-enabled no-ref event CG baseline; minor outfit drift accepted"
     }
   },
   "13": {
@@ -149,7 +102,10 @@
         "13",
         0
       ],
-      "filename_prefix": "hermes_vn_scene_event_cg_character_only/template_scene_seed_TEMPLATE_seed"
+      "filename_prefix": "hermes_vn_scene_event_cg/final_no_ref_pose_lora_upper_white_serafuku_seed260521401"
+    },
+    "_meta": {
+      "title": "Save final no-ref pose-LoRA upper-body white-serafuku event CG candidate"
     }
   },
   "100": {
@@ -168,7 +124,7 @@
       "strength_clip": 0.65
     },
     "_meta": {
-      "title": "Pose LoRA for natural event-CG staging"
+      "title": "Pose LoRA for natural event-CG staging; keep enabled by default"
     }
   }
 }

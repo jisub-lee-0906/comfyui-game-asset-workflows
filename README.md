@@ -31,7 +31,7 @@ WSL path:
 | `scene_background` | 캐릭터 없는 16:9 VN 배경 생성. | `scene_background/scene_background_workflow_api.json` |
 | `scene_prop_cg` | 16:9 소품 / 단서 / item cut-in CG 생성. | `scene_prop_cg/scene_prop_cg_workflow_api.json` |
 | `char_outfit` | source character image에서 outfit/costume variant 생성. | `char_outfit/char_outfit_workflow_api.json` |
-| `scene_event_cg` | 캐릭터 reference 1장으로 16:9 character event CG 생성. 배경은 prompt로 생성되며 pose LoRA가 기본 적용됩니다. | `scene_event_cg/scene_event_cg_workflow_api.json` |
+| `scene_event_cg` | no-reference txt2img + pose LoRA로 16:9 character event CG 생성. 캐릭터/의상 일관성은 캐릭터 metadata anchor와 prompt tag로 유지합니다. | `scene_event_cg/scene_event_cg_workflow_api.json` |
 | `audio_bgm_ace` | ACE-Step 1.5 기반 lyric-free VN BGM 후보 생성. | `audio_bgm_ace/audio_bgm_ace_workflow_api.json` |
 | `audio_sfx_mmaudio` | MMAudio video-to-audio 기반 짧은 효과음 후보 생성. | `audio_sfx_mmaudio/audio_sfx_mmaudio_workflow_api.json` |
 
@@ -43,7 +43,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 2. `WORKFLOW_INDEX.json`을 읽고 workflow path, editable field, input placeholder를 확인합니다.
 3. `AGENTS.md`를 읽고 실행 규칙을 확인합니다.
 4. target workflow folder의 `README.md`를 읽고 prompt template과 주의사항을 확인합니다.
-5. target `*_workflow_api.json`을 load하고, index에 적힌 editable field만 runtime patch합니다.
+5. 기존 캐릭터 기반 에셋이면 프로젝트의 `docs/assets/characters/*.asset.json` sidecar를 읽고, workflow별로 필요한 metadata subset만 prompt로 조립합니다.
+6. target `*_workflow_api.json`을 load하고, index에 적힌 editable field만 runtime patch합니다.
 
 사용자가 “README 프롬프트를 수정했다”고 말하면, 기존 기억이나 이전 run prompt를 재사용하지 말고 target README를 즉시 다시 읽습니다.
 
@@ -53,7 +54,7 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 
 | 사용자 또는 장면 맥락 | 사용할 workflow | 입력 이미지 | 판단 기준 / 주의사항 |
 |---|---|---|---|
-| “캐릭터 CG 만들어줘”, “이벤트 CG 뽑아줘”, “이 장면용 캐릭터 일러스트가 필요해” | `scene_event_cg` | 캐릭터 reference 1장 | 16:9 캐릭터 CG입니다. 사용자가 source/base/anchor를 명시하지 않았다면 `char_base`로 가지 않습니다. |
+| “캐릭터 CG 만들어줘”, “이벤트 CG 뽑아줘”, “이 장면용 캐릭터 일러스트가 필요해” | `scene_event_cg` | 없음 | 16:9 캐릭터 CG입니다. 사용자가 source/base/anchor를 명시하지 않았다면 `char_base`로 가지 않습니다. 기존 캐릭터 기반이면 캐릭터 metadata의 identity/outfit/framing anchor를 먼저 사용합니다. |
 | 새 캐릭터의 기본 source, anchor, base image가 필요함 | `char_base` | 없음 | downstream expression/outfit/event workflow에 넣을 기준 캐릭터 이미지를 만듭니다. |
 | 표정만 바꾸고 싶음, 대사창용 표정 variation이 필요함 | `char_expression` | source character image | 몸/의상을 유지하고 얼굴/표정만 바꾸는 route입니다. |
 | 투명 배경 PNG, sprite cutout, 배경 제거가 필요함 | `char_alpha` | source image | QA된 캐릭터/표정/의상 이미지를 transparent PNG 후보로 만듭니다. |
@@ -62,7 +63,7 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 | 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | 16:9 단일 소품 후보를 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄입니다. |
 | 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_ace` | 없음 | ACE-Step 1.5 기반 instrumental BGM 후보를 생성합니다. vocal 여부와 loop 품질은 listening QA가 필요합니다. |
 | 문 열림, 발소리, 마법 crack 같은 짧은 효과음이 필요함 | `audio_sfx_mmaudio` | 없음 | MMAudio video-to-audio 기반 후보를 생성합니다. 입력 영상 cue와 청감 QA가 필요합니다. 음성/음악 섞임 여부는 listening QA가 필요합니다. |
-| 포즈나 액션이 있는 장면 일러스트가 필요함 | `scene_event_cg` | 캐릭터 reference 1장 | `pose_variations`는 제거되었습니다. Dialogue sprite 재생성이 아니라 event CG로 처리합니다. |
+| 포즈나 액션이 있는 장면 일러스트가 필요함 | `scene_event_cg` | 없음 | `pose_variations`는 제거되었습니다. Dialogue sprite 재생성이 아니라 event CG로 처리합니다. 기존 캐릭터 기반이면 캐릭터 metadata anchor를 고정한 뒤 작은 staging/background/seed만 바꿉니다. |
 
 중요한 용어 구분:
 
@@ -81,6 +82,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
    - 위 표에 따라 가장 작은 적절한 workflow를 선택합니다.
 3. 프롬프트 작성
    - target workflow README의 템플릿을 읽고 모든 placeholder를 실제 태그/문장으로 채웁니다.
+   - 기존 캐릭터 기반 에셋은 README 샘플 prompt나 과거 PNG metadata를 직접 복붙하지 말고, 캐릭터 metadata sidecar에서 `identity_anchor`, `outfits`, `expression_map`, `framing_defaults`를 읽어 조립합니다.
+   - 재사용 스크립트: `scripts/build_character_prompt.py`.
 4. Runtime patch
    - canonical JSON은 직접 수정하지 않고, runtime payload/copy의 editable field만 바꿉니다.
 5. ComfyUI 제출
