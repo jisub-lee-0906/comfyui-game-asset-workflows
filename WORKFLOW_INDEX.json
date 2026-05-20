@@ -1,0 +1,487 @@
+{
+  "pack_name": "comfyui-game-asset-workflows",
+  "version": "2026-05-20-mmaudio-sfx-default",
+  "root_wsl": "/home/jisub-lee/workspace/comfyui-game-asset-workflows",
+  "root_windows_unc": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\jisub-lee\\workspace\\comfyui-game-asset-workflows",
+  "comfyui_paths": {
+    "windows_output_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\output",
+    "wsl_output_root": "/mnt/c/Users/Desktop/Documents/ComfyUI/output",
+    "windows_input_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\input",
+    "wsl_input_root": "/mnt/c/Users/Desktop/Documents/ComfyUI/input",
+    "output_rule": "SaveImage.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated files via /history/{prompt_id} or output-folder scan before reporting.",
+    "audio_output_rule": "SaveAudio/SaveAudioMP3.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated audio files via /history/{prompt_id}, output-folder scan, and ffprobe before reporting."
+  },
+  "structure": "flat semantic workflow folders; each folder contains README.md and one canonical *_workflow_api.json",
+  "numbered_folder_contract": "deprecated; do not assume old 01_* through 07_* folders exist",
+  "agent_entrypoint": [
+    "README.md",
+    "WORKFLOW_INDEX.json",
+    "AGENTS.md",
+    "<target workflow>/README.md",
+    "<target workflow>/*_workflow_api.json"
+  ],
+  "global_rules": [
+    "Do not overwrite canonical API JSONs during normal generation; copy to a runtime/sandbox file and patch the copy.",
+    "Replace TEMPLATE_* and Korean brace placeholders before live ComfyUI submission unless explicitly testing placeholder behavior.",
+    "Keep generated images outside this canonical workflow pack.",
+    "Do not claim quality or production readiness without artifact/contact-sheet/Ren'Py QA.",
+    "When user performs visual QA, report output paths and seeds without inventing visual judgments."
+  ],
+  "workflows": [
+    {
+      "order": 1,
+      "id": "char_base",
+      "folder": "char_base",
+      "readme": "char_base/README.md",
+      "api": "char_base/char_base_workflow_api.json",
+      "purpose": "Generate opaque base/source character images for downstream VN assets.",
+      "output_type": "opaque character source image, 1152x1536 by default",
+      "requires_input_images": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "positive_prompt": "3",
+        "negative_prompt": "4",
+        "latent_size": "5",
+        "sampler": "6",
+        "save": "8"
+      },
+      "editable_fields": [
+        "3.inputs.text",
+        "4.inputs.text",
+        "5.inputs.width",
+        "5.inputs.height",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "width": 1152,
+        "height": 1536,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 28,
+        "cfg": 5.0
+      },
+      "downstream": [
+        "char_expression",
+        "char_alpha",
+        "char_outfit",
+        "scene_event_cg"
+      ],
+      "status": "canonical_template",
+      "input_placeholders": []
+    },
+    {
+      "order": 2,
+      "id": "char_expression",
+      "folder": "char_expression",
+      "readme": "char_expression/README.md",
+      "api": "char_expression/char_expression_workflow_api.json",
+      "purpose": "Generate facial/emotional expression variants from a source character image using YOLO+SAM face mask + inpaint/composite workflow.",
+      "output_type": "opaque expression variant plus mask/raw/composited debug outputs",
+      "requires_input_images": true,
+      "input_placeholders": [
+        "TEMPLATE_character_anchor_source.png"
+      ],
+      "primary_nodes": {
+        "source_image": "1",
+        "checkpoint": "2",
+        "positive_prompt": "6",
+        "negative_prompt": "7",
+        "sampler": "13",
+        "save_raw_inpaint": "15",
+        "save_mask_preview": "17",
+        "save_composited": "19",
+        "face_detector": "1000",
+        "face_bbox_segs": "1002",
+        "face_sam_mask": "1003",
+        "mask_enhancer": "5"
+      },
+      "editable_fields": [
+        "1.inputs.image",
+        "6.inputs.text",
+        "7.inputs.text",
+        "13.inputs.seed",
+        "13.inputs.denoise",
+        "15.inputs.filename_prefix",
+        "17.inputs.filename_prefix",
+        "19.inputs.filename_prefix",
+        "5.inputs.mask_blur",
+        "5.inputs.mask_offset",
+        "1000.inputs.model_name",
+        "1002.inputs.threshold",
+        "1002.inputs.crop_factor",
+        "1003.inputs.detection_hint",
+        "1003.inputs.threshold"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "sampler": "euler_ancestral",
+        "scheduler": "karras",
+        "steps": 26,
+        "cfg": 5.0,
+        "denoise": 0.4,
+        "face_mask_route": "YOLO face_yolov9c bbox + SAM center-1",
+        "face_detector": "bbox/face_yolov9c.pt",
+        "sam_model": "sam_vit_b_01ec64.pth",
+        "face_bbox_threshold": 0.35,
+        "face_sam_threshold": 0.93
+      },
+      "upstream": [
+        "char_base"
+      ],
+      "downstream": [
+        "char_alpha"
+      ],
+      "status": "canonical_template_requires_runtime_input_yolosam_face_mask"
+    },
+    {
+      "order": 3,
+      "id": "char_alpha",
+      "folder": "char_alpha",
+      "readme": "char_alpha/README.md",
+      "api": "char_alpha/char_alpha_workflow_api.json",
+      "purpose": "Remove background / create transparent PNG alpha output from a character/source image.",
+      "output_type": "transparent PNG / alpha character asset",
+      "requires_input_images": true,
+      "input_placeholders": [
+        "TEMPLATE_source_image.png"
+      ],
+      "primary_nodes": {
+        "source_image": "1",
+        "background_removal": "2",
+        "save": "3"
+      },
+      "editable_fields": [
+        "1.inputs.image",
+        "3.inputs.filename_prefix"
+      ],
+      "upstream": [
+        "char_base",
+        "char_expression",
+        "char_outfit"
+      ],
+      "status": "canonical_template_requires_runtime_input",
+      "fixed_defaults_observed": {
+        "background_removal_model": "BiRefNet_toonout",
+        "mask_blur": 1,
+        "mask_offset": 0,
+        "invert_output": false,
+        "refine_foreground": true,
+        "background": "Alpha"
+      }
+    },
+    {
+      "order": 4,
+      "id": "char_outfit",
+      "folder": "char_outfit",
+      "readme": "char_outfit/README.md",
+      "api": "char_outfit/char_outfit_workflow_api.json",
+      "purpose": "Generate outfit/costume variants from a featureless mannequin/source character image.",
+      "output_type": "opaque outfit-variant character image",
+      "requires_input_images": true,
+      "input_placeholders": [
+        "TEMPLATE_featureless_mannequin_source.png"
+      ],
+      "primary_nodes": {
+        "checkpoint": "1",
+        "source_image": "3",
+        "positive_prompt": "23",
+        "negative_prompt": "24",
+        "sampler": "27",
+        "save_final": "35",
+        "face_protect_detector": "1000",
+        "face_protect_sam": "1003"
+      },
+      "editable_fields": [
+        "3.inputs.image",
+        "23.inputs.text",
+        "24.inputs.text",
+        "27.inputs.seed",
+        "27.inputs.steps",
+        "27.inputs.cfg",
+        "27.inputs.denoise",
+        "35.inputs.filename_prefix",
+        "16.inputs.expand",
+        "954.inputs.expand",
+        "1000.inputs.model_name",
+        "1002.inputs.threshold",
+        "1002.inputs.dilation",
+        "1002.inputs.crop_factor",
+        "1003.inputs.detection_hint",
+        "1003.inputs.threshold",
+        "1003.inputs.dilation",
+        "1003.inputs.bbox_expansion"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 28,
+        "cfg": 4.5,
+        "denoise": 0.92,
+        "masking": "body/non-face GrowMask expand=8, alpha cap expand=6, final mask subtracts 3-05 YOLO face_yolov9c + SAM center-1 face protection mask",
+        "face_protect": "YOLO face_yolov9c threshold=0.35 -> BboxDetectorSEGS crop_factor=2.0 -> SAMDetectorCombined center-1 threshold=0.93"
+      },
+      "upstream": [
+        "char_base"
+      ],
+      "downstream": [
+        "char_alpha"
+      ],
+      "status": "canonical_template_requires_runtime_input"
+    },
+    {
+      "order": 5,
+      "id": "scene_background",
+      "folder": "scene_background",
+      "readme": "scene_background/README.md",
+      "api": "scene_background/scene_background_workflow_api.json",
+      "purpose": "Generate 16:9 visual-novel background art with no characters or text.",
+      "output_type": "opaque 16:9 background image, 1024x576 by default",
+      "requires_input_images": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "clip_last_layer": "2",
+        "positive_prompt": "3",
+        "negative_prompt": "4",
+        "latent_size": "5",
+        "sampler": "6",
+        "save": "8"
+      },
+      "editable_fields": [
+        "3.inputs.text",
+        "4.inputs.text",
+        "5.inputs.width",
+        "5.inputs.height",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "width": 1024,
+        "height": 576,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 24,
+        "cfg": 5.5
+      },
+      "known_placeholders_in_current_json": [
+        "{배경 테마 및 장소}",
+        "{시간대 및 광원 디테일}"
+      ],
+      "status": "canonical_template_but_prompt_placeholders_require_runtime_patch",
+      "input_placeholders": []
+    },
+    {
+      "order": 6,
+      "id": "scene_event_cg",
+      "folder": "scene_event_cg",
+      "readme": "scene_event_cg/README.md",
+      "api": "scene_event_cg/scene_event_cg_workflow_api.json",
+      "purpose": "Generate 16:9 character event CG from a character reference only; background is prompt-generated and a pose LoRA is applied for natural small staging.",
+      "output_type": "opaque 16:9 event CG",
+      "requires_input_images": true,
+      "input_placeholders": [
+        "TEMPLATE_character_reference.png"
+      ],
+      "primary_nodes": {
+        "checkpoint": "1",
+        "pose_lora": "100",
+        "character_reference": "3",
+        "pulid_apply": "8",
+        "positive_prompt": "9",
+        "negative_prompt": "10",
+        "latent_size": "11",
+        "sampler": "12",
+        "save": "14"
+      },
+      "editable_fields": [
+        "3.inputs.image",
+        "100.inputs.lora_name",
+        "100.inputs.strength_model",
+        "100.inputs.strength_clip",
+        "8.inputs.weight",
+        "8.inputs.end_at",
+        "9.inputs.text",
+        "10.inputs.text",
+        "11.inputs.width",
+        "11.inputs.height",
+        "12.inputs.seed",
+        "12.inputs.steps",
+        "12.inputs.cfg",
+        "12.inputs.denoise",
+        "14.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "pose_lora": "hinaMaybeBetterPoseXL_v5-NoobAI.safetensors",
+        "pose_lora_strength_model": 0.65,
+        "pose_lora_strength_clip": 0.65,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 30,
+        "cfg": 5.2,
+        "denoise": 1.0,
+        "latent_size": "1024x576",
+        "identity_reference": "PuLID Advanced weight=0.66 end_at=0.76",
+        "scene_reference": "none; prompt-generated background from blank latent",
+        "direction": "preserve original character/outfit as much as possible; pose LoRA supports natural small event-CG staging"
+      },
+      "upstream": [
+        "char_base",
+        "char_outfit",
+        "char_expression"
+      ],
+      "status": "canonical_template_requires_character_reference_only_prompt_generated_background_pose_lora"
+    },
+    {
+      "order": 7,
+      "id": "scene_prop_cg",
+      "folder": "scene_prop_cg",
+      "readme": "scene_prop_cg/README.md",
+      "api": "scene_prop_cg/scene_prop_cg_workflow_api.json",
+      "purpose": "Generate separate 16:9 close-up prop, clue, or story cut-in CG images for Ren'Py staging.",
+      "output_type": "opaque 16:9 prop close-up CG, 1024x576 by default",
+      "requires_input_images": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "clip_last_layer": "2",
+        "positive_prompt": "3",
+        "negative_prompt": "4",
+        "latent_size": "5",
+        "sampler": "6",
+        "save": "8"
+      },
+      "editable_fields": [
+        "3.inputs.text",
+        "4.inputs.text",
+        "5.inputs.width",
+        "5.inputs.height",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "width": 1024,
+        "height": 576,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 30,
+        "cfg": 5.2,
+        "default_subject": "brass_key"
+      },
+      "status": "canonical_template",
+      "input_placeholders": []
+    },
+    {
+      "order": 8,
+      "id": "audio_bgm_ace",
+      "folder": "audio_bgm_ace",
+      "readme": "audio_bgm_ace/README.md",
+      "api": "audio_bgm_ace/audio_bgm_ace_workflow_api.json",
+      "purpose": "Generate lyric-free instrumental visual-novel BGM candidates with ACE-Step 1.5.",
+      "output_type": "MP3 BGM candidate; convert to OGG before Ren'Py promotion",
+      "requires_input_images": false,
+      "requires_auth": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "audio_text_encode": "2",
+        "negative_conditioning": "3",
+        "latent_audio": "4",
+        "model_sampling": "5",
+        "sampler": "6",
+        "audio_decode": "7",
+        "save": "8"
+      },
+      "editable_fields": [
+        "2.inputs.tags",
+        "2.inputs.lyrics",
+        "2.inputs.seed",
+        "2.inputs.bpm",
+        "2.inputs.duration",
+        "2.inputs.keyscale",
+        "2.inputs.cfg_scale",
+        "2.inputs.temperature",
+        "4.inputs.seconds",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix",
+        "8.inputs.quality"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "ace_step_1.5_turbo_aio.safetensors",
+        "duration": 30.0,
+        "bpm": 90,
+        "timesignature": "4",
+        "language": "en",
+        "keyscale": "C major",
+        "sampler": "euler",
+        "scheduler": "simple",
+        "steps": 20,
+        "cfg": 1.0,
+        "model_sampling": "AuraFlow shift=1.73",
+        "save_format": "MP3 V0"
+      },
+      "status": "canonical_template_audio_bgm_requires_runtime_prompt_and_listening_qa",
+      "input_placeholders": []
+    },
+    {
+      "order": 9,
+      "id": "audio_sfx_mmaudio",
+      "folder": "audio_sfx_mmaudio",
+      "readme": "audio_sfx_mmaudio/README.md",
+      "api": "audio_sfx_mmaudio/audio_sfx_mmaudio_workflow_api.json",
+      "purpose": "Generate short VN/game SFX candidates with MMAudio video-to-audio using an 8-second visual cue video.",
+      "output_type": "FLAC SFX candidate; convert approved candidate to OGG before Ren'Py promotion",
+      "requires_input_images": false,
+      "requires_input_video": true,
+      "requires_auth": false,
+      "primary_nodes": {
+        "video_loader": "1",
+        "model_loader": "2",
+        "feature_utils_loader": "3",
+        "sampler": "4",
+        "save": "5"
+      },
+      "editable_fields": [
+        "1.inputs.video",
+        "1.inputs.custom_width",
+        "1.inputs.custom_height",
+        "4.inputs.duration",
+        "4.inputs.steps",
+        "4.inputs.cfg",
+        "4.inputs.seed",
+        "4.inputs.prompt",
+        "4.inputs.negative_prompt",
+        "5.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "source_prompt_id": "e2941581-4bec-4065-878c-d259c034c538",
+        "custom_node": "ComfyUI-MMAudio",
+        "model_dir": "C:\\Users\\Desktop\\Documents\\ComfyUI\\models\\mmaudio",
+        "mmaudio_model": "mmaudio_large_44k.safetensors",
+        "vae_model": "mmaudio_vae_44k_fp16.safetensors",
+        "synchformer_model": "mmaudio_synchformer_fp16.safetensors",
+        "clip_model": "apple_DFN5B-CLIP-ViT-H-14-384_fp16.safetensors",
+        "mode": "44k",
+        "precision": "fp16",
+        "duration": 8.0,
+        "steps": 25,
+        "cfg": 4.5,
+        "seed": 202,
+        "sample_rate": 44100,
+        "baseline_input_video": "mmaudio_official_car_horn_8s_25fps_384.mp4"
+      },
+      "status": "canonical_template_mmaudio_video_sfx_requires_runtime_video_prompt_ffprobe_and_listening_qa",
+      "input_placeholders": []
+    }
+  ]
+}

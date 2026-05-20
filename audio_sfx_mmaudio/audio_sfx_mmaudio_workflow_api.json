@@ -1,0 +1,67 @@
+{
+  "1": {
+    "class_type": "VHS_LoadVideo",
+    "inputs": {
+      "video": "mmaudio_official_car_horn_8s_25fps_384.mp4",
+      "force_rate": 0.0,
+      "custom_width": 384,
+      "custom_height": 384,
+      "frame_load_cap": 0,
+      "skip_first_frames": 0,
+      "select_every_nth": 1,
+      "format": "None"
+    }
+  },
+  "2": {
+    "class_type": "MMAudioModelLoader",
+    "inputs": {
+      "mmaudio_model": "mmaudio_large_44k.safetensors",
+      "base_precision": "fp16"
+    }
+  },
+  "3": {
+    "class_type": "MMAudioFeatureUtilsLoader",
+    "inputs": {
+      "vae_model": "mmaudio_vae_44k_fp16.safetensors",
+      "synchformer_model": "mmaudio_synchformer_fp16.safetensors",
+      "clip_model": "apple_DFN5B-CLIP-ViT-H-14-384_fp16.safetensors",
+      "mode": "44k",
+      "precision": "fp16"
+    }
+  },
+  "4": {
+    "class_type": "MMAudioSampler",
+    "inputs": {
+      "mmaudio_model": [
+        "2",
+        0
+      ],
+      "feature_utils": [
+        "3",
+        0
+      ],
+      "images": [
+        "1",
+        0
+      ],
+      "duration": 8.0,
+      "steps": 25,
+      "cfg": 4.5,
+      "seed": 202,
+      "prompt": "a car horn honking short loud beeps synchronized with the flashing headlights and sound wave marks, realistic automobile horn, no engine, no music, no speech",
+      "negative_prompt": "Low quality, music, melody, speech, voice, talking, singing, crowd, rain, wind, siren, police, ambulance, engine rumble, traffic noise, distorted, robotic, electronic",
+      "mask_away_clip": false,
+      "force_offload": true
+    }
+  },
+  "5": {
+    "class_type": "SaveAudio",
+    "inputs": {
+      "audio": [
+        "4",
+        0
+      ],
+      "filename_prefix": "audio_sfx_mmaudio/mmaudio_video_sfx"
+    }
+  }
+}
