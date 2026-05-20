@@ -7,7 +7,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, anime_style, cinematic_visual_novel_event_CG,1girl, solo, [원본 캐릭터 핵심 특징:  {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, [원본 의상 디테일: {상의, 하의, 신발, 악세서리}], {카메라 구도}, {자연스러운 작은 연출}, {배경 테마 및 장소}, {시간대 및 조명}, character_integrated_with_background_lighting, depth_of_field, detailed_background
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, anime_style, visual_novel, game_cg, 1girl, solo, [원본 캐릭터 핵심 특징:  {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, [원본 의상 디테일: {상의, 하의, 신발, 악세서리}], {카메라 구도}, {자연스러운 작은 연출}, {배경 테마 및 장소}, {시간대 및 조명}, depth_of_field
 
 ```
 
@@ -16,7 +16,7 @@ masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution,
 **Negative prompt:**
 
 ```text
-modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), vignette, shadow, depth_of_field, rim_lighting
+modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field
 
 ```
 
@@ -31,12 +31,12 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 **2) 상황 및 자연스러운 작은 연출 (Staging & Pose)**
 
-* **권장 예시:** `standing_beside_classroom_window`, `sitting_at_a_classroom_desk`, `elbows_gently_resting_on_desk`, `one_hand_lightly_near_chest`, `slight_body_turn` 등 원본 포즈를 크게 바꾸지 않는 자연스러운 연출
-* **주의:** `reaching_out_to_viewer`, `hugging_knees`, `looking_back_over_shoulder`처럼 큰 포즈 변화는 이벤트 CG 재해석이 커질 수 있으므로 필요할 때만 사용합니다.
+* **권장 예시:** `standing`, `sitting`, `hand_on_own_chest`, `looking_at_viewer`처럼 CSV에 있는 작은 연출 태그를 우선 사용합니다. 창가/책상/세부 연출은 `classroom`, `window`, `desk`, `chair` 등 검증 태그와 seed/settings로 유도합니다.
+* **주의:** CSV에 없는 자연어식 포즈 문구나 큰 액션 지시는 넣지 않습니다. 큰 포즈 변화는 이벤트 CG 재해석이 커질 수 있으므로 필요할 때만 검증된 태그로 작게 테스트합니다.
 
 **3) 배경 및 조명 연출 보강**
 
-* **예시 (창가에서 햇빛을 받는 씬):** `{배경 테마 및 장소}` 자리에 `warm_sunset_classroom, sunlight_through_window, dust_motes` 등을 넣고, `{시간대 및 조명}` 자리에 `golden_hour_rim_light, soft_orange_sunlight` 등을 넣으면 캐릭터와 배경 조명이 함께 맞춰집니다.
+* **예시 (창가에서 햇빛을 받는 씬):** `{배경 테마 및 장소}` 자리에 `classroom, window`를 넣고, `{시간대 및 조명}` 자리에 `sunset, sunlight`처럼 CSV 검증 태그를 넣습니다. 더 복잡한 빛줄기/먼지/무드 연출은 seed/settings 또는 후보 선택으로 처리합니다.
 
 #### 3. 검증된 Danbooru CSV 태그 메모
 

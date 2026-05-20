@@ -80,7 +80,7 @@
       "readme": "char_expression/README.md",
       "api": "char_expression/char_expression_workflow_api.json",
       "purpose": "Generate facial/emotional expression variants from a source character image using YOLO+SAM face mask + inpaint/composite workflow.",
-      "output_type": "opaque expression variant plus mask/raw/composited debug outputs",
+      "output_type": "opaque composited expression variant image",
       "requires_input_images": true,
       "input_placeholders": [
         "TEMPLATE_character_anchor_source.png"
@@ -91,8 +91,6 @@
         "positive_prompt": "6",
         "negative_prompt": "7",
         "sampler": "13",
-        "save_raw_inpaint": "15",
-        "save_mask_preview": "17",
         "save_composited": "19",
         "face_detector": "1000",
         "face_bbox_segs": "1002",
@@ -105,8 +103,6 @@
         "7.inputs.text",
         "13.inputs.seed",
         "13.inputs.denoise",
-        "15.inputs.filename_prefix",
-        "17.inputs.filename_prefix",
         "19.inputs.filename_prefix",
         "5.inputs.mask_blur",
         "5.inputs.mask_offset",
@@ -135,7 +131,7 @@
       "downstream": [
         "char_alpha"
       ],
-      "status": "canonical_template_requires_runtime_input_yolosam_face_mask"
+      "status": "canonical_template_requires_runtime_input_yolosam_face_mask_composited_only"
     },
     {
       "order": 3,

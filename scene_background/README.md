@@ -5,14 +5,14 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, anime_style, digital_illustration, scenery, no_humans, background, wide_shot, landscape, clear_foreground, unoccupied_bottom_third, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, anime_style, scenery, no_humans, wide_shot, landscape, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting
 
 ```
 
 **Negative prompt:**
 
 ```text
-1girl, 1boy, human, person, character, crowd, people, silhouette, monster, animal, modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, ugly, lowres, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, bad_ai-generated, simple_background, (worst_quality, bad_quality:1.2)
+1girl, 1boy, crowd, people, silhouette, monster, animal, modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, ugly, lowres, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, bad_ai-generated, simple_background, (worst_quality, bad_quality:1.2)
 
 ```
 
@@ -22,30 +22,30 @@ masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution,
 
 **1) 학교 (School)**
 
-* **교실:** `school, classroom, desks, chairs, blackboard, windows`
-* **복도:** `school, hallway, lockers, windows, wooden_floor`
-* **학교 옥상:** `school, rooftop, chain_link_fence, blue_sky`
-* **교문/등굣길:** `school, school_gate, cherry_blossoms, road, street`
+* **교실:** `school, classroom, desk, chair, chalkboard, window`
+* **복도:** `school, hallway, locker, window, wooden_floor`
+* **학교 옥상:** `school, rooftop, fence, blue_sky`
+* **교문/등굣길:** `school, cherry_blossoms, road, street`
 
 **2) 일상 / 집 (Home / Daily)**
 
-* **주인공/히로인 방:** `indoor, bedroom, bed, desk, computer, bookshelf, cozy`
-* **거실:** `indoor, living_room, sofa, television, coffee_table, window`
+* **주인공/히로인 방:** `indoors, bedroom, bed, desk, computer, bookshelf`
+* **거실:** `indoors, living_room, television, coffee_table, window`
 * **동네 길거리:** `outdoors, street, utility_pole, houses, sidewalk`
-* **공원:** `outdoors, park, benches, trees, grass, path`
+* **공원:** `outdoors, park, bench, tree, grass, path`
 
 **3) 판타지 / 이세계 (Fantasy)**
 
-* **판타지 마을:** `outdoors, fantasy_world, medieval_town, cobblestone_street, brick_houses`
-* **신비로운 숲:** `outdoors, fantasy_forest, glowing_mushrooms, giant_trees, magical_atmosphere`
-* **마왕성 / 서재:** `indoor, castle, gothic_architecture, library, large_bookshelf, candelabra`
+* **판타지 마을:** `outdoors, town, street, house`
+* **신비로운 숲:** `outdoors, forest, mushroom, tree`
+* **마왕성 / 서재:** `indoors, castle, gothic_architecture, library, bookshelf, candelabra`
 
 **[ 시간대 및 분위기 태그 ]**
 
 * **낮 (Day):** `day, sunlight, bright, clear_sky`
-* **노을/저녁 (Sunset):** `sunset, golden_hour, orange_sky, warm_lighting, shadows`
-* **밤 (Night):** `night, starry_sky, moonlight, dark, window_light`
-* **새벽/비 (Atmosphere):** `morning, misty, fog` 또는 `rain, rainy_day, overcast`
+* **노을/저녁 (Sunset):** `sunset, golden_hour, orange_sky, shadow`
+* **밤 (Night):** `night, starry_sky, moonlight, dark`
+* **새벽/비 (Atmosphere):** `morning, fog` 또는 `rain, overcast`
 
 #### 3. 검증된 Danbooru CSV 태그 메모
 

@@ -36,7 +36,7 @@
         "2",
         1
       ],
-      "text": "masterpiece, best quality, amazing quality, 4k, very aesthetic, high resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, front_view, looking_at_viewer, straight_posture, arms_at_sides, {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}, {감정표현}, BREAK, depth of field, volumetric lighting"
+      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}, {감정표현}, BREAK, depth_of_field, volumetric_lighting"
     }
   },
   "7": {
@@ -46,7 +46,7 @@
         "2",
         1
       ],
-      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, lowres, bad anatomy, cropped, very displeasing, sketch, jpeg artifacts, signature, watermark, username, conjoined, bad ai-generated, changed_clothes, different_clothes, different_hair, (worst quality, bad quality:1.2), {상극 감정표현}"
+      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, lowres, bad_anatomy, cropped, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), {상극 감정표현}"
     }
   },
   "8": {
@@ -167,35 +167,6 @@
         "2",
         2
       ]
-    }
-  },
-  "15": {
-    "class_type": "SaveImage",
-    "inputs": {
-      "images": [
-        "14",
-        0
-      ],
-      "filename_prefix": "hermes_vn_expression/source_TEMPLATE_CHARACTER_happy_raw_inpaint"
-    }
-  },
-  "16": {
-    "class_type": "MaskToImage",
-    "inputs": {
-      "mask": [
-        "5",
-        0
-      ]
-    }
-  },
-  "17": {
-    "class_type": "SaveImage",
-    "inputs": {
-      "images": [
-        "16",
-        0
-      ],
-      "filename_prefix": "hermes_vn_expression/source_TEMPLATE_CHARACTER_happy_mask_preview"
     }
   },
   "18": {
