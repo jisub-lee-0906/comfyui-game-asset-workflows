@@ -9,7 +9,19 @@ MMAudio video-to-audio 기반 VN/게임 SFX 후보 생성 workflow입니다.
 - 기준 입력 영상: `/mnt/c/Users/Desktop/Documents/ComfyUI/input/mmaudio_official_car_horn_8s_25fps_384.mp4`
 - canonical API workflow: `audio_sfx_mmaudio/audio_sfx_mmaudio_workflow_api.json`
 
-주의: 이 workflow는 후보 생성용입니다. `production-ready` 판정은 청감 QA, 노이즈/볼륨/컷 편집/fade/Ren'Py 재생 확인 후에만 합니다.
+주의: 이 workflow는 후보 생성용입니다. `production-ready` 판정은 청감 QA, 노이즈/볼륨/컷 편집/fade/Ren'Py 재생 확인 후에만 합니다. MMAudio가 8초 안에 같은 효과를 여러 번 반복하거나 문 열림/닫힘처럼 두 동작을 모두 낼 수 있으므로, 실제 게임용 SFX는 청감상 가장 깨끗한 한 번의 hit/segment만 잘라내어 사용합니다.
+
+운영 고정: ComfyUI graph는 8초 source take를 생성하고, 최종 게임용 파일은 외부 후처리 단계에서 자동 single-hit 편집본으로 만듭니다. 기본 후처리 스크립트는 `/home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/final_edit_mmaudio_sfx.py`이며, 원본 FLAC/WAV를 분석해 가장 강한 1회 이벤트를 잘라 `edited_single_hits/`에 FLAC+OGG로 저장합니다.
+
+예:
+
+```bash
+python3 /home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/final_edit_mmaudio_sfx.py \
+  /mnt/c/Users/Desktop/Documents/ComfyUI/output/<run>/audio_sfx_mmaudio/<source_take>.flac \
+  --name <sfx_id>_final
+```
+
+보고 단위는 항상 `8초 원본 take + 선택 구간 + 최종편집 FLAC + Ren'Py용 OGG + ffprobe/silencedetect`입니다.
 
 ## 기본값
 
@@ -108,6 +120,8 @@ Low quality, music, melody, speech, voice, talking, singing, crowd, rain, wind, 
 - 장면별 오염: 목표 소리와 헷갈리는 사촌 소리를 명시적으로 제외
 
 ## 예시
+
+운영 우선순위: 모든 SFX 요청은 먼저 현실에 존재하는 유사 소리로 변환합니다. 핵심은 “일상 소리만”이 아니라 “실제로 들을 수 있는 자연/물리 현상으로 대체”하는 것입니다. 마법/추상음 요청도 직접 `magic sparkle`처럼 만들지 말고, 소리의 물리적 유사물을 정합니다. 예: 전기 마법은 천둥, 번개, 전기 스파크, 전선 지직거림으로 치환하고, 화염 마법은 불이 붙는 화르륵 소리, 가스레인지 점화, 장작 타는 소리, 짧은 불꽃 whoosh로 치환합니다. 구조선/감지는 연필·분필 긁힘, 공간 진동은 창틀·문틀 떨림, 물/얼음 계열은 물방울·얼음 깨짐처럼 source가 분명한 현실 cue를 씁니다.
 
 ### 자동차 경적
 

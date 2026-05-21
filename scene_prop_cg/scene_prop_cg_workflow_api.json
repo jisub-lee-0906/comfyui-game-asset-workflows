@@ -22,7 +22,7 @@
         "2",
         0
       ],
-      "text": "masterpiece, best quality, amazing quality, 4k, very aesthetic, high resolution, ultra-detailed, absurdres, newest, anime style, digital illustration, still life, close-up, macro shot, object focus, {아이템 이름 및 형태}, {재질 및 질감 디테일}, {놓여있는 장소/배경}, BREAK, strong depth of field, blurry background, studio lighting, highly detailed texture"
+      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, no_humans, still_life, object_focus, {아이템 이름 및 형태}, {재질 및 질감 디테일}, {놓여있는 장소/배경}, BREAK, depth_of_field"
     }
   },
   "4": {
@@ -32,7 +32,7 @@
         "2",
         0
       ],
-      "text": "1girl, 1boy, human, person, character, face, hands, body, modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, lowres, bad anatomy, sketch, jpeg artifacts, signature, watermark, username, bad ai-generated, (worst quality, bad quality:1.2), readable text, fake letters, fake writing, printed text, paragraphs, symbols, glyphs, logo, label, ui, interface, screenshot, dialogue box, subtitle, caption"
+      "text": "1girl, 1boy, cropped, out_of_frame, duplicate, close-up, modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, lowres, bad_anatomy, sketch, jpeg_artifacts, signature, watermark, username, bad_ai-generated, (worst_quality, bad_quality:1.2), fake_text, logo, label, screenshot, dialogue_box, caption"
     }
   },
   "5": {

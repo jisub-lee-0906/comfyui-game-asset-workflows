@@ -5,7 +5,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, anime_style, no_humans, still_life, object_focus, {아이템 이름 및 형태}, {재질 및 질감 디테일}, {놓여있는 장소/배경}, BREAK, depth_of_field
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, no_humans, still_life, object_focus, {아이템 이름 및 형태}, {재질 및 질감 디테일}, {놓여있는 장소/배경}, BREAK, depth_of_field
 
 ```
 
@@ -55,4 +55,8 @@ masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution,
 - CSV에서 확인된 텍스트/UI negative: `signature`, `watermark`, `logo`, `label`, `caption`, `speech_bubble`
 
 소품 규칙: 편지/책/화면은 최종 텍스트를 ComfyUI 밖에서 합성할 계획이 아니라면 빈 디자인이나 읽을 수 없는 디자인을 우선합니다. `single_object`처럼 "단일 소품만"을 직접 뜻하는 Danbooru 태그는 현재 로컬 CSV에 없으므로, 단일 소품 구도는 `no_humans`, `still_life`, `object_focus`와 seed/settings/후보 선택으로 유도합니다. 소품이 잘리면 `close-up`처럼 과한 근접을 유도하는 태그를 줄입니다.
+
+#### 4. Smoke QA 메모
+
+2026-05-21 smoke 기준으로 `key`는 단일 단서 소품으로 안정적이었고, `ring`도 단일 소품으로는 안정적이지만 보석 장식이 과장되어 팔찌/장식 링처럼 커질 수 있습니다. `pocket_watch`는 단서 분위기는 좋지만 문자판/뚜껑/체인 때문에 화면상 여러 물체처럼 분리될 수 있으므로 단일 소품 기준에서는 seed 후보를 여러 장 뽑아 QA로 골라야 합니다. 문서, 책, 편지, 스마트폰 화면, 시계 문자판처럼 텍스트/기호가 들어가기 쉬운 소품은 fake text 여부를 반드시 확인합니다. 단순 금속/보석/병/칼/크리스탈류는 상대적으로 안전하고, 읽을 수 있는 정보가 필요한 단서는 ComfyUI에서 직접 생성하지 말고 빈 소품을 만든 뒤 Ren'Py/후편집으로 텍스트를 합성합니다.
 
