@@ -71,7 +71,7 @@ upper_body, straight-on, facing_viewer, looking_at_viewer
 현재 프로젝트 예시:
 
 ```text
-/home/jisub-lee/workspace/vn-demo/the_accidental_architect_of_magic/docs/assets/characters/lia_bel_astrin.asset.json
+/home/jisub-lee/workspace/renpy-project/the_accidental_architect_of_magic/docs/assets/characters/lia_bel_astrin.asset.json
 ```
 
 조립 순서:
@@ -87,7 +87,7 @@ prompt builder 예시:
 
 ```bash
 python /home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/build_character_prompt.py \
-  --character /home/jisub-lee/workspace/vn-demo/the_accidental_architect_of_magic/docs/assets/characters/lia_bel_astrin.asset.json \
+  --character /home/jisub-lee/workspace/renpy-project/the_accidental_architect_of_magic/docs/assets/characters/lia_bel_astrin.asset.json \
   --workflow scene_event_cg \
   --outfit white_serafuku \
   --expression serious \

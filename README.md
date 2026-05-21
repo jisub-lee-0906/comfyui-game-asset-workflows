@@ -237,7 +237,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 - 각 workflow README는 간결한 운영 가이드로 유지합니다. 실험 이력이나 일시적인 튜닝 노트를 넣기 위해 수정하지 않습니다.
 
 최신 audit report:
-`/home/jisub-lee/workspace/vn-demo/.analysis/workflow_pack_freeze_audit_20260517.md`
+`/home/jisub-lee/workspace/renpy-project/.analysis/workflow_pack_freeze_audit_20260517.md`
 
 ## 현재 주의사항
 
