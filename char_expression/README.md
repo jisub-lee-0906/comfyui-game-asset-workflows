@@ -5,9 +5,14 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, [캐릭터 원본 특징: {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], {감정표현}, BREAK, depth_of_field, volumetric_lighting
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}, {감정표현}, BREAK, depth_of_field, volumetric_lighting
 
 ```
+
+캐릭터 원본 특징 guard:
+- `{헤어 길이}`, `{헤어 스타일}`, `{머리색}`, `{눈색}`은 반드시 입력 source/승인된 캐릭터 metadata에서 가져옵니다.
+- 임의로 다른 특징을 넣지 않습니다. 이전 이미지와 다른 특징을 넣으면 같은 캐릭터 표정 variant가 아니라 새 캐릭터처럼 drift할 수 있습니다.
+- 위 code block은 ComfyUI에 들어가는 실제 prompt contract이므로 `[캐릭터 원본 특징: ...]` 같은 한국어 라벨은 넣지 않습니다. 라벨은 이 guard 문단에서만 읽고, 실제 prompt에는 검증된 Danbooru tag만 넣습니다.
 
 **Negative prompt:**
 

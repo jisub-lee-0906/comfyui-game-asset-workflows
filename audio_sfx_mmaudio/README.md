@@ -4,10 +4,8 @@ MMAudio video-to-audio 기반 VN/게임 SFX 후보 생성 workflow입니다.
 
 현재 SFX 기본 route는 사용자가 청감상 가장 좋다고 선택한 MMAudio video baseline입니다.
 
-- 기준 prompt_id: `e2941581-4bec-4065-878c-d259c034c538`
-- 기준 출력: `/mnt/c/Users/Desktop/Documents/ComfyUI/output/hermes_official/mmaudio_video_car_horn_8s_seed202_00001_.flac`
-- 기준 입력 영상: `/mnt/c/Users/Desktop/Documents/ComfyUI/input/mmaudio_official_car_horn_8s_25fps_384.mp4`
 - canonical API workflow: `audio_sfx_mmaudio/audio_sfx_mmaudio_workflow_api.json`
+- 기준 검증 타입: 8초 25fps 384px 영상 cue + 44k fp16 MMAudio large 모델 + 현실 source가 분명한 prompt
 
 주의: 이 workflow는 후보 생성용입니다. `production-ready` 판정은 청감 QA, 노이즈/볼륨/컷 편집/fade/Ren'Py 재생 확인 후에만 합니다. MMAudio가 8초 안에 같은 효과를 여러 번 반복하거나 문 열림/닫힘처럼 두 동작을 모두 낼 수 있으므로, 실제 게임용 SFX는 청감상 가장 깨끗한 한 번의 hit/segment만 잘라내어 사용합니다.
 
@@ -171,16 +169,16 @@ Negative:
 Low quality, music, melody, speech, voice, talking, singing, crowd, rain, wind, running, metal, distorted, robotic, electronic
 ```
 
-### 마법 짧은 효과음
+### 전기/마법 스파크의 현실 analog
 
 ```text
-a short magical sparkle burst synchronized with the glowing visual effect, bright crystalline chime, clean fantasy game sound effect, no music, no speech
+an electrical spark crackling from a metal wire synchronized with the visible blue flash, short sharp static discharge, realistic close foley, no music, no speech
 ```
 
 Negative:
 
 ```text
-Low quality, music, melody, singing, speech, voice, talking, explosion, thunder, crowd, distorted, noisy, robotic
+Low quality, music, melody, singing, speech, voice, talking, explosion, creature sound, crowd, distorted, noisy, robotic
 ```
 
 ## 제출 전 체크
@@ -199,4 +197,4 @@ Low quality, music, melody, singing, speech, voice, talking, explosion, thunder,
 - `candidate`: 사람이 듣고 장면에 쓸 가능성이 있음
 - `production-ready`: 청감 QA, 편집, 볼륨, 노이즈, 페이드, 게임 내 재생 확인 통과
 
-현재 기준 prompt_id `e2941581-4bec-4065-878c-d259c034c538`는 사용자가 가장 좋다고 선택한 `candidate baseline`입니다.
+기준 검증 이력은 skill reference와 `.analysis/`에 보관하고, 이 README에서는 재현 가능한 설정/입력 영상 규칙/prompt 패턴만 유지합니다.

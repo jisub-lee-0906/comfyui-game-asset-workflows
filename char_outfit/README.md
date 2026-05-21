@@ -5,9 +5,18 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, open_hands, [캐릭터 원본 특징: {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}], [의상 디테일: {상의}, {하의}, {신발}, {악세서리}], grey_background
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, open_hands, {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}, {의상 디테일(상의, 하의, 신발, 악세서리)}, grey_background
 
 ```
+
+캐릭터 원본 특징 guard:
+- `{헤어 길이}`, `{헤어 스타일}`, `{머리색}`, `{눈색}`은 반드시 입력 source/승인된 캐릭터 metadata에서 가져옵니다.
+- 의상만 바꾸고 얼굴/머리 identity는 바꾸지 않습니다. 이전 이미지와 다른 특징을 넣으면 outfit variant가 아니라 새 캐릭터처럼 drift할 수 있습니다.
+- 위 code block은 ComfyUI에 들어가는 실제 prompt contract이므로 `[캐릭터 원본 특징: ...]` 같은 한국어 라벨은 넣지 않습니다. 라벨은 이 guard 문단에서만 읽고, 실제 prompt에는 검증된 Danbooru tag만 넣습니다.
+
+의상 디테일 guard:
+- `{의상 디테일(상의, 하의, 신발, 악세서리)}`에는 아래 의상 리스트나 CSV 검증된 의상 tag만 넣습니다.
+- source와 충돌하는 identity/표정/카메라/배경 tag를 의상 slot에 섞지 않습니다.
 
 **Negative prompt:**
 

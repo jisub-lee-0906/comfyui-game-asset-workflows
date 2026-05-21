@@ -135,10 +135,4 @@ edited_loops/<bgm_id>_loop_edit_loop_preview_2x.ogg
 hermes_vn_bgm_template/academic_wonder
 ```
 
-출력은 보통 다음 아래에 생성됩니다.
-
-```text
-/mnt/c/Users/Desktop/Documents/ComfyUI/output/hermes_vn_bgm_template/
-```
-
-Agent는 생성 후 `/history/{prompt_id}` 또는 output scan으로 정확한 파일 경로를 확인해야 합니다.
+출력은 active output root 아래 `<unique_run_folder>/...`에 생성됩니다. Agent는 생성 후 `/history/{prompt_id}` 또는 output scan으로 정확한 파일 경로를 확인해야 합니다.

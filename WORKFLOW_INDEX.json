@@ -1,6 +1,6 @@
 {
   "pack_name": "comfyui-game-asset-workflows",
-  "version": "2026-05-21-event-cg-final-no-ref-pose-lora",
+  "version": "2026-05-21-event-cg-canonical-no-ref-pose-lora",
   "root_wsl": "/home/jisub-lee/workspace/comfyui-game-asset-workflows",
   "root_windows_unc": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\jisub-lee\\workspace\\comfyui-game-asset-workflows",
   "comfyui_paths": {
@@ -279,7 +279,7 @@
       "folder": "scene_event_cg",
       "readme": "scene_event_cg/README.md",
       "api": "scene_event_cg/scene_event_cg_workflow_api.json",
-      "purpose": "Generate 16:9 no-reference event CG; character/outfit consistency is prompt-driven by fixed hair/eye + white_serafuku outfit tags, with upper_body framing and pose LoRA enabled by default. Minor outfit drift is accepted for this final route; do not revert to PuLID/source-image by default.",
+      "purpose": "Generate 16:9 no-reference event CG; character/outfit consistency is prompt-driven by metadata identity/outfit tags, with close upper_body framing and pose LoRA enabled by default. Minor outfit drift is accepted; do not revert to PuLID/source-image by default.",
       "output_type": "opaque 16:9 event CG",
       "requires_input_images": false,
       "input_placeholders": [],
@@ -319,21 +319,34 @@
         "latent_size": "1024x576",
         "identity_reference": "none; no-ref txt2img, character consistency from explicit character/outfit tags",
         "scene_reference": "none; prompt-generated background from blank latent",
-        "direction": "final no-reference event CG route; keep fixed hair/eye + white_serafuku outfit tags and upper_body framing; accept small outfit drift; vary only expression, small staging, background/time, and seed first; pose LoRA supports natural small staging; do not reintroduce PuLID/source image by default",
-        "canonical_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, medium_hair, straight_hair, brown_hair, green_eyes, school_uniform, white_serafuku, sailor_collar, blue_ribbon, pleated_skirt, upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, classroom, window, sunset, sunlight, BREAK, depth of field, volumetric lighting",
-        "canonical_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, (worst_quality, bad_quality:1.2), sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated",
+        "direction": "canonical no-reference event CG route; keep metadata identity/outfit tags plus close upper_body framing for neutral/default candidates; vary one staging family at a time; tested cinematic tag blocks (cowboy_shot/from_below/from_above with dutch_angle/reaching/pointing/etc.) are safe candidate sets when beat-matched, not a mandate to mix all presets every batch; avoid wide_shot/full_body as defaults; do not reintroduce PuLID/source image by default",
+        "canonical_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, long_hair, wavy_hair, blunt_bangs, sidelocks, pink_hair, purple_eyes, school_uniform, white_shirt, red_bow, blue_jacket, gold_trim, capelet, upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, auditorium, stage, curtains, spotlight, indoors, podium, presentation, depth_of_field",
+        "canonical_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, (worst_quality, bad_quality:1.2), sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, classroom, chalkboard, blackboard, whiteboard",
         "default_seed": 260521401,
-        "identity_anchor_tags": "medium_hair, straight_hair, brown_hair, green_eyes",
-        "outfit_anchor_tags": "school_uniform, white_serafuku, sailor_collar, blue_ribbon, pleated_skirt",
+        "identity_anchor_tags": "long_hair, wavy_hair, blunt_bangs, sidelocks, pink_hair, purple_eyes",
+        "outfit_anchor_tags": "school_uniform, white_shirt, red_bow, blue_jacket, gold_trim, capelet",
         "framing_anchor_tags": "upper_body, straight-on, facing_viewer, looking_at_viewer",
-        "accepted_tradeoff": "minor outfit/color/layer drift is acceptable in exchange for cleaner no-ref composition and integrated background lighting"
+        "accepted_tradeoff": "minor outfit/color/layer drift is acceptable in exchange for cleaner no-ref composition and integrated background lighting",
+        "recommended_action_presets": {
+          "safe_static_serious": "upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, serious, closed_mouth",
+          "stable_explain_or_stop_dialogue": "upper_body, straight-on, facing_viewer, looking_at_viewer, standing, open_hands, reaching, serious, open_mouth, motion_lines",
+          "close_cinematic_shock_reveal": "upper_body, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines",
+          "cinematic_general_shock_reveal_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines",
+          "cinematic_stable_fallback_candidate": "cowboy_shot, from_below, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines",
+          "cinematic_stop_reveal_presentation_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, outstretched_arms, open_hands, surprised, open_mouth, motion_lines",
+          "cinematic_command_accusation_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, pointing_at_viewer, outstretched_arm, serious, open_mouth, motion_lines",
+          "cinematic_reaching_pov_involvement_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning_forward, open_hands, reaching, serious, open_mouth, motion_lines",
+          "cinematic_vulnerability_panic_shock_candidate": "cowboy_shot, from_above, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines"
+        },
+        "owner_taste_note": "Cinematic testing should not be read as a requirement to mix many presets into every batch. The practical rule is that the tested tag blocks responded well and are relatively safe candidate sets when the script beat matches. Keep close/upper_body as neutral default; use reaching/POV-involvement and from_above shock candidates only when beat-matched; avoid wide_shot/full_body defaults.",
+        "cinematic_candidate_rule": "Use the cinematic candidate blocks as reusable beat-matched tag sets, not as mandatory batch composition. Keep generated outputs QA-gated for face, identity, hands, outfit, background, and RenPy textbox/safe-area fit."
       },
       "upstream": [
         "char_base",
         "char_outfit",
         "char_expression"
       ],
-      "status": "canonical_final_no_reference_txt2img_pose_lora_upper_body_white_serafuku_anchor_minor_outfit_drift_accepted"
+      "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added"
     },
     {
       "order": 7,
@@ -460,7 +473,6 @@
         "5.inputs.filename_prefix"
       ],
       "fixed_defaults_observed": {
-        "source_prompt_id": "e2941581-4bec-4065-878c-d259c034c538",
         "custom_node": "ComfyUI-MMAudio",
         "model_dir": "C:\\Users\\Desktop\\Documents\\ComfyUI\\models\\mmaudio",
         "mmaudio_model": "mmaudio_large_44k.safetensors",
@@ -474,7 +486,8 @@
         "cfg": 4.5,
         "seed": 202,
         "sample_rate": 44100,
-        "baseline_input_video": "mmaudio_official_car_horn_8s_25fps_384.mp4"
+        "baseline_input_video": "mmaudio_official_car_horn_8s_25fps_384.mp4",
+        "baseline_reference": "official-style 8s car-horn visual cue; keep exact run prompt IDs and output paths in .analysis/skill references, not in the canonical index"
       },
       "status": "canonical_template_mmaudio_video_sfx_requires_runtime_video_prompt_ffprobe_and_listening_qa",
       "input_placeholders": []

@@ -18,7 +18,7 @@ WSL path:
 
 각 workflow 폴더는 다음 파일을 포함합니다.
 
-- `README.md` — 해당 workflow의 프롬프트 작성법과 운영 메모.
+- `README.md` — 해당 workflow의 프롬프트 작성법과 운영 가이드. 재현에 필요한 원칙/태그/절차만 적고, 일회성 실험 로그·출력 경로·prompt_id·contact sheet 목록은 넣지 않습니다.
 - `*_workflow_api.json` — canonical ComfyUI API graph template.
 
 현재 canonical folder 목록:
@@ -105,7 +105,7 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 4. `char_outfit` — source/featureless character image에서 의상 variant를 만듭니다.
 5. `scene_background` — 16:9 scene background를 만듭니다.
 6. `scene_prop_cg` — Ren'Py 연출용 16:9 prop/clue cut-in을 만듭니다.
-7. `scene_event_cg` — 캐릭터 reference 1장으로 full 16:9 event CG를 만듭니다. 배경/구도는 prompt-generated이며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
+7. `scene_event_cg` — no-reference txt2img + pose LoRA로 full 16:9 event CG를 만듭니다. 캐릭터/의상 일관성은 metadata anchor와 prompt tag로 유지하며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
 8. `audio_bgm_ace` — 장면 mood에 맞는 lyric-free instrumental BGM 후보를 만듭니다.
 9. `audio_sfx_mmaudio` — MMAudio video-to-audio로 짧은 효과음 후보를 만듭니다.
 
@@ -122,11 +122,9 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 - Windows input root: `C:\Users\Desktop\Documents\ComfyUI\input`
 - WSL input root: `/mnt/c/Users/Desktop/Documents/ComfyUI/input`
 
-예를 들어 runtime에서 `filename_prefix`를 `hermes_vn_event_readme_YYYYMMDD_HHMMSS/scene_event_cg_scene`으로 패치하면 결과는 보통 다음처럼 생성됩니다.
+예를 들어 runtime에서 `filename_prefix`를 `<unique_run_folder>/scene_event_cg_scene`으로 패치하면 결과는 active output root 아래 `<unique_run_folder>/...`에 생성됩니다.
 
-`/mnt/c/Users/Desktop/Documents/ComfyUI/output/hermes_vn_event_readme_YYYYMMDD_HHMMSS/scene_event_cg_scene_00001_.png`
-
-Agent는 생성 후 `/history/{prompt_id}` 또는 output folder scan으로 실제 파일명을 확인하고, 추정 경로가 아니라 exact output path를 보고해야 합니다.
+Agent는 생성 후 `/history/{prompt_id}` 또는 output folder scan으로 실제 파일명을 확인하고, 예시 경로가 아니라 exact output path를 보고해야 합니다.
 
 QA 후 실제 게임 프로젝트에 사용할 이미지만 별도 game asset directory로 promote합니다. 이 workflow pack 안으로 생성 이미지를 복사하지 않습니다.
 
@@ -149,7 +147,6 @@ QA 후 실제 게임 프로젝트에 사용할 이미지만 별도 game asset di
 - `TEMPLATE_character_anchor_source.png`
 - `TEMPLATE_source_image.png`
 - `TEMPLATE_featureless_mannequin_source.png`
-- `TEMPLATE_character_reference.png`
 - `TEMPLATE_*` output prefix fragment
 - `{감정표현}`, `{배경 테마 및 장소}`, `{아이템 이름 및 형태}` 같은 한국어 prompt placeholder
 
@@ -162,6 +159,13 @@ Input image가 필요한 workflow에서 사용자가 특정 이미지를 지정�
 - 관계없는 오래된 이미지를 조용히 사용하지 않습니다.
 - `LoadImage.inputs.image`에 넣기 전에 active Windows ComfyUI `input/` directory에 파일이 실제로 있는지 확인합니다.
 
+Source/metadata 보존 guard:
+
+- `char_expression`, `char_outfit`, `char_alpha`처럼 source image가 있는 workflow는 원본 이미지의 캐릭터 특징을 보존하는 route입니다. hair length/style/color, eye color, face identity, 핵심 의상/표정 상태를 임의로 바꾸지 않습니다.
+- `scene_event_cg`처럼 현재 no-ref route인 workflow는 source image 대신 승인된 character metadata/sidecar의 `identity_anchor`와 outfit block을 원본 특징 guard로 사용합니다.
+- prompt slot의 `{헤어 길이}`, `{헤어 스타일}`, `{머리색}`, `{눈색}`은 새로 창작하는 칸이 아니라 source/metadata에서 가져오는 칸입니다.
+- source/metadata와 충돌하는 tag를 추가해야 할 것 같으면 runtime 제출 전에 멈추고 사용자 확인 또는 sidecar 업데이트가 필요합니다.
+
 ## Prompt 작성 규칙
 
 각 workflow folder의 `README.md`가 해당 workflow의 prompt contract입니다.
@@ -173,7 +177,7 @@ Live generation 전:
 - README의 prompt ordering을 기본적으로 유지합니다.
 - 사용자가 README를 수정했다고 말하면 즉시 다시 읽습니다.
 - unresolved placeholder를 ComfyUI에 제출하지 않습니다.
-- `danbooru_tag.csv`에 존재하지 않는 태그를 README에 새 guidance로 추가하지 않습니다. 단, 실제 생성에서 필요한 자연어 구도 보정은 runtime prompt에 사용할 수 있습니다.
+- 이미지 workflow의 variable prompt에는 루트 `danbooru_tag.csv`에 존재하는 tag/alias만 사용합니다. CSV에 없는 자연어 구도 보정은 이미지 prompt에 넣지 말고 workflow 선택, seed/settings, 별도 배경/소품/overlay, Ren'Py staging으로 해결합니다. audio workflow는 해당 README가 명시한 자연어 prompt 규칙을 따릅니다.
 
 ## QA와 promote 규칙
 
@@ -244,7 +248,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 - 현재 폴더명은 번호식 이름이 아니라 flat semantic name입니다. 예전 `01_*`부터 `07_*`까지의 참조는 stale일 수 있습니다.
 - `scene_background`와 `scene_prop_cg`는 이미지 입력이 없는 16:9 txt2img 계열 workflow입니다.
 - `audio_bgm_ace`, `audio_sfx_mmaudio`는 이미지 입력이 없는 local audio workflow입니다. BGM은 로컬 ACE-Step checkpoint 기반이고, SFX는 MMAudio video-to-audio 기반입니다.
-- `char_expression`, `char_alpha`, `char_outfit`, `scene_event_cg`는 runtime image input이 필요합니다.
+- `char_expression`, `char_alpha`, `char_outfit`은 runtime에서 `LoadImage.inputs.image`를 실제 ComfyUI input 파일명으로 패치해야 합니다. `scene_event_cg`는 현재 canonical 기준으로 `LoadImage`가 없는 no-ref txt2img route입니다.
 - `pose_variations`는 pose/action sprite 테스트에서 색감/의상/구도/해부학 drift가 커서 canonical pack에서 제거했습니다. 포즈/액션 CG는 `scene_event_cg`로 처리하고, dialogue sprite는 fixed outfit/expression/alpha 경로를 유지합니다.
-- 일부 README의 prompt 텍스트는 사람이 읽기 위한 안내라 canonical JSON prompt와 정확히 일치하지 않을 수 있습니다. 실행 기준은 `WORKFLOW_INDEX.json`과 실제 JSON입니다.
+- 일부 README의 prompt 텍스트는 운영 가이드이며, `Positive prompt`/`Negative prompt`로 명시된 canonical block은 해당 workflow JSON과 동기화합니다. 실행 가능한 node/field 기준은 `WORKFLOW_INDEX.json`과 실제 JSON입니다.
 - 루트 `danbooru_tag.csv`는 README tag note의 로컬 검증 기준입니다. 해당 CSV에 존재하거나 실제 생성물로 테스트된 태그가 아니라면, 기억이나 실패한 web fetch 기반으로 tag guidance를 추가하지 않습니다.

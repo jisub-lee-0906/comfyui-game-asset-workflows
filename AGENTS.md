@@ -109,6 +109,13 @@ ComfyUI에 unresolved placeholder를 제출하지 않습니다.
 5. 관계없는 오래된 이미지를 조용히 사용하지 않습니다.
 6. 제출 전 active Windows ComfyUI `input/` directory에 파일을 복사하고 실제 존재 여부를 확인합니다.
 
+## Source/metadata 보존 guard
+
+- `char_expression`, `char_outfit`, `char_alpha`는 source image의 기존 캐릭터 특징을 보존하는 route입니다. hair length/style/color, eye color, face identity, 핵심 의상/표정 상태를 임의로 바꾸지 않습니다.
+- `scene_event_cg`는 현재 no-ref route이므로 source image 대신 승인된 character metadata/sidecar의 `identity_anchor`와 outfit block을 원본 특징 guard로 사용합니다.
+- prompt slot의 `{헤어 길이}`, `{헤어 스타일}`, `{머리색}`, `{눈색}`은 새로 창작하는 칸이 아니라 source/metadata에서 가져오는 칸입니다.
+- source/metadata와 충돌하는 tag를 추가해야 할 것 같으면 runtime 제출 전에 멈추고 사용자 확인 또는 sidecar 업데이트가 필요합니다.
+
 ## Output 위치 규칙
 
 이 pack의 생성 이미지는 workflow pack 폴더 안에 저장하지 않습니다. ComfyUI `SaveImage` node의 `filename_prefix` 기준으로 active Windows ComfyUI output directory 아래에 저장됩니다.
@@ -146,10 +153,10 @@ Windows ComfyUI는 공유 환경으로 취급합니다. 사용자 승인 없이 
 각 workflow folder README가 해당 workflow의 prompt contract입니다.
 
 - target README를 읽고 그 템플릿 순서를 기본적으로 따릅니다.
-- 한국어 placeholder를 실제 Danbooru tag 또는 필요한 자연어 구도 설명으로 채웁니다.
+- 한국어 placeholder를 실제 Danbooru tag 또는 해당 workflow README가 명시한 audio 자연어 prompt로 채웁니다. 이미지 workflow의 variable prompt는 local `danbooru_tag.csv`에 있는 tag/alias만 사용합니다.
 - README에 사용자가 최근 수정한 prompt가 있으면 그 내용을 우선합니다.
 - 단일 소품처럼 local `danbooru_tag.csv`에 정확한 태그가 없는 경우, README에 적힌 대체 전략을 따릅니다.
-- 캐릭터 보존이 중요하면 identity/hair/eye/outfit tag를 reference image 기준으로 유지하고, 큰 action/pose tag는 줄입니다.
+- 캐릭터 보존이 중요하면 metadata/source 기준의 identity/hair/eye/outfit tag를 유지하고, 큰 action/pose tag는 줄입니다. `scene_event_cg`는 현재 no-ref route이므로 source image reference가 아니라 metadata anchor를 사용합니다.
 
 ## Reporting style
 
@@ -176,7 +183,7 @@ Windows ComfyUI는 공유 환경으로 취급합니다. 사용자 승인 없이 
 
 ### Character / event CG
 
-- reference character와 hair/eye/face가 유지되는지
+- no-ref event CG는 metadata anchor와 현재 prompt 기준으로 hair/eye/face가 유지되는지
 - outfit drift가 과한지
 - 손/팔/몸 anatomy가 깨졌는지
 - duplicate character가 생겼는지
