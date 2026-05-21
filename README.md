@@ -61,7 +61,7 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 | 의상 변경, costume variation이 필요함 | `char_outfit` | source character image | 얼굴 보호 route가 포함되어 있지만 identity/outfit drift QA가 필요합니다. |
 | 교실, 복도, 방, 거리 같은 VN 배경이 필요함 | `scene_background` | 없음 | 캐릭터 없는 16:9 배경을 생성합니다. |
 | 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | 16:9 단일 소품 후보를 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄입니다. |
-| 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_ace` | 없음 | ACE-Step 1.5 기반 instrumental BGM 후보를 생성합니다. vocal 여부와 loop 품질은 listening QA가 필요합니다. |
+| 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_ace` | 없음 | ACE-Step 1.5 기반 instrumental BGM 후보를 생성합니다. raw MP3는 source 후보이며, Ren'Py용은 무음 trim + fade loop edit + OGG 변환 후 loop preview 청감 QA가 필요합니다. |
 | 문 열림, 발소리, 마법 crack 같은 짧은 효과음이 필요함 | `audio_sfx_mmaudio` | 없음 | MMAudio video-to-audio 기반 후보를 생성합니다. 입력 영상 cue와 청감 QA가 필요합니다. 음성/음악 섞임 여부는 listening QA가 필요합니다. |
 | 포즈나 액션이 있는 장면 일러스트가 필요함 | `scene_event_cg` | 없음 | `pose_variations`는 제거되었습니다. Dialogue sprite 재생성이 아니라 event CG로 처리합니다. 기존 캐릭터 기반이면 캐릭터 metadata anchor를 고정한 뒤 작은 staging/background/seed만 바꿉니다. |
 
@@ -216,10 +216,10 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 
 - `ffprobe`로 duration/audio stream이 정상인지 확인
 - BGM은 vocal/lyrics가 섞이지 않았는지 listening QA
-- BGM은 loop 지점이 너무 튀지 않는지 확인
+- BGM은 raw MP3를 그대로 promote하지 않고 `scripts/final_edit_ace_bgm_loop.py`로 무음 trim/fade/OGG 변환/2회 loop preview를 만든 뒤 loop 지점이 너무 튀지 않는지 확인
 - SFX는 불필요한 voice/music/말소리가 섞이지 않았는지 확인
 - 대사와 충돌하지 않는 볼륨/밀도인지 확인
-- Ren'Py promote 전 MP3 후보를 OGG로 변환하고 `play music` / `play sound` smoke
+- Ren'Py promote 전 BGM은 편집본 OGG로 `play music ... loop` smoke, SFX는 single-hit 편집본 OGG로 `play sound` smoke
 
 사용자가 직접 눈으로 QA하겠다고 하면 agent는 품질을 단정하지 말고 prompt id, seed, runtime JSON path, output path만 보고합니다.
 

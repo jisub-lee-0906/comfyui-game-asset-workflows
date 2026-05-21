@@ -208,9 +208,9 @@ Windows ComfyUI는 공유 환경으로 취급합니다. 사용자 승인 없이 
 
 - `ffprobe`로 duration/audio stream 확인
 - BGM은 vocal/lyrics가 섞이지 않았는지 listening QA
-- BGM은 loop 지점과 대사 방해 여부 확인
+- BGM은 raw MP3를 그대로 promote하지 않고 `scripts/final_edit_ace_bgm_loop.py`로 무음 trim/fade/OGG 변환/2회 loop preview를 만든 뒤 loop 지점과 대사 방해 여부 확인
 - SFX는 불필요한 voice/music/말소리가 섞이지 않았는지 확인
-- Ren'Py promote 전 OGG 변환 및 `play music` / `play sound` smoke
+- Ren'Py promote 전 BGM은 loop-edit OGG로 `play music ... loop` smoke, SFX는 single-hit OGG로 `play sound` smoke
 
 ## Pack maintenance 완료 전 검증
 

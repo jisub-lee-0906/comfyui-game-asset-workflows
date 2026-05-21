@@ -97,11 +97,33 @@ BGM 생성 성공은 production pass가 아닙니다.
 - loop로 썼을 때 끊김이 심하지 않은지 확인
 - Ren'Py에서 `play music ... loop` smoke
 
-Ren'Py promote 전 권장 변환:
+Ren'Py promote 전 권장 편집:
+
+ACE-Step 출력은 duration이 맞아도 앞/뒤 또는 중간 이후에 무음 tail이 생길 수 있습니다. 게임에 넣을 때는 원본 MP3를 그대로 쓰지 말고, 소리 안 나는 앞/뒤 tail을 최대한 자른 뒤 마지막에 짧은 fade-out을 걸고 OGG로 변환합니다. 루프 이음새는 2회 반복 preview를 들어보고 QA합니다.
+
+기본 후처리 스크립트:
 
 ```bash
-ffmpeg -y -i input.mp3 -c:a libvorbis -q:a 4 output.ogg
+python3 /home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/final_edit_ace_bgm_loop.py \
+  /mnt/c/Users/Desktop/Documents/ComfyUI/output/<run>/audio_bgm_ace/<source>.mp3 \
+  --name <bgm_id>_loop_edit
 ```
+
+출력:
+
+```text
+edited_loops/<bgm_id>_loop_edit.flac
+edited_loops/<bgm_id>_loop_edit.ogg
+edited_loops/<bgm_id>_loop_edit_loop_preview_2x.ogg
+```
+
+보고 단위:
+
+```text
+원본 MP3, 감지된 무음 구간, 선택/trim 구간, fade-in/out, 최종 FLAC, Ren'Py OGG, 2회 loop preview, ffprobe/silencedetect, 청감 QA 필요 여부
+```
+
+단, fade-out 방식은 “부드럽게 다시 시작되는 후보”를 만드는 편집입니다. 완전 seamless loop는 음악 구조/박자/마디가 맞아야 하므로 loop preview 청감 QA 후 필요하면 수동 loop point/crossfade 편집을 추가합니다.
 
 #### 6. 출력 위치
 
