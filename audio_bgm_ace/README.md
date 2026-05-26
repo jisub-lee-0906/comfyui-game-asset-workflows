@@ -1,3 +1,17 @@
+## 문서 규격(v1)
+
+- workflow_id: `audio_bgm_ace`
+- modality: `audio`
+- input_requirement: 없음
+- output: mp3 candidate (post OGG)
+- prompt_policy: `audio_tags_natural_language`
+- editable_fields: 2.inputs.tags, 2.inputs.lyrics, 2.inputs.seed, 2.inputs.bpm, 2.inputs.duration, 2.inputs.keyscale, 2.inputs.cfg_scale, 2.inputs.temperature, 4.inputs.seconds, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix, 8.inputs.quality
+
+운영 원칙:
+- README를 실행 계약으로 사용합니다.
+- canonical workflow JSON은 직접 덮어쓰지 않고 runtime/in-memory patch를 우선합니다.
+- candidate != approved != production-ready.
+
 ### 🎵 0. VN BGM 생성 워크플로우 — ACE-Step 1.5
 
 #### 1. 목적

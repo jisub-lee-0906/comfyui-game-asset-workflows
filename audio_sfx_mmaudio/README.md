@@ -1,3 +1,17 @@
+## 문서 규격(v1)
+
+- workflow_id: `audio_sfx_mmaudio`
+- modality: `audio`
+- input_requirement: 8s input video cue 필요
+- output: flac/wav candidate (post OGG)
+- prompt_policy: `audio_prompt_formula`
+- editable_fields: 1.inputs.video, 1.inputs.custom_width, 1.inputs.custom_height, 4.inputs.duration, 4.inputs.steps, 4.inputs.cfg, 4.inputs.seed, 4.inputs.prompt, 4.inputs.negative_prompt, 5.inputs.filename_prefix
+
+운영 원칙:
+- README를 실행 계약으로 사용합니다.
+- canonical workflow JSON은 직접 덮어쓰지 않고 runtime/in-memory patch를 우선합니다.
+- candidate != approved != production-ready.
+
 # audio_sfx_mmaudio
 
 MMAudio video-to-audio 기반 VN/게임 SFX 후보 생성 workflow입니다.

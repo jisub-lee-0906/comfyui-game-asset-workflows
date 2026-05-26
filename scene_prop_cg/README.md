@@ -1,3 +1,17 @@
+## 문서 규격(v1)
+
+- workflow_id: `scene_prop_cg`
+- modality: `image`
+- input_requirement: 없음
+- output: 16:9 prop CG PNG
+- prompt_policy: `danbooru_csv+readme_wrapper`
+- editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
+
+운영 원칙:
+- README를 실행 계약으로 사용합니다.
+- canonical workflow JSON은 직접 덮어쓰지 않고 runtime/in-memory patch를 우선합니다.
+- candidate != approved != production-ready.
+
 ### 🔍 0. 소품 클로즈업 CG 워크플로우
 
 #### 1. 프롬프팅 방법

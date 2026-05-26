@@ -1,3 +1,17 @@
+## 문서 규격(v1)
+
+- workflow_id: `char_expression`
+- modality: `image`
+- input_requirement: source character image 필요
+- output: expression variant PNG
+- prompt_policy: `danbooru_csv+readme_wrapper`
+- editable_fields: 1.inputs.image, 6.inputs.text, 7.inputs.text, 13.inputs.seed, 13.inputs.denoise, 19.inputs.filename_prefix, 5.inputs.mask_blur, 5.inputs.mask_offset, 1000.inputs.model_name, 1002.inputs.threshold, 1002.inputs.crop_factor, 1003.inputs.detection_hint, 1003.inputs.threshold
+
+운영 원칙:
+- README를 실행 계약으로 사용합니다.
+- canonical workflow JSON은 직접 덮어쓰지 않고 runtime/in-memory patch를 우선합니다.
+- candidate != approved != production-ready.
+
 ### 🎭 0. 감정 표현 워크플로우
 
 #### 1. 프롬프팅 방법
@@ -5,14 +19,14 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}, {감정표현}, BREAK, depth_of_field, volumetric_lighting
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, {캐릭터 원본 특징(헤어 길이, 헤어 스타일, 머리색, 눈색)}, {감정표현}, BREAK, depth_of_field, volumetric_lighting
 
 ```
 
 캐릭터 원본 특징 guard:
-- `{헤어 길이}`, `{헤어 스타일}`, `{머리색}`, `{눈색}`은 반드시 입력 source/승인된 캐릭터 metadata에서 가져옵니다.
+- `헤어 길이, 헤어 스타일, 머리색, 눈색`은 반드시 입력 source/승인된 캐릭터 metadata에서 가져옵니다.
 - 임의로 다른 특징을 넣지 않습니다. 이전 이미지와 다른 특징을 넣으면 같은 캐릭터 표정 variant가 아니라 새 캐릭터처럼 drift할 수 있습니다.
-- 위 code block은 ComfyUI에 들어가는 실제 prompt contract이므로 `[캐릭터 원본 특징: ...]` 같은 한국어 라벨은 넣지 않습니다. 라벨은 이 guard 문단에서만 읽고, 실제 prompt에는 검증된 Danbooru tag만 넣습니다.
+- 위 code block은 ComfyUI에 들어가는 실제 prompt contract이므로 `{캐릭터 원본 특징(...)}` 같은 한국어 라벨은 넣지 않습니다. 라벨은 이 guard 문단에서만 읽고, 실제 prompt에는 검증된 Danbooru tag만 넣습니다.
 
 **Negative prompt:**
 

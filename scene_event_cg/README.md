@@ -1,4 +1,18 @@
-### 🖼️ 이벤트 CG 제작 워크플로우 가이드
+## 문서 규격(v1)
+
+- workflow_id: `scene_event_cg`
+- modality: `image`
+- input_requirement: 없음 (no-ref)
+- output: 16:9 event CG PNG
+- prompt_policy: `danbooru_csv+readme_wrapper`
+- editable_fields: 100.inputs.lora_name, 100.inputs.strength_model, 100.inputs.strength_clip, 9.inputs.text, 10.inputs.text, 11.inputs.width, 11.inputs.height, 12.inputs.seed, 12.inputs.steps, 12.inputs.cfg, 12.inputs.denoise, 14.inputs.filename_prefix
+
+운영 원칙:
+- README를 실행 계약으로 사용합니다.
+- canonical workflow JSON은 직접 덮어쓰지 않고 runtime/in-memory patch를 우선합니다.
+- candidate != approved != production-ready.
+
+### 🖼️ 0. 이벤트 CG 제작 워크플로우
 
 이 워크플로우는 이미지 reference 없이 Nova Anime XL IL v19 텍스트 프롬프트만으로 16:9 이벤트 CG를 생성합니다. canonical JSON은 no-ref + pose LoRA on을 기본으로 합니다.
 

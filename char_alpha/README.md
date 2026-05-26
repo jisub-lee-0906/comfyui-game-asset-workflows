@@ -1,3 +1,17 @@
+## 문서 규격(v1)
+
+- workflow_id: `char_alpha`
+- modality: `image`
+- input_requirement: source image 필요
+- output: transparent PNG
+- prompt_policy: `no_prompt_or_minimal`
+- editable_fields: 1.inputs.image, 3.inputs.filename_prefix
+
+운영 원칙:
+- README를 실행 계약으로 사용합니다.
+- canonical workflow JSON은 직접 덮어쓰지 않고 runtime/in-memory patch를 우선합니다.
+- candidate != approved != production-ready.
+
 ### ✂️ 배경 투명화 / alpha 워크플로우
 
 #### 1. 목적
