@@ -1,6 +1,6 @@
 {
   "pack_name": "comfyui-game-asset-workflows",
-  "version": "2026-05-21-event-cg-canonical-no-ref-pose-lora",
+  "version": "2026-05-26-char-base-same-seed-outfit-route",
   "root_wsl": "/home/jisub-lee/workspace/comfyui-game-asset-workflows",
   "root_windows_unc": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\jisub-lee\\workspace\\comfyui-game-asset-workflows",
   "comfyui_paths": {
@@ -34,8 +34,8 @@
       "folder": "char_base",
       "readme": "char_base/README.md",
       "api": "char_base/char_base_workflow_api.json",
-      "purpose": "Generate opaque base/source character images for downstream VN assets.",
-      "output_type": "opaque character source image, 1152x1536 by default",
+      "purpose": "Generate opaque base/source character images and same-seed outfit/costume variants from identity + outfit prompt tags.",
+      "output_type": "opaque character source or outfit-variant image, 1152x1536 by default",
       "requires_input_images": false,
       "primary_nodes": {
         "checkpoint": "1",
@@ -62,15 +62,18 @@
         "sampler": "euler_ancestral",
         "scheduler": "normal",
         "steps": 28,
-        "cfg": 5.0
+        "cfg": 5.0,
+        "seed": 260526204,
+        "same_seed_outfit_route": "validated 2026-05-26; keep identity/framing tags and seed fixed, vary only outfit block + filename_prefix",
+        "default_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, medium_hair, straight_hair, blunt_bangs, brown_hair, brown_eyes, school_uniform, white_shirt, necktie, pleated_skirt, cardigan, grey_background",
+        "default_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, school_emblem"
       },
       "downstream": [
         "char_expression",
         "char_alpha",
-        "char_outfit",
         "scene_event_cg"
       ],
-      "status": "canonical_template",
+      "status": "canonical_template_executable_same_seed_outfit_route",
       "input_placeholders": []
     },
     {
@@ -156,8 +159,7 @@
       ],
       "upstream": [
         "char_base",
-        "char_expression",
-        "char_outfit"
+        "char_expression"
       ],
       "status": "canonical_template_requires_runtime_input",
       "fixed_defaults_observed": {
@@ -168,66 +170,6 @@
         "refine_foreground": true,
         "background": "Alpha"
       }
-    },
-    {
-      "order": 4,
-      "id": "char_outfit",
-      "folder": "char_outfit",
-      "readme": "char_outfit/README.md",
-      "api": "char_outfit/char_outfit_workflow_api.json",
-      "purpose": "Generate outfit/costume variants from a featureless mannequin/source character image.",
-      "output_type": "opaque outfit-variant character image",
-      "requires_input_images": true,
-      "input_placeholders": [
-        "TEMPLATE_featureless_mannequin_source.png"
-      ],
-      "primary_nodes": {
-        "checkpoint": "1",
-        "source_image": "3",
-        "positive_prompt": "23",
-        "negative_prompt": "24",
-        "sampler": "27",
-        "save_final": "35",
-        "face_protect_detector": "1000",
-        "face_protect_sam": "1003"
-      },
-      "editable_fields": [
-        "3.inputs.image",
-        "23.inputs.text",
-        "24.inputs.text",
-        "27.inputs.seed",
-        "27.inputs.steps",
-        "27.inputs.cfg",
-        "27.inputs.denoise",
-        "35.inputs.filename_prefix",
-        "16.inputs.expand",
-        "954.inputs.expand",
-        "1000.inputs.model_name",
-        "1002.inputs.threshold",
-        "1002.inputs.dilation",
-        "1002.inputs.crop_factor",
-        "1003.inputs.detection_hint",
-        "1003.inputs.threshold",
-        "1003.inputs.dilation",
-        "1003.inputs.bbox_expansion"
-      ],
-      "fixed_defaults_observed": {
-        "checkpoint": "novaAnimeXL_ilV190.safetensors",
-        "sampler": "euler_ancestral",
-        "scheduler": "normal",
-        "steps": 28,
-        "cfg": 4.5,
-        "denoise": 0.92,
-        "masking": "body/non-face GrowMask expand=8, alpha cap expand=6, final mask subtracts 3-05 YOLO face_yolov9c + SAM center-1 face protection mask",
-        "face_protect": "YOLO face_yolov9c threshold=0.35 -> BboxDetectorSEGS crop_factor=2.0 -> SAMDetectorCombined center-1 threshold=0.93"
-      },
-      "upstream": [
-        "char_base"
-      ],
-      "downstream": [
-        "char_alpha"
-      ],
-      "status": "canonical_template_requires_runtime_input"
     },
     {
       "order": 5,
@@ -343,7 +285,6 @@
       },
       "upstream": [
         "char_base",
-        "char_outfit",
         "char_expression"
       ],
       "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added"

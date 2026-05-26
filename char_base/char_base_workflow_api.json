@@ -12,7 +12,7 @@
         "1",
         1
       ],
-      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, {헤어 길이}, {헤어 스타일}, {머리색}, {눈색}, grey_background"
+      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, medium_hair, straight_hair, blunt_bangs, brown_hair, brown_eyes, school_uniform, white_shirt, necktie, pleated_skirt, cardigan, grey_background"
     }
   },
   "4": {
@@ -52,7 +52,7 @@
         "5",
         0
       ],
-      "seed": 719251138,
+      "seed": 260526204,
       "steps": 28,
       "cfg": 5.0,
       "sampler_name": "euler_ancestral",
@@ -80,7 +80,7 @@
         "7",
         0
       ],
-      "filename_prefix": "hermes_vn_character_anchor/source_featureless_mannequin_base_seed719251138"
+      "filename_prefix": "hermes_vn_character_base/seoha_base_school_uniform_seed260526204"
     }
   }
 }

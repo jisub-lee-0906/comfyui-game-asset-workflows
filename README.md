@@ -25,12 +25,11 @@ WSL path:
 
 | 폴더 | 목적 | 메인 API JSON |
 |---|---|---|
-| `char_base` | downstream workflow에 사용할 기본 캐릭터/source image 생성. | `char_base/char_base_workflow_api.json` |
+| `char_base` | 기본 캐릭터/source image와 same-seed outfit/costume variant 생성. | `char_base/char_base_workflow_api.json` |
 | `char_expression` | 캐릭터 source image에서 얼굴/표정 variant 생성. | `char_expression/char_expression_workflow_api.json` |
 | `char_alpha` | source character image를 transparent PNG / alpha output으로 변환. | `char_alpha/char_alpha_workflow_api.json` |
 | `scene_background` | 캐릭터 없는 16:9 VN 배경 생성. | `scene_background/scene_background_workflow_api.json` |
 | `scene_prop_cg` | 16:9 소품 / 단서 / item cut-in CG 생성. | `scene_prop_cg/scene_prop_cg_workflow_api.json` |
-| `char_outfit` | source character image에서 outfit/costume variant 생성. | `char_outfit/char_outfit_workflow_api.json` |
 | `scene_event_cg` | no-reference txt2img + pose LoRA로 16:9 character event CG 생성. 캐릭터/의상 일관성은 캐릭터 metadata anchor와 prompt tag로 유지합니다. | `scene_event_cg/scene_event_cg_workflow_api.json` |
 | `audio_bgm_ace` | ACE-Step 1.5 기반 lyric-free VN BGM 후보 생성. | `audio_bgm_ace/audio_bgm_ace_workflow_api.json` |
 | `audio_sfx_mmaudio` | MMAudio video-to-audio 기반 짧은 효과음 후보 생성. | `audio_sfx_mmaudio/audio_sfx_mmaudio_workflow_api.json` |
@@ -55,10 +54,10 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 | 사용자 또는 장면 맥락 | 사용할 workflow | 입력 이미지 | 판단 기준 / 주의사항 |
 |---|---|---|---|
 | “캐릭터 CG 만들어줘”, “이벤트 CG 뽑아줘”, “이 장면용 캐릭터 일러스트가 필요해” | `scene_event_cg` | 없음 | 16:9 캐릭터 CG입니다. 사용자가 source/base/anchor를 명시하지 않았다면 `char_base`로 가지 않습니다. 기존 캐릭터 기반이면 캐릭터 metadata의 identity/outfit/framing anchor를 먼저 사용합니다. |
-| 새 캐릭터의 기본 source, anchor, base image가 필요함 | `char_base` | 없음 | downstream expression/outfit/event workflow에 넣을 기준 캐릭터 이미지를 만듭니다. |
+| 새 캐릭터의 기본 source, anchor, base image가 필요함 | `char_base` | 없음 | downstream expression/event workflow에 넣을 기준 캐릭터 이미지를 만듭니다. |
 | 표정만 바꾸고 싶음, 대사창용 표정 variation이 필요함 | `char_expression` | source character image | 몸/의상을 유지하고 얼굴/표정만 바꾸는 route입니다. |
 | 투명 배경 PNG, sprite cutout, 배경 제거가 필요함 | `char_alpha` | source image | QA된 캐릭터/표정/의상 이미지를 transparent PNG 후보로 만듭니다. |
-| 의상 변경, costume variation이 필요함 | `char_outfit` | source character image | 얼굴 보호 route가 포함되어 있지만 identity/outfit drift QA가 필요합니다. |
+| 의상 변경, costume variation이 필요함 | `char_base` | 없음 | 같은 seed와 identity/framing tag를 유지하고 outfit block만 바꾸는 route를 사용합니다. 기존 `char_outfit` source-image inpaint route는 backup으로 이동했습니다. |
 | 교실, 복도, 방, 거리 같은 VN 배경이 필요함 | `scene_background` | 없음 | 캐릭터 없는 16:9 배경을 생성합니다. |
 | 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | 16:9 단일 소품 후보를 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄입니다. |
 | 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_ace` | 없음 | ACE-Step 1.5 기반 instrumental BGM 후보를 생성합니다. raw MP3는 source 후보이며, Ren'Py용은 무음 trim + fade loop edit + OGG 변환 후 loop preview 청감 QA가 필요합니다. |
@@ -68,8 +67,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 중요한 용어 구분:
 
 - “캐릭터 CG”는 기본적으로 `scene_event_cg`입니다.
-- `char_base`는 “캐릭터 앵커/source/base”를 만들 때만 사용합니다.
-- “대사 중 서 있는 캐릭터 sprite”는 보통 source/outfit → expression → alpha route로 만듭니다.
+- `char_base`는 “캐릭터 앵커/source/base”와 same-seed outfit/costume variant를 만듭니다.
+- “대사 중 서 있는 캐릭터 sprite”는 보통 `char_base` same-seed outfit 후보 → `char_expression` → `char_alpha` route로 만듭니다.
 - “장면 삽화 / 이벤트 일러스트 / 포즈 있는 CG”는 `scene_event_cg`로 만듭니다.
 - “BGM / 배경음악 / 루프 음악”은 `audio_bgm_ace`으로 만듭니다.
 - “효과음 / SFX / 문소리 / 발소리 / 마법 소리”는 `audio_sfx_mmaudio`로 만듭니다. SFX는 입력 영상 cue와 listening QA가 필요합니다.
@@ -99,15 +98,14 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 
 일반적인 asset flow는 다음과 같습니다.
 
-1. `char_base` — opaque base/source character를 생성합니다.
-2. `char_alpha` — 승인된 character source를 transparent PNG로 변환합니다.
+1. `char_base` — opaque base/source character와 same-seed outfit/costume variant를 생성합니다.
+2. `char_alpha` — 승인된 character source/outfit/expression 후보를 transparent PNG로 변환합니다.
 3. `char_expression` — source character image에서 표정 variant를 만듭니다.
-4. `char_outfit` — source/featureless character image에서 의상 variant를 만듭니다.
-5. `scene_background` — 16:9 scene background를 만듭니다.
-6. `scene_prop_cg` — Ren'Py 연출용 16:9 prop/clue cut-in을 만듭니다.
-7. `scene_event_cg` — no-reference txt2img + pose LoRA로 full 16:9 event CG를 만듭니다. 캐릭터/의상 일관성은 metadata anchor와 prompt tag로 유지하며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
-8. `audio_bgm_ace` — 장면 mood에 맞는 lyric-free instrumental BGM 후보를 만듭니다.
-9. `audio_sfx_mmaudio` — MMAudio video-to-audio로 짧은 효과음 후보를 만듭니다.
+4. `scene_background` — 16:9 scene background를 만듭니다.
+5. `scene_prop_cg` — Ren'Py 연출용 16:9 prop/clue cut-in을 만듭니다.
+6. `scene_event_cg` — no-reference txt2img + pose LoRA로 full 16:9 event CG를 만듭니다. 캐릭터/의상 일관성은 metadata anchor와 prompt tag로 유지하며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
+7. `audio_bgm_ace` — 장면 mood에 맞는 lyric-free instrumental BGM 후보를 만듭니다.
+8. `audio_sfx_mmaudio` — MMAudio video-to-audio로 짧은 효과음 후보를 만듭니다.
 
 이 폴더들은 필수 linear pipeline이 아니라 재사용 도구입니다. 현재 장면에 필요한 가장 작은 workflow를 선택합니다.
 
@@ -161,7 +159,7 @@ Input image가 필요한 workflow에서 사용자가 특정 이미지를 지정�
 
 Source/metadata 보존 guard:
 
-- `char_expression`, `char_outfit`, `char_alpha`처럼 source image가 있는 workflow는 원본 이미지의 캐릭터 특징을 보존하는 route입니다. hair length/style/color, eye color, face identity, 핵심 의상/표정 상태를 임의로 바꾸지 않습니다.
+- `char_expression`, `char_alpha`처럼 source image가 있는 workflow는 원본 이미지의 캐릭터 특징을 보존하는 route입니다. hair length/style/color, eye color, face identity, 핵심 의상/표정 상태를 임의로 바꾸지 않습니다. `char_base` 의상 variant는 source image 없이 same seed + identity/outfit prompt tag로 일관성을 유지합니다.
 - `scene_event_cg`처럼 현재 no-ref route인 workflow는 source image 대신 승인된 character metadata/sidecar의 `identity_anchor`와 outfit block을 원본 특징 guard로 사용합니다.
 - prompt slot의 `{헤어 길이}`, `{헤어 스타일}`, `{머리색}`, `{눈색}`은 새로 창작하는 칸이 아니라 source/metadata에서 가져오는 칸입니다.
 - source/metadata와 충돌하는 tag를 추가해야 할 것 같으면 runtime 제출 전에 멈추고 사용자 확인 또는 sidecar 업데이트가 필요합니다.
@@ -229,7 +227,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 
 ## 고정 상태
 
-현재 canonical pack은 위에 적힌 9개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 16:9 `scene_event_cg`로 처리합니다.
+현재 canonical pack은 위에 적힌 8개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 16:9 `scene_event_cg`로 처리합니다.
 
 고정 전 audit 상태:
 
@@ -248,7 +246,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 - 현재 폴더명은 번호식 이름이 아니라 flat semantic name입니다. 예전 `01_*`부터 `07_*`까지의 참조는 stale일 수 있습니다.
 - `scene_background`와 `scene_prop_cg`는 이미지 입력이 없는 16:9 txt2img 계열 workflow입니다.
 - `audio_bgm_ace`, `audio_sfx_mmaudio`는 이미지 입력이 없는 local audio workflow입니다. BGM은 로컬 ACE-Step checkpoint 기반이고, SFX는 MMAudio video-to-audio 기반입니다.
-- `char_expression`, `char_alpha`, `char_outfit`은 runtime에서 `LoadImage.inputs.image`를 실제 ComfyUI input 파일명으로 패치해야 합니다. `scene_event_cg`는 현재 canonical 기준으로 `LoadImage`가 없는 no-ref txt2img route입니다.
-- `pose_variations`는 pose/action sprite 테스트에서 색감/의상/구도/해부학 drift가 커서 canonical pack에서 제거했습니다. 포즈/액션 CG는 `scene_event_cg`로 처리하고, dialogue sprite는 fixed outfit/expression/alpha 경로를 유지합니다.
+- `char_expression`, `char_alpha`는 runtime에서 `LoadImage.inputs.image`를 실제 ComfyUI input 파일명으로 패치해야 합니다. `char_base`와 `scene_event_cg`는 현재 canonical 기준으로 `LoadImage`가 없는 txt2img route입니다.
+- `pose_variations`는 pose/action sprite 테스트에서 색감/의상/구도/해부학 drift가 커서 canonical pack에서 제거했습니다. 포즈/액션 CG는 `scene_event_cg`로 처리하고, dialogue sprite는 `char_base` same-seed outfit → `char_expression` → `char_alpha` 경로를 유지합니다.
 - 일부 README의 prompt 텍스트는 운영 가이드이며, `Positive prompt`/`Negative prompt`로 명시된 canonical block은 해당 workflow JSON과 동기화합니다. 실행 가능한 node/field 기준은 `WORKFLOW_INDEX.json`과 실제 JSON입니다.
 - 루트 `danbooru_tag.csv`는 README tag note의 로컬 검증 기준입니다. 해당 CSV에 존재하거나 실제 생성물로 테스트된 태그가 아니라면, 기억이나 실패한 web fetch 기반으로 tag guidance를 추가하지 않습니다.

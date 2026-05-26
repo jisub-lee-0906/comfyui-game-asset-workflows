@@ -23,7 +23,6 @@
 - `char_alpha`
 - `scene_background`
 - `scene_prop_cg`
-- `char_outfit`
 - `scene_event_cg`
 - `audio_bgm_ace`
 - `audio_sfx_mmaudio`
@@ -35,10 +34,10 @@
 사용자 지시나 게임 장면 맥락을 보고 가장 작은 적절한 workflow를 고릅니다.
 
 - “캐릭터 CG”, “이벤트 CG”, “장면 일러스트”, 포즈/액션이 있는 16:9 캐릭터 그림 → `scene_event_cg`
-- 새 캐릭터의 기준 source/base/anchor image → `char_base`
+- 새 캐릭터의 기준 source/base/anchor image 또는 same-seed 의상 variant → `char_base`
 - 표정 변경, 대사용 표정 variant → `char_expression`
 - 배경 제거, transparent PNG, sprite cutout → `char_alpha`
-- 의상 변경, costume variant → `char_outfit`
+- 의상 변경, costume variant → `char_base` same-seed outfit route
 - 캐릭터 없는 VN 배경 → `scene_background`
 - 소품 CG, 단서 이미지, item cut-in → `scene_prop_cg`
 - 장면 BGM, 배경음악, loopable music → `audio_bgm_ace`
@@ -48,7 +47,7 @@
 
 - “캐릭터 CG”를 `char_base`로 처리하지 않습니다. 사용자가 anchor/source/base를 명시하지 않았다면 `scene_event_cg`입니다.
 - `pose_variations`는 제거되었습니다. 포즈/액션 CG는 `scene_event_cg`로 처리합니다.
-- Dialogue sprite는 보통 source/outfit → expression → alpha route를 사용합니다.
+- Dialogue sprite는 보통 `char_base` same-seed outfit 후보 → `char_expression` → `char_alpha` route를 사용합니다.
 
 ## Canonical template 수정 금지
 
@@ -111,7 +110,7 @@ ComfyUI에 unresolved placeholder를 제출하지 않습니다.
 
 ## Source/metadata 보존 guard
 
-- `char_expression`, `char_outfit`, `char_alpha`는 source image의 기존 캐릭터 특징을 보존하는 route입니다. hair length/style/color, eye color, face identity, 핵심 의상/표정 상태를 임의로 바꾸지 않습니다.
+- `char_expression`, `char_alpha`는 source image의 기존 캐릭터 특징을 보존하는 route입니다. hair length/style/color, eye color, face identity, 핵심 의상/표정 상태를 임의로 바꾸지 않습니다. `char_base` 의상 variant는 source image 대신 같은 seed와 identity/outfit prompt tag로 일관성을 유지합니다.
 - `scene_event_cg`는 현재 no-ref route이므로 source image 대신 승인된 character metadata/sidecar의 `identity_anchor`와 outfit block을 원본 특징 guard로 사용합니다.
 - prompt slot의 `{헤어 길이}`, `{헤어 스타일}`, `{머리색}`, `{눈색}`은 새로 창작하는 칸이 아니라 source/metadata에서 가져오는 칸입니다.
 - source/metadata와 충돌하는 tag를 추가해야 할 것 같으면 runtime 제출 전에 멈추고 사용자 확인 또는 sidecar 업데이트가 필요합니다.
@@ -156,7 +155,7 @@ Windows ComfyUI는 공유 환경으로 취급합니다. 사용자 승인 없이 
 - 한국어 placeholder를 실제 Danbooru tag 또는 해당 workflow README가 명시한 audio 자연어 prompt로 채웁니다. 이미지 workflow의 variable prompt는 local `danbooru_tag.csv`에 있는 tag/alias만 사용합니다.
 - README에 사용자가 최근 수정한 prompt가 있으면 그 내용을 우선합니다.
 - 단일 소품처럼 local `danbooru_tag.csv`에 정확한 태그가 없는 경우, README에 적힌 대체 전략을 따릅니다.
-- 캐릭터 보존이 중요하면 metadata/source 기준의 identity/hair/eye/outfit tag를 유지하고, 큰 action/pose tag는 줄입니다. `scene_event_cg`는 현재 no-ref route이므로 source image reference가 아니라 metadata anchor를 사용합니다.
+- 캐릭터 보존이 중요하면 metadata/source 기준의 identity/hair/eye/outfit tag를 유지하고, 큰 action/pose tag는 줄입니다. `char_base` outfit variant는 같은 seed에서 outfit block만 교체합니다. `scene_event_cg`는 현재 no-ref route이므로 source image reference가 아니라 metadata anchor를 사용합니다.
 
 ## Reporting style
 

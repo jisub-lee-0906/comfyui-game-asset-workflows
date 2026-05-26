@@ -31,7 +31,11 @@ NEGATIVE_DEFAULT = [
 ]
 WRAPPER_ALLOWLIST = set(POSITIVE_WRAPPER + POSITIVE_TRAILER + NEGATIVE_DEFAULT)
 
-CHARACTER_ALLOWED_WORKFLOWS = {"char_base", "char_outfit", "char_expression", "scene_event_cg"}
+CHARACTER_ALLOWED_WORKFLOWS = {"char_base", "char_expression", "scene_event_cg"}
+CHAR_BASE_WRAPPER = [
+    "masterpiece", "best_quality", "amazing_quality", "4k", "very_aesthetic",
+    "high_resolution", "ultra-detailed", "absurdres", "newest", "1girl", "solo",
+]
 
 
 def load_valid_tags(csv_path: Path) -> set[str]:
@@ -113,13 +117,9 @@ def build_prompt(meta: dict, workflow: str, outfit: str | None, expression: str 
         negative = dedupe(NEGATIVE_DEFAULT + identity_neg + outfit_neg)
         notes.append("scene_event_cg: identity + outfit + upper_body framing are fixed; vary expression/scene/seed first; minor outfit drift accepted.")
     elif workflow == "char_base":
-        positive = dedupe(POSITIVE_WRAPPER + identity_pos + outfit_pos + framing + staging + expr + scene_tags + POSITIVE_TRAILER)
+        positive = dedupe(CHAR_BASE_WRAPPER + identity_pos + outfit_pos + framing + staging + expr + scene_tags)
         negative = dedupe(NEGATIVE_DEFAULT + identity_neg + outfit_neg)
-        notes.append("char_base: source/anchor candidate generation; QA before downstream use.")
-    elif workflow == "char_outfit":
-        positive = dedupe(POSITIVE_WRAPPER + identity_pos + outfit_pos + framing + staging + expr + scene_tags + POSITIVE_TRAILER)
-        negative = dedupe(NEGATIVE_DEFAULT + identity_neg + outfit_neg)
-        notes.append("char_outfit: keep identity anchor; outfit block is the intended variable; use workflow face-protection route.")
+        notes.append("char_base: same-seed source/outfit route; keep identity/framing tags and seed fixed, vary outfit block + filename_prefix first.")
     else:  # char_expression
         positive = dedupe(expr)
         negative = []
