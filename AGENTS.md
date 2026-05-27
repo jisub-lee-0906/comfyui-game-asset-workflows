@@ -124,9 +124,9 @@ ComfyUI에 unresolved placeholder를 제출하지 않습니다.
 - Windows workspace root: `E:\workspace\comfyui-game-asset-workflows`
 - Hermes/Windows bash workspace root: `E:/workspace/comfyui-game-asset-workflows`
 - Windows output root: `C:\Users\Desktop\Documents\ComfyUI\output`
-- WSL output root: `/mnt/c/Users/Desktop/Documents/ComfyUI/output`
+- Windows output root: `C:/Users/Desktop/Documents/ComfyUI/output`
 - Windows input root: `C:\Users\Desktop\Documents\ComfyUI\input`
-- WSL input root: `/mnt/c/Users/Desktop/Documents/ComfyUI/input`
+- Windows input root: `C:/Users/Desktop/Documents/ComfyUI/input`
 
 Run마다 `SaveImage.inputs.filename_prefix`를 고유한 run folder 형태로 runtime patch합니다. 예:
 

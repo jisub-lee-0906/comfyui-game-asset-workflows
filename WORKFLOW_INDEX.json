@@ -5,9 +5,9 @@
   "root_windows_bash": "E:/workspace/comfyui-game-asset-workflows",
   "comfyui_paths": {
     "windows_output_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\output",
-    "wsl_output_root": "/mnt/c/Users/Desktop/Documents/ComfyUI/output",
+    "wsl_output_root": "C:/Users/Desktop/Documents/ComfyUI/output",
     "windows_input_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\input",
-    "wsl_input_root": "/mnt/c/Users/Desktop/Documents/ComfyUI/input",
+    "wsl_input_root": "C:/Users/Desktop/Documents/ComfyUI/input",
     "output_rule": "SaveImage.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated files via /history/{prompt_id} or output-folder scan before reporting.",
     "audio_output_rule": "SaveAudio/SaveAudioMP3.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated audio files via /history/{prompt_id}, output-folder scan, and ffprobe before reporting."
   },

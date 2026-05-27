@@ -118,9 +118,9 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 현재 이 환경의 ComfyUI 경로:
 
 - Windows output root: `C:\Users\Desktop\Documents\ComfyUI\output`
-- WSL output root: `/mnt/c/Users/Desktop/Documents/ComfyUI/output`
+- Windows output root: `C:/Users/Desktop/Documents/ComfyUI/output`
 - Windows input root: `C:\Users\Desktop\Documents\ComfyUI\input`
-- WSL input root: `/mnt/c/Users/Desktop/Documents/ComfyUI/input`
+- Windows input root: `C:/Users/Desktop/Documents/ComfyUI/input`
 
 예를 들어 runtime에서 `filename_prefix`를 `<unique_run_folder>/scene_event_cg_scene`으로 패치하면 결과는 active output root 아래 `<unique_run_folder>/...`에 생성됩니다.
 
