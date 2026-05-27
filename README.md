@@ -12,7 +12,7 @@ Windows workspace path:
 Hermes/Windows bash path:
 `E:/workspace/comfyui-game-asset-workflows`
 
-Legacy WSL source paths are historical reference only and should not be used for new work.
+Legacy Linux-bridge source paths are historical reference only and should not be used for new work.
 
 ## 현재 구조
 
