@@ -121,6 +121,8 @@ ComfyUI에 unresolved placeholder를 제출하지 않습니다.
 
 현재 환경 기준:
 
+- Windows workspace root: `E:\workspace\comfyui-game-asset-workflows`
+- Hermes/Windows bash workspace root: `E:/workspace/comfyui-game-asset-workflows`
 - Windows output root: `C:\Users\Desktop\Documents\ComfyUI\output`
 - WSL output root: `/mnt/c/Users/Desktop/Documents/ComfyUI/output`
 - Windows input root: `C:\Users\Desktop\Documents\ComfyUI\input`

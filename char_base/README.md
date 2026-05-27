@@ -19,7 +19,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, {캐릭터 특징(헤어 길이, 헤어 스타일, 머리색, 눈색)}, {의상 디테일(상의, 하의, 신발, 악세서리)}, grey_background
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, {캐릭터 특징(연령대, 헤어스타일, 머리길이, 머리색, 눈매, 눈색)}, {의상 디테일(의상 이름, 색상_의상종류)}, grey_background
 ```
 
 **Negative prompt:**
@@ -43,7 +43,7 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 - 기준 후보와 동일한 캐릭터 특징
 
 바꾸는 것:
-- `{의상 디테일(상의, 하의, 신발, 악세서리)}`
+- `{의상 디테일(의상 이름, 색상_의상종류)}`
 - `SaveImage.inputs.filename_prefix`
 
 주의:
@@ -52,85 +52,60 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 - 손 주변에 소품/가방이 생기면 먼저 `arms_at_sides`를 유지하고 seed 후보를 봅니다. 무리하게 negative를 넓히지 않습니다.
 - 어깨/다리 노출 태그(`bare_shoulders`, `bare_legs`)를 쓸 때는 의상 레이어 태그(`dress`, `shirt`, `skirt`, `gloves`)를 함께 명시합니다.
 
-#### 3. 의상 프롬프트 리스트 (단부루 표준 규격)
+#### 3. 의상 프롬프트 리스트 (canonical 예시)
 
-Positive prompt의 `{의상 디테일}` 자리에 아래 텍스트를 그대로 넣을 수 있습니다.
+Positive prompt의 `{의상 디테일}` 자리에 아래 텍스트를 넣습니다.
+원칙: `{의상 이름, 색상_의상종류}` 중심으로 짧고 고정된 block을 우선 사용합니다.
 모든 variable outfit tag는 루트 `danbooru_tag.csv` 기준으로 검증합니다.
 
-**교복 / School Uniform**
+아래 5세트는 현재 char_base same-seed 비교에 자주 쓰는 canonical 예시입니다.
 
-하복 세일러복:
+**1) school_uniform**
 ```text
-school_uniform, serafuku, white_shirt, short_sleeves, sailor_collar, blue_ribbon, pleated_skirt, blue_skirt, white_socks, ankle_socks, loafers, brown_footwear, fabric
+school_uniform, white_shirt, brown_cardigan, blue_skirt, brown_pantyhose
 ```
 
-동복 블레이저:
+**2) summer_sundress**
 ```text
-school_uniform, black_blazer, open_jacket, white_shirt, collared_shirt, red_necktie, cardigan, plaid_skirt, pleated_skirt, black_pantyhose, loafers, black_footwear, wool
+sundress, white_dress, floral_print, sleeveless, sandals
 ```
 
-검증된 기본값:
+**3) winter_coat**
 ```text
-school_uniform, white_shirt, necktie, pleated_skirt, cardigan
+winter_clothes, black_coat, white_sweater, jeans, boots
 ```
 
-**일상복 / Date Outfit**
-
-봄·가을 니트룩:
+**4) armor_knight**
 ```text
-casual, sweater, white_sweater, denim_shorts, black_shorts, tights, ankle_boots, brown_footwear, loose_clothes
+armor, breastplate, white_tunic, gauntlets, armored_boots
 ```
 
-여름 원피스:
+**5) witch_mage**
 ```text
-sundress, white_dress, floral_print, sleeveless, frills, straw_hat, sandals, belt, fabric
+witch, purple_cape, black_corset, long_skirt, pendant
 ```
 
-겨울 코트:
-```text
-winter_clothes, trench_coat, black_coat, white_sweater, turtleneck_sweater, jeans, boots, black_gloves, leather_gloves, wool
-```
+확장 후보(선택):
+- 위 5세트 QA가 안정적일 때만 tag를 1~2개씩 추가합니다.
+- 한 번에 다층 태그를 늘리지 않습니다.
+- 예: `frills`, `belt`, `gloves`, `leather`, `wool` 같은 재질/디테일 tag는 A/B로만 추가합니다.
 
-**판타지 / RPG**
-
-기사/전사:
-```text
-armor, breastplate, white_tunic, corset, leather_belt, gauntlets, armored_boots, thigh_boots, red_cape, leather
-```
-
-마법사/마녀:
-```text
-witch, witch_hat, purple_cape, black_corset, long_skirt, black_boots, pendant
-```
-
-**이벤트 / 파티**
-
-포멀 블랙 드레스:
-```text
-black_dress, bare_shoulders, long_dress, side_slit, frills, lace, high_heels, pearl_necklace, gloves, silk
-```
-
-주의: `evening_dress`는 README에 있던 표현이지만 현재 local CSV에서 빠져 있으므로 기본 추천 block에서는 제외합니다.
-
-**실내복 / 잠옷**
-
-오버사이즈 셔츠:
-```text
-sleepwear, oversized_shirt, white_shirt, unbuttoned, open_shirt, bare_legs, white_shorts, slippers, loose_clothes
-```
-
-파자마:
-```text
-pajamas, pink_pajamas, long_sleeves, pants, frills, sleep_mask, silk
-```
+주의:
+- `black_kneehighs`, `black_boots`는 local CSV 미존재이므로 기본 세트에서 사용하지 않습니다.
+- 의상 block에는 표정/카메라/배경 tag를 넣지 않습니다.
+- 예시 목록 확장/수정은 소규모 QA(최소 same-seed 3~5장) 후 반영합니다.
 
 #### 4. 검증된 Danbooru CSV 태그 메모
 
 출처: 루트 `danbooru_tag.csv`. 아래 태그들은 runtime placeholder 선택지로만 사용하고, 태그를 더 넣기 위해 장황하게 prompt를 늘리지 않습니다.
 
+현재 char_base 기본 템플릿은 `1girl, solo` 기준이므로 여성 캐릭터 생성만 지원합니다.
+
+- 연령대(여): `loli`, `mature_female`, `old_woman`
 - 머리 길이: `short_hair`, `medium_hair`, `long_hair`, `very_long_hair`
 - 헤어스타일: `straight_hair`, `wavy_hair`, `bob_cut`, `ponytail`, `side_ponytail`, `twintails`, `braid`, `blunt_bangs`, `sidelocks`
 - 머리색: `black_hair`, `brown_hair`, `blonde_hair`, `pink_hair`, `blue_hair`, `white_hair`, `two-tone_hair`
+- 눈매: `tsurime`, `tareme`, `upturned_eyes`, `downturned_eyes`
 - 눈색: `brown_eyes`, `blue_eyes`, `green_eyes`, `red_eyes`, `purple_eyes`
 - 중립 구도: `cowboy_shot`, `standing`, `facing_viewer`, `looking_at_viewer`, `expressionless`, `closed_mouth`, `arms_at_sides`, `grey_background`
 - 상의/카라: `shirt`, `white_shirt`, `blouse`, `sweater`, `cardigan`, `blazer`, `jacket`, `hoodie`, `collared_shirt`, `sailor_collar`

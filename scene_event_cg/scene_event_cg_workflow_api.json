@@ -22,10 +22,10 @@
         "2",
         0
       ],
-      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, long_hair, wavy_hair, blunt_bangs, sidelocks, pink_hair, purple_eyes, school_uniform, white_shirt, red_bow, blue_jacket, gold_trim, capelet, upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, auditorium, stage, curtains, spotlight, indoors, podium, presentation, depth_of_field"
+      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, mature_female, straight_hair, downturned_eyes, brown_hair, brown_eyes, school_uniform, white_shirt, brown_cardigan, blue_skirt, brown_pantyhose, auditorium, indoors, spotlight, depth_of_field"
     },
     "_meta": {
-      "title": "Positive prompt: no-ref upper-body white-serafuku event CG baseline"
+      "title": "Positive prompt: no-ref identity/outfit-first baseline (char_base no-composition style, 16:9 event cg)"
     }
   },
   "10": {
@@ -35,10 +35,10 @@
         "2",
         0
       ],
-      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, (worst_quality, bad_quality:1.2), sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, classroom, chalkboard, blackboard, whiteboard"
+      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, cowboy_shot, upper_body, full_body, standing, sitting, facing_viewer, looking_at_viewer, from_above, from_below, dutch_angle, classroom, chalkboard, blackboard, whiteboard"
     },
     "_meta": {
-      "title": "Negative prompt: compact creator/model block; no close-up default"
+      "title": "Negative prompt: suppress quality failures plus composition-forcing camera/pose tags by default"
     }
   },
   "11": {

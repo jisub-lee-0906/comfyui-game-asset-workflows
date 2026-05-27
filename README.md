@@ -6,11 +6,13 @@
 
 생성 결과는 곧바로 최종 게임 에셋이 아니라 QA/promote 전의 후보입니다. 실제 게임 리소스로 승격할지는 사용자 또는 agent의 artifact QA 이후 결정합니다.
 
-Windows path:
-`\\wsl.localhost\Ubuntu-24.04\home\jisub-lee\workspace\comfyui-game-asset-workflows`
+Windows workspace path:
+`E:\workspace\comfyui-game-asset-workflows`
 
-WSL path:
-`/home/jisub-lee/workspace/comfyui-game-asset-workflows`
+Hermes/Windows bash path:
+`E:/workspace/comfyui-game-asset-workflows`
+
+Legacy WSL source paths are historical reference only and should not be used for new work.
 
 ## 현재 구조
 
@@ -238,8 +240,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 - `WORKFLOW_INDEX.json`은 editable field, primary node, placeholder, observed default의 machine-readable 기준 문서입니다.
 - 각 workflow README는 간결한 운영 가이드로 유지합니다. 실험 이력이나 일시적인 튜닝 노트를 넣기 위해 수정하지 않습니다.
 
-최신 audit report:
-`/home/jisub-lee/workspace/renpy-project/.analysis/workflow_pack_freeze_audit_20260517.md`
+최신 audit report는 현재 game project root의 `.analysis/` 아래에서 확인합니다. Windows 이관 후 active workspace 기준은 `E:\workspace\renpy-project`입니다.
 
 ## 현재 주의사항
 

@@ -118,8 +118,8 @@ ACE-Step 출력은 duration이 맞아도 앞/뒤 또는 중간 이후에 무음 
 기본 후처리 스크립트:
 
 ```bash
-python3 /home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/final_edit_ace_bgm_loop.py \
-  /mnt/c/Users/Desktop/Documents/ComfyUI/output/<run>/audio_bgm_ace/<source>.mp3 \
+python E:/workspace/comfyui-game-asset-workflows/scripts/final_edit_ace_bgm_loop.py \
+  C:/Users/Desktop/Documents/ComfyUI/output/<run>/audio_bgm_ace/<source>.mp3 \
   --name <bgm_id>_loop_edit
 ```
 

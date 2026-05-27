@@ -1,8 +1,8 @@
 {
   "pack_name": "comfyui-game-asset-workflows",
   "version": "2026-05-26-char-base-same-seed-outfit-route",
-  "root_wsl": "/home/jisub-lee/workspace/comfyui-game-asset-workflows",
-  "root_windows_unc": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\jisub-lee\\workspace\\comfyui-game-asset-workflows",
+  "root_windows": "E:\\workspace\\comfyui-game-asset-workflows",
+  "root_windows_bash": "E:/workspace/comfyui-game-asset-workflows",
   "comfyui_paths": {
     "windows_output_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\output",
     "wsl_output_root": "/mnt/c/Users/Desktop/Documents/ComfyUI/output",

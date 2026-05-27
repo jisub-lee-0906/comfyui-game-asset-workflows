@@ -23,13 +23,13 @@ MMAudio video-to-audio 기반 VN/게임 SFX 후보 생성 workflow입니다.
 
 주의: 이 workflow는 후보 생성용입니다. `production-ready` 판정은 청감 QA, 노이즈/볼륨/컷 편집/fade/Ren'Py 재생 확인 후에만 합니다. MMAudio가 8초 안에 같은 효과를 여러 번 반복하거나 문 열림/닫힘처럼 두 동작을 모두 낼 수 있으므로, 실제 게임용 SFX는 청감상 가장 깨끗한 한 번의 hit/segment만 잘라내어 사용합니다.
 
-운영 고정: ComfyUI graph는 8초 source take를 생성하고, 최종 게임용 파일은 외부 후처리 단계에서 자동 single-hit 편집본으로 만듭니다. 기본 후처리 스크립트는 `/home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/final_edit_mmaudio_sfx.py`이며, 원본 FLAC/WAV를 분석해 가장 강한 1회 이벤트를 잘라 `edited_single_hits/`에 FLAC+OGG로 저장합니다.
+운영 고정: ComfyUI graph는 8초 source take를 생성하고, 최종 게임용 파일은 외부 후처리 단계에서 자동 single-hit 편집본으로 만듭니다. 기본 후처리 스크립트는 `E:/workspace/comfyui-game-asset-workflows/scripts/final_edit_mmaudio_sfx.py`이며, 원본 FLAC/WAV를 분석해 가장 강한 1회 이벤트를 잘라 `edited_single_hits/`에 FLAC+OGG로 저장합니다.
 
 예:
 
 ```bash
-python3 /home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/final_edit_mmaudio_sfx.py \
-  /mnt/c/Users/Desktop/Documents/ComfyUI/output/<run>/audio_sfx_mmaudio/<source_take>.flac \
+python E:/workspace/comfyui-game-asset-workflows/scripts/final_edit_mmaudio_sfx.py \
+  C:/Users/Desktop/Documents/ComfyUI/output/<run>/audio_sfx_mmaudio/<source_take>.flac \
   --name <sfx_id>_final
 ```
 

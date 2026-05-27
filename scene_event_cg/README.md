@@ -21,19 +21,19 @@
 - 이미지 reference / PuLID 없음.
 - checkpoint: `novaAnimeXL_ilV190.safetensors`.
 - pose LoRA: `hinaMaybeBetterPoseXL_v5-NoobAI.safetensors`, strength `0.65 / 0.65`.
-- 캐릭터 일관성은 이미지 참조가 아니라 metadata의 캐릭터/의상 anchor tag로 유지합니다.
-- 기본/중립 구도는 얼굴 품질을 위해 `upper_body, straight-on, facing_viewer, looking_at_viewer`를 사용합니다.
-- 작은 의상/색/레이어 variation은 no-ref route의 tradeoff로 허용하고, 기본 route를 PuLID/source-image로 되돌리지 않습니다.
+- 출력 비율은 event_cg 규칙에 따라 항상 16:9(기본 1024x576)만 사용합니다.
+- 캐릭터 일관성은 이미지 참조가 아니라 고정 identity/outfit block으로 유지합니다.
+- 프롬프트는 `char_base no-composition 테스트 방식`을 event_cg에 이식한 계약을 사용합니다.
 - README는 실행 가이드입니다. 과거 출력 경로, prompt_id, contact sheet 같은 기록은 README가 아니라 skill reference / `.analysis/` / `WORKFLOW_INDEX.json`에 둡니다.
 
 #### 1. 기본 canonical prompt
 
-아래 prompt는 바로 실행 가능한 기본 샘플입니다. 다른 느낌을 뽑을 때도 wrapper, 캐릭터/의상 anchor, 기본 거리/정면 anchor는 유지하고, 표정/작은 연출/배경/시간대/seed만 작게 바꿉니다.
+아래 prompt는 바로 실행 가능한 기본 샘플입니다. char_base no-composition 테스트 방식 그대로, 구도/카메라 강제 태그를 기본 positive에서 제거하고 identity/outfit block 중심으로 운용합니다. event_cg 특성상 장면 태그는 최소한으로만 추가하고, 16:9 출력은 고정합니다.
 
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, long_hair, wavy_hair, blunt_bangs, sidelocks, pink_hair, purple_eyes, school_uniform, white_shirt, red_bow, blue_jacket, gold_trim, capelet, upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, auditorium, stage, curtains, spotlight, indoors, podium, presentation, depth_of_field
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, {캐릭터 특징(연령대, 헤어스타일, 눈매, 머리색, 눈색)}, {의상 디테일(의상 이름, 색상_의상종류)}, auditorium, indoors, spotlight, depth_of_field
 ```
 
 **Negative prompt:**
@@ -46,29 +46,28 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 기존 캐릭터 기반 event CG를 만들 때는 README 샘플을 그대로 복붙하지 말고, 먼저 프로젝트의 캐릭터 metadata sidecar를 읽습니다.
 
-현재 프로젝트 예시:
+현재 Windows workspace 예시:
 
 ```text
-/home/jisub-lee/workspace/renpy-project/the_accidental_architect_of_magic/docs/assets/characters/lia_bel_astrin.asset.json
+E:/workspace/renpy-project/<game_slug>/docs/assets/characters/<character_id>.asset.json
 ```
 
 조립 순서:
 
 1. creator/model wrapper를 유지합니다.
-2. `identity_anchor.positive`를 캐릭터 동일성 block으로 고정합니다.
-3. 사용할 의상 `outfits.<outfit_id>.positive`를 outfit block으로 고정합니다.
-4. `framing_defaults.scene_event_cg`를 기본 거리/정면 block으로 고정합니다.
-5. 필요한 경우 `expression_map.<expression_id>.prompt_tags`만 추가합니다.
-6. scene/background/time/small staging tag를 마지막에 소량 추가합니다.
-7. 모든 variable tag를 루트 `danbooru_tag.csv`로 검증합니다.
+2. 캐릭터 특징 block을 `{연령대, 헤어스타일, 눈매, 머리색, 눈색}`으로 고정합니다.
+3. 의상 block을 `{의상 이름, 색상_의상종류}` CSV 태그 묶음으로 고정합니다.
+4. 구도/카메라 강제 태그(`upper_body`, `cowboy_shot`, `from_above`, `from_below`, `dutch_angle` 등)는 기본 positive에 넣지 않습니다.
+5. scene/background/time tag는 최소한으로만 추가합니다.
+6. 모든 variable tag를 루트 `danbooru_tag.csv`로 검증합니다.
 
 prompt builder 예시:
 
 ```bash
-python /home/jisub-lee/workspace/comfyui-game-asset-workflows/scripts/build_character_prompt.py \
-  --character /home/jisub-lee/workspace/renpy-project/the_accidental_architect_of_magic/docs/assets/characters/lia_bel_astrin.asset.json \
+python E:/workspace/comfyui-game-asset-workflows/scripts/build_character_prompt.py \
+  --character E:/workspace/renpy-project/<game_slug>/docs/assets/characters/<character_id>.asset.json \
   --workflow scene_event_cg \
-  --outfit academy_uniform_blue_gold \
+  --outfit <outfit_id> \
   --expression serious \
   --scene-tags auditorium stage curtains spotlight indoors podium presentation
 ```
@@ -195,10 +194,11 @@ classroom, chalkboard, blackboard, whiteboard
 #### 7. 실행 / QA 규칙
 
 1. 기본은 no-ref + pose LoRA on입니다.
-2. 이 canonical route에는 `LoadImage`/PuLID reference conditioning을 추가하지 않습니다.
-3. 자연어 prompt chunk나 CSV에 없는 pseudo-tag를 추가하지 않습니다.
-4. `danbooru_tag.csv`에 있는 `tag` 또는 `aliases`만 variable prompt에 사용합니다.
-5. 기본 negative에는 `close-up`을 넣지 않습니다. 너무 확대되는 개별 런타임에서만 추가합니다.
-6. 의상 드리프트를 더 줄이겠다고 기본 prompt를 장황하게 늘리지 않습니다. 같은 anchor에서 seed 후보를 더 뽑고 QA로 고릅니다.
-7. QA 전에는 생성 에셋을 production-ready/final이라고 부르지 않습니다.
-8. 출력은 `/history/{prompt_id}` 또는 output scan으로 정확한 파일 경로를 검증한 뒤 보고합니다.
+2. 출력은 event_cg 규칙상 항상 16:9만 사용합니다(기본 1024x576).
+3. 이 canonical route에는 `LoadImage`/PuLID reference conditioning을 추가하지 않습니다.
+4. 자연어 prompt chunk나 CSV에 없는 pseudo-tag를 추가하지 않습니다.
+5. `danbooru_tag.csv`에 있는 `tag` 또는 `aliases`만 variable prompt에 사용합니다.
+6. 기본 positive는 identity/outfit 중심으로 유지하고, 구도/카메라 강제 태그는 기본값에서 제외합니다.
+7. 의상 드리프트를 더 줄이겠다고 기본 prompt를 장황하게 늘리지 않습니다. 같은 anchor에서 seed 후보를 더 뽑고 QA로 고릅니다.
+8. QA 전에는 생성 에셋을 production-ready/final이라고 부르지 않습니다.
+9. 출력은 `/history/{prompt_id}` 또는 output scan으로 정확한 파일 경로를 검증한 뒤 보고합니다.
