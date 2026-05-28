@@ -84,7 +84,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 3. 프롬프트 작성
    - target workflow README의 템플릿을 읽고 모든 placeholder를 실제 태그/문장으로 채웁니다.
    - 기존 캐릭터 기반 에셋은 README 샘플 prompt나 과거 PNG metadata를 직접 복붙하지 말고, 캐릭터 metadata sidecar에서 `identity_anchor`, `outfits`, `expression_map`, `framing_defaults`를 읽어 조립합니다.
-   - 재사용 스크립트: `scripts/build_character_prompt.py`.
+   - prompt에는 target workflow README에 문서화된 태그와 루트 `danbooru_tag.csv`의 `tag`/`aliases`에 존재하는 태그만 사용합니다.
+   - CSV에 없는 자연어 chunk, pseudo-tag, 오래된 helper script 출력은 사용하지 않습니다.
 4. Runtime patch
    - canonical JSON은 직접 수정하지 않고, runtime payload/copy의 editable field만 바꿉니다.
 5. ComfyUI 제출

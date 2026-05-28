@@ -59,18 +59,9 @@ E:/workspace/renpy-project/<game_slug>/docs/assets/characters/<character_id>.ass
 3. 의상 block을 `{의상 이름, 색상_의상종류}` CSV 태그 묶음으로 고정합니다.
 4. 구도/카메라 강제 태그(`upper_body`, `cowboy_shot`, `from_above`, `from_below`, `dutch_angle` 등)는 기본 positive에 넣지 않습니다.
 5. scene/background/time tag는 최소한으로만 추가합니다.
-6. 모든 variable tag를 루트 `danbooru_tag.csv`로 검증합니다.
-
-prompt builder 예시:
-
-```bash
-python E:/workspace/comfyui-game-asset-workflows/scripts/build_character_prompt.py \
-  --character E:/workspace/renpy-project/<game_slug>/docs/assets/characters/<character_id>.asset.json \
-  --workflow scene_event_cg \
-  --outfit <outfit_id> \
-  --expression serious \
-  --scene-tags auditorium stage curtains spotlight indoors podium presentation
-```
+6. 모든 variable tag는 루트 `danbooru_tag.csv`의 `tag` 또는 `aliases`에 존재하는지 검증합니다.
+7. README에 문서화된 wrapper/운영 태그와 CSV 검증을 통과한 태그만 사용합니다.
+8. CSV에 없는 자연어 chunk, pseudo-tag, 오래된 helper script 출력은 사용하지 않습니다.
 
 Metadata 원본 특징 guard:
 
