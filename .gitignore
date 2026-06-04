@@ -1,1 +1,6 @@
 .analysis/
+# Local Danbooru taxonomy DBs for cksdnfas/danbooru-db-viewer; large release assets, not source.
+danbooru*.sqlite
+danbooru*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
