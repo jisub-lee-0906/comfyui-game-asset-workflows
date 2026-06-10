@@ -1,0 +1,36 @@
+{
+  "workflow_id": "audio_bgm_with_sfx",
+  "contract_version": "2026-06-10-owner-qa-audio-role-split",
+  "canonical_engine": true,
+  "do_not_duplicate_workflow_json_for_roles": true,
+  "roles": {
+    "audio_sfx": {
+      "asset_types": ["sfx"],
+      "default_mode": "One-shot",
+      "alternate_modes": ["SFX"],
+      "default_duration": 2.5,
+      "duration_guidance": "1.5-2.5s for one-shots; 3-8s for longer foley/magic/ambience-like effects",
+      "negative_prompt_default": "",
+      "prompt_shape": "short positive-only natural-language cue + one/two material or timbre colors",
+      "prompt_examples": [
+        "A short glass chime rings when a visual novel system notification appears, with a clear crystal bell tone.",
+        "An old wooden door opens slowly with one clear metal hinge creak and a soft wooden handle click.",
+        "A dark fantasy contract seal activates with a soft arcane hum, parchment shimmer, and gentle crystal resonance."
+      ],
+      "qa_focus": ["semantic function", "duration/tail", "loudness", "no unintended voice/song", "not BGM-like unless intentionally sustained"]
+    },
+    "audio_bgm": {
+      "asset_types": ["bgm"],
+      "default_mode": "Music",
+      "alternate_modes": ["Instrument"],
+      "default_duration": 24.0,
+      "duration_guidance": "20-30s source candidates for QA; longer only after direction approval and loop/edit planning",
+      "negative_prompt_default": "",
+      "prompt_shape": "instrumentation + musical form/rhythm + mood + short role",
+      "prompt_examples": [
+        "Soft felt piano and low strings, slow minor waltz, dark romantic fantasy, quiet dialogue underscore."
+      ],
+      "qa_focus": ["reads as continuous BGM", "dialogue-friendly density", "not SFX/stinger", "mood fit", "loop/edit potential"]
+    }
+  }
+}

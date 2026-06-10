@@ -1,0 +1,163 @@
+{
+  "unit": "Unit 4 — audio_bgm_with_sfx SFX situation smoke",
+  "endpoint": "http://127.0.0.1:8000",
+  "workflow_path": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\audio_bgm_with_sfx_workflow_api.json",
+  "no_promotion": true,
+  "scenario_count": 3,
+  "results": [
+    {
+      "id": "sfx_ui_system_short",
+      "label": "A_short_ui_system_cue",
+      "intent": "짧은 UI/system cue: system alert / choice appears",
+      "mode": "One-shot",
+      "duration": 2.5,
+      "seed": 360610401,
+      "positive": "short dark fantasy visual novel user interface sound effect, system notification appears, clear glass bell chime, tiny magical sparkle, subtle ominous low pulse, quick decay, serious tone, no voice, no speech, no music, no melody",
+      "negative": "speech, human voice, talking, singing, lyrics, background music, melody, cheerful arcade jingle, cute notification, long ambience, distorted, clipping, harsh noise",
+      "workflow_id": "audio_bgm_with_sfx",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\runtime_payloads\\sfx_ui_system_short_workflow_api.json",
+      "prompt_id": "84df8748-46f2-42fd-8ba4-6325ea2beed3",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\runtime_payloads\\sfx_ui_system_short_history.json",
+      "output_paths": [
+        "C:\\Users\\Desktop\\Documents\\ComfyUI\\output\\workflow_pack_unit4\\sfx_ui_system_short_00001_.mp3"
+      ],
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\candidates\\A_short_ui_system_cue_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "239939"
+              }
+            ],
+            "format": {
+              "duration": "2.507755",
+              "size": "109477",
+              "bit_rate": "349243"
+            }
+          },
+          "duration": 2.507755,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -38.3,
+          "max_volume_db": -17.3,
+          "silencedetect_-45dB_d0.5": [
+            "[Parsed_silencedetect_0 @ 000001fe5cfdb0c0] silence_start: 0.710567",
+            "[Parsed_silencedetect_0 @ 000001fe5cfdb0c0] silence_end: 2.507755 | silence_duration: 1.797188"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    },
+    {
+      "id": "sfx_old_door_foley_medium",
+      "label": "B_medium_foley_action_cue",
+      "intent": "짧은 행동/foley cue: old wooden door opens then settles",
+      "mode": "SFX",
+      "duration": 3.5,
+      "seed": 360610402,
+      "positive": "realistic visual novel foley sound effect, old heavy wooden door slowly opens, soft hinge creak, subtle room tone, gentle wooden latch click at the end, close microphone, natural decay, no voice, no speech, no music, no melody",
+      "negative": "speech, human voice, talking, singing, lyrics, background music, melody, horror scream, monster, loud slam, explosion, distorted, clipping, harsh noise",
+      "workflow_id": "audio_bgm_with_sfx",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\runtime_payloads\\sfx_old_door_foley_medium_workflow_api.json",
+      "prompt_id": "432fb071-d5dd-4dae-8c83-e50b957ef4da",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\runtime_payloads\\sfx_old_door_foley_medium_history.json",
+      "output_paths": [
+        "C:\\Users\\Desktop\\Documents\\ComfyUI\\output\\workflow_pack_unit4\\sfx_old_door_foley_medium_00001_.mp3"
+      ],
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\candidates\\B_medium_foley_action_cue_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "192260"
+              }
+            ],
+            "format": {
+              "duration": "3.529433",
+              "size": "119473",
+              "bit_rate": "270803"
+            }
+          },
+          "duration": 3.529433,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -35.8,
+          "max_volume_db": -0.1,
+          "silencedetect_-45dB_d0.5": [
+            "[Parsed_silencedetect_0 @ 000001d15777d940] silence_start: 2.44322",
+            "[Parsed_silencedetect_0 @ 000001d15777d940] silence_end: 3.529433 | silence_duration: 1.086213"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    },
+    {
+      "id": "sfx_magic_contract_sustained",
+      "label": "C_longer_sustained_magic_cue",
+      "intent": "조금 긴 sustained SFX: magic contract forms and hums ominously",
+      "mode": "SFX",
+      "duration": 7.0,
+      "seed": 360610403,
+      "positive": "sustained dark fantasy visual novel magic sound effect, ominous contract magic forming in the air, low resonant magical hum, faint parchment rustle, slow rising tension, subtle crystal shimmer, controlled energy swell, smooth fade tail, no voice, no speech, no music, no melody",
+      "negative": "speech, human voice, talking, chanting, singing, lyrics, background music, melody, choir, bright cheerful sparkle, explosion, battle drums, distorted, clipping, harsh noise",
+      "workflow_id": "audio_bgm_with_sfx",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\runtime_payloads\\sfx_magic_contract_sustained_workflow_api.json",
+      "prompt_id": "b4f3e8d2-ed51-4286-9669-3ce77b40e6fa",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\runtime_payloads\\sfx_magic_contract_sustained_history.json",
+      "output_paths": [
+        "C:\\Users\\Desktop\\Documents\\ComfyUI\\output\\workflow_pack_unit4\\sfx_magic_contract_sustained_00001_.mp3"
+      ],
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4_audio_sfx_smoke\\candidates\\C_longer_sustained_magic_cue_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "228493"
+              }
+            ],
+            "format": {
+              "duration": "6.965986",
+              "size": "233496",
+              "bit_rate": "268155"
+            }
+          },
+          "duration": 6.965986,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -18.4,
+          "max_volume_db": 0.0,
+          "silencedetect_-45dB_d0.5": [
+            "[Parsed_silencedetect_0 @ 000002634015b580] silence_start: 4.378322",
+            "[Parsed_silencedetect_0 @ 000002634015b580] silence_end: 6.965986 | silence_duration: 2.587664"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    }
+  ],
+  "errors": []
+}

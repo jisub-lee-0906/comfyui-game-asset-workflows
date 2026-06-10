@@ -89,6 +89,62 @@ class DanbooruTagSearchTests(unittest.TestCase):
         self.assertIn("250", result.stdout)
         self.assertNotIn("old_red_border", result.stdout)
 
+    def test_db_check_works_when_csv_file_is_missing(self):
+        db_path = self.tmp / "danbooru-taxonomy.sqlite"
+        conn = sqlite3.connect(db_path)
+        conn.executescript(
+            """
+            CREATE TABLE tags (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                normalized_name TEXT NOT NULL,
+                display_name TEXT NOT NULL,
+                category_name TEXT NOT NULL,
+                post_count INTEGER NOT NULL,
+                is_deprecated INTEGER NOT NULL DEFAULT 0
+            );
+            CREATE TABLE tag_aliases (
+                id INTEGER PRIMARY KEY,
+                alias_name TEXT NOT NULL,
+                alias_normalized_name TEXT NOT NULL,
+                target_tag_id INTEGER NOT NULL,
+                status TEXT NOT NULL DEFAULT 'active'
+            );
+            INSERT INTO tags VALUES
+              (1, 'jpeg_artifacts', 'jpeg_artifacts', 'jpeg artifacts', 'meta', 26083, 0),
+              (2, 'highres', 'highres', 'highres', 'meta', 500000, 0),
+              (3, 'old_tag', 'old_tag', 'old tag', 'general', 10, 1);
+            INSERT INTO tag_aliases VALUES
+              (1, 'high_res', 'high_res', 2, 'active');
+            """
+        )
+        conn.commit()
+        conn.close()
+        missing_csv = self.tmp / "missing.csv"
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--csv",
+                str(missing_csv),
+                "check",
+                "jpeg artifacts, high res",
+                "--db",
+                str(db_path),
+                "--mode",
+                "auto",
+            ],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("OK\tjpeg_artifacts", result.stdout)
+        self.assertIn("source=db", result.stdout)
+        self.assertIn("OK\thighres", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -34,8 +34,7 @@ Legacy Linux-bridge source paths are historical reference only and should not be
 | `scene_prop_cg` | 16:9 소품 / 단서 / item cut-in CG 생성. | `scene_prop_cg/scene_prop_cg_workflow_api.json` |
 | `scene_event_cg` | no-reference txt2img + pose LoRA로 16:9 character event CG 생성. 캐릭터/의상 일관성은 캐릭터 metadata anchor와 prompt tag로 유지합니다. | `scene_event_cg/scene_event_cg_workflow_api.json` |
 | `ui_system_alert_frame` | Textless red/ornate VN system alert frame 후보 생성. Ren'Py text overlay preview는 QA/통합 확인용이며, `scene_prop_cg`와 분리된 UI 전용 route입니다. | `ui_system_alert_frame/ui_system_alert_frame_workflow_api.json` |
-| `audio_bgm_ace` | ACE-Step 1.5 기반 lyric-free VN BGM 후보 생성. | `audio_bgm_ace/audio_bgm_ace_workflow_api.json` |
-| `audio_sfx_mmaudio` | MMAudio video-to-audio 기반 짧은 효과음 후보 생성. | `audio_sfx_mmaudio/audio_sfx_mmaudio_workflow_api.json` |
+| `audio_bgm_with_sfx` | Stable Audio 3 기반 통합 BGM/SFX/One-shot 후보 생성. | `audio_bgm_with_sfx/audio_bgm_with_sfx_workflow_api.json` |
 
 ## AI agent 시작 지점
 
@@ -64,8 +63,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 | 교실, 복도, 방, 거리 같은 VN 배경이 필요함 | `scene_background` | 없음 | 캐릭터 없는 16:9 배경을 생성합니다. |
 | 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | 16:9 단일 소품 후보를 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄입니다. |
 | VN 시스템 알림창, 경고/계약 알림 UI frame, textless message frame이 필요함 | `ui_system_alert_frame` | 없음 | 소품이 아니라 UI frame입니다. frame/ornament 제작이 1차 목표이고, Ren'Py overlay preview는 QA입니다. 중앙 plate와 외곽 ornament를 분리 QA하고, baked text/logo/symbol/nameplate/object는 reject합니다. |
-| 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_ace` | 없음 | ACE-Step 1.5 기반 instrumental BGM 후보를 생성합니다. raw MP3는 source 후보이며, Ren'Py용은 무음 trim + fade loop edit + OGG 변환 후 loop preview 청감 QA가 필요합니다. |
-| 문 열림, 발소리, 마법 crack 같은 짧은 효과음이 필요함 | `audio_sfx_mmaudio` | 없음 | MMAudio video-to-audio 기반 후보를 생성합니다. 입력 영상 cue와 청감 QA가 필요합니다. 음성/음악 섞임 여부는 listening QA가 필요합니다. |
+| 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_bgm` role로 사용합니다. prompt는 `instrumentation + musical form/rhythm + mood + short role`처럼 음악 정체성을 먼저 둡니다. raw MP3는 source 후보이며, Ren'Py용은 무음 trim + fade loop edit + OGG 변환 후 loop preview 청감 QA가 필요합니다. |
+| 문 열림, 발소리, 마법 crack 같은 짧은/중간/긴 효과음이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_sfx` role로 사용합니다. prompt는 짧은 positive 자연어 cue + 재질/음색 1~2개가 기본이며, 상황에 따라 `One-shot`/`SFX` mode와 duration을 조절합니다. trim/normalize와 listening QA가 필요합니다. |
 | 포즈나 액션이 있는 장면 일러스트가 필요함 | `scene_event_cg` | 없음 | `pose_variations`는 제거되었습니다. Dialogue sprite 재생성이 아니라 event CG로 처리합니다. 기존 캐릭터 기반이면 캐릭터 metadata anchor를 고정한 뒤 작은 staging/background/seed만 바꿉니다. |
 
 중요한 용어 구분:
@@ -74,8 +73,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 - `char_base`는 “캐릭터 앵커/source/base”와 same-seed outfit/costume variant를 만듭니다.
 - “대사 중 서 있는 캐릭터 sprite”는 보통 `char_base` same-seed outfit 후보 → `char_expression` → `char_alpha` route로 만듭니다.
 - “장면 삽화 / 이벤트 일러스트 / 포즈 있는 CG”는 `scene_event_cg`로 만듭니다.
-- “BGM / 배경음악 / 루프 음악”은 `audio_bgm_ace`으로 만듭니다.
-- “효과음 / SFX / 문소리 / 발소리 / 마법 소리”는 `audio_sfx_mmaudio`로 만듭니다. SFX는 입력 영상 cue와 listening QA가 필요합니다.
+- “BGM / 배경음악 / 루프 음악”은 `audio_bgm_with_sfx`의 `audio_bgm` role로 만듭니다.
+- “효과음 / SFX / 문소리 / 발소리 / 마법 소리”는 `audio_bgm_with_sfx`의 `audio_sfx` role로 만듭니다. SFX는 길이가 항상 짧지는 않으므로 장면 기능에 맞게 `One-shot`/`SFX` mode와 duration을 조절하고, trim/normalize/listening QA를 거칩니다.
 
 ## 에셋 생성 lifecycle
 
@@ -86,8 +85,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 3. 프롬프트 작성
    - target workflow README의 템플릿을 읽고 모든 placeholder를 실제 태그/문장으로 채웁니다.
    - 기존 캐릭터 기반 에셋은 README 샘플 prompt나 과거 PNG metadata를 직접 복붙하지 말고, 캐릭터 metadata sidecar에서 `identity_anchor`, `outfits`, `expression_map`, `framing_defaults`를 읽어 조립합니다.
-   - prompt에는 target workflow README에 문서화된 태그와 루트 `danbooru_tag.csv`의 `tag`/`aliases`에 존재하는 태그만 사용합니다.
-   - CSV에 없는 자연어 chunk, pseudo-tag, 오래된 helper script 출력은 사용하지 않습니다.
+   - prompt에는 target workflow README에 문서화된 태그와 로컬 Danbooru taxonomy SQLite tag oracle에서 active/non-deprecated로 검증되는 태그만 사용합니다.
+   - DB에 없는 자연어 chunk, pseudo-tag, 오래된 helper script 출력은 사용하지 않습니다.
 4. Runtime patch
    - canonical JSON은 직접 수정하지 않고, runtime payload/copy의 editable field만 바꿉니다.
 5. ComfyUI 제출
@@ -110,8 +109,7 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 5. `scene_prop_cg` — Ren'Py 연출용 16:9 prop/clue cut-in을 만듭니다.
 6. `scene_event_cg` — no-reference txt2img + pose LoRA로 full 16:9 event CG를 만듭니다. 캐릭터/의상 일관성은 metadata anchor와 prompt tag로 유지하며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
 7. `ui_system_alert_frame` — textless VN system alert frame 후보를 만듭니다. 소품 CG와 분리하고, frame identity / 중앙 plate / 외곽 ornament / baked content를 별도로 QA합니다. Ren'Py overlay preview는 통합 QA입니다.
-8. `audio_bgm_ace` — 장면 mood에 맞는 lyric-free instrumental BGM 후보를 만듭니다.
-9. `audio_sfx_mmaudio` — MMAudio video-to-audio로 짧은 효과음 후보를 만듭니다.
+8. `audio_bgm_with_sfx` — Stable Audio 3 기반 통합 route로 BGM/SFX/One-shot 후보를 만듭니다.
 
 이 폴더들은 필수 linear pipeline이 아니라 재사용 도구입니다. 현재 장면에 필요한 가장 작은 workflow를 선택합니다.
 
@@ -181,7 +179,7 @@ Live generation 전:
 - README의 prompt ordering을 기본적으로 유지합니다.
 - 사용자가 README를 수정했다고 말하면 즉시 다시 읽습니다.
 - unresolved placeholder를 ComfyUI에 제출하지 않습니다.
-- 이미지 workflow의 variable prompt에는 루트 `danbooru_tag.csv`에 존재하는 tag/alias만 사용합니다. CSV에 없는 자연어 구도 보정은 이미지 prompt에 넣지 말고 workflow 선택, seed/settings, 별도 배경/소품/overlay, Ren'Py staging으로 해결합니다. audio workflow는 해당 README가 명시한 자연어 prompt 규칙을 따릅니다.
+- 이미지 workflow의 variable prompt에는 로컬 Danbooru taxonomy SQLite tag oracle에서 active/non-deprecated로 검증되는 tag/alias만 사용합니다. DB에 없는 자연어 구도 보정은 이미지 prompt에 넣지 말고 workflow 선택, seed/settings, 별도 배경/소품/overlay, Ren'Py staging으로 해결합니다. audio workflow는 해당 README가 명시한 자연어 prompt 규칙을 따릅니다.
 
 ## QA와 promote 규칙
 
@@ -233,7 +231,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 
 - `ffprobe`로 duration/audio stream이 정상인지 확인
 - BGM은 vocal/lyrics가 섞이지 않았는지 listening QA
-- BGM은 raw MP3를 그대로 promote하지 않고 `scripts/final_edit_ace_bgm_loop.py`로 무음 trim/fade/OGG 변환/2회 loop preview를 만든 뒤 loop 지점이 너무 튀지 않는지 확인
+- BGM은 raw MP3를 그대로 promote하지 않고 무음 trim/fade/OGG 변환/2회 loop preview를 만든 뒤 loop 지점이 너무 튀지 않는지 확인
 - SFX는 불필요한 voice/music/말소리가 섞이지 않았는지 확인
 - 대사와 충돌하지 않는 볼륨/밀도인지 확인
 - Ren'Py promote 전 BGM은 편집본 OGG로 `play music ... loop` smoke, SFX는 single-hit 편집본 OGG로 `play sound` smoke
@@ -242,7 +240,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 
 ## 고정 상태
 
-현재 canonical pack은 위에 적힌 9개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 16:9 `scene_event_cg`로 처리합니다.
+현재 canonical pack은 위에 적힌 8개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 16:9 `scene_event_cg`로 처리합니다.
 
 고정 전 audit 상태:
 
@@ -259,8 +257,8 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 
 - 현재 폴더명은 번호식 이름이 아니라 flat semantic name입니다. 예전 `01_*`부터 `07_*`까지의 참조는 stale일 수 있습니다.
 - `scene_background`와 `scene_prop_cg`는 이미지 입력이 없는 16:9 txt2img 계열 workflow입니다.
-- `audio_bgm_ace`, `audio_sfx_mmaudio`는 이미지 입력이 없는 local audio workflow입니다. BGM은 로컬 ACE-Step checkpoint 기반이고, SFX는 MMAudio video-to-audio 기반입니다.
+- `audio_bgm_with_sfx`는 이미지/영상 입력이 없는 local Stable Audio 3 workflow입니다. BGM, SFX, One-shot 모두 이 통합 route로 생성합니다.
 - `char_expression`, `char_alpha`는 runtime에서 `LoadImage.inputs.image`를 실제 ComfyUI input 파일명으로 패치해야 합니다. `char_base`와 `scene_event_cg`는 현재 canonical 기준으로 `LoadImage`가 없는 txt2img route입니다.
 - `pose_variations`는 pose/action sprite 테스트에서 색감/의상/구도/해부학 drift가 커서 canonical pack에서 제거했습니다. 포즈/액션 CG는 `scene_event_cg`로 처리하고, dialogue sprite는 `char_base` same-seed outfit → `char_expression` → `char_alpha` 경로를 유지합니다.
 - 일부 README의 prompt 텍스트는 운영 가이드이며, `Positive prompt`/`Negative prompt`로 명시된 canonical block은 해당 workflow JSON과 동기화합니다. 실행 가능한 node/field 기준은 `WORKFLOW_INDEX.json`과 실제 JSON입니다.
-- 루트 `danbooru_tag.csv`는 README tag note의 로컬 검증 기준입니다. 해당 CSV에 존재하거나 실제 생성물로 테스트된 태그가 아니라면, 기억이나 실패한 web fetch 기반으로 tag guidance를 추가하지 않습니다.
+- 로컬 `danbooru-taxonomy.release.sqlite`는 README tag note의 primary 검증 기준입니다. DB에서 active/non-deprecated로 확인되거나 실제 생성물로 테스트된 태그가 아니라면, 기억이나 실패한 web fetch 기반으로 tag guidance를 추가하지 않습니다.

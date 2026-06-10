@@ -4,7 +4,7 @@
 - modality: `image`
 - input_requirement: 없음
 - output: 16:9 textless VN system alert backdrop/frame PNG
-- prompt_policy: `pure_t2i_creator_wrapper+danbooru_csv_backdrop_slots+runtime_patch+overlay_readability_qa`
+- prompt_policy: `pure_t2i_creator_wrapper+danbooru_sqlite_backdrop_slots+runtime_patch+overlay_readability_qa`
 - editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
 
 운영 원칙:
@@ -28,7 +28,7 @@
 
 #### 1. 프롬프팅 방법
 
-이미지 workflow prompt는 **pure T2I textless system alert backdrop/frame generation**을 기본 route로 사용합니다. 제작자 권장 quality/style wrapper와 Danbooru CSV 검증 backdrop/color/corner slot을 분리합니다. 구조/장식/색/억제 slot은 루트 `danbooru_tag.csv`의 `tag` 또는 `aliases`에 존재하는 tag를 우선 사용하고, `masterpiece`, `best quality`, `amazing quality`, `very aesthetic`, `absurdres`, `highres`, `newest` 같은 제작자 권장 wrapper는 CSV 밖이어도 보존합니다. 단, 임의 자연어 chunk/pseudo-tag/문장형 UI 설명은 넣지 않습니다. 2026-06-04 실사용 probe 기준으로 `window_(computing)`, `dialogue_box`, positive `scenery`, `user_interface`, `empty_picture_frame`, `picture_frame`, `gradient_background`, `gradient_border`는 기본 positive에서 제외하고 필요 시 별도 실험으로만 사용합니다.
+이미지 workflow prompt는 **pure T2I textless system alert backdrop/frame generation**을 기본 route로 사용합니다. 제작자 권장 quality/style wrapper와 Danbooru SQLite 검증 backdrop/color/corner slot을 분리합니다. 구조/장식/색/억제 slot은 로컬 Danbooru taxonomy SQLite에서 active/non-deprecated로 검증되는 tag를 우선 사용하고, `masterpiece`, `best quality`, `amazing quality`, `very aesthetic`, `absurdres`, `highres`, `newest` 같은 제작자 권장 wrapper는 Danbooru tag gate 밖이어도 보존합니다. 단, 임의 자연어 chunk/pseudo-tag/문장형 UI 설명은 넣지 않습니다. 2026-06-04 실사용 probe 기준으로 `window_(computing)`, `dialogue_box`, positive `scenery`, `user_interface`, `empty_picture_frame`, `picture_frame`, `gradient_background`, `gradient_border`는 기본 positive에서 제외하고 필요 시 별도 실험으로만 사용합니다.
 
 **Positive prompt 기본형 — corner alert backdrop base:**
 
@@ -57,20 +57,20 @@ orange_border, black_border, gold_border, orange_theme, black_theme, dark_backgr
 **Negative prompt 기본형:**
 
 ```text
-worst quality, low quality, bad quality, lowres, jpeg artifacts, blurry, bad anatomy, bad hands, missing fingers, extra fingers, extra digits, fewer digits, cropped, very displeasing, artist name, signature, watermark, username, text, fake_text, text_focus, english_text, korean_text, logo, label, caption, speech_bubble, dialogue_options, 1girl, 1boy, people, portrait, face, eye, glowing_eye, animal, cat, scenery, indoors, outdoors, city, building, window_(computing), dialogue_box, icon_(computing), emblem, crest, magic_circle, runes, glyph, circle, red_circle, heart, halo, lens_flare, spotlight, gem, jewel, crystal, cross, medallion, box, paper, book, empty_picture_frame, picture_frame, photo_frame, painting, painting_(object)
+worst quality, low quality, bad quality, lowres, jpeg artifacts, blurry, bad anatomy, bad hands, missing fingers, extra fingers, extra digits, fewer digits, cropped, very displeasing, artist name, signature, watermark, text, fake_text, text_focus, english_text, korean_text, logo, label, caption, speech_bubble, dialogue_options, 1girl, 1boy, people, portrait, glowing_eye, animal, cat, scenery, indoors, outdoors, city, building, window_(computing), dialogue_box, icon_(computing), emblem, crest, magic_circle, runes, glyph, circle, red_circle, heart, halo, lens_flare, spotlight, gem, jewel, crystal, cross, medallion, box, paper, book, empty_picture_frame, picture_frame, photo_frame, painting, painting_(object)
 ```
 
 프롬프트 원칙:
-- subject/구조/억제 slot의 Danbooru tag는 README 작성 시점에 루트 `danbooru_tag.csv` 존재를 확인한 것만 적습니다.
-- 제작자 권장 wrapper는 CSV 검증 대상에서 분리하여 보존할 수 있습니다. 이 workflow의 현재 positive wrapper는 `masterpiece, best quality, amazing quality, very aesthetic, absurdres, highres, newest`입니다. `scenery`는 wrapper가 아니라 drift-prone subject tag로 취급하여 negative에 둡니다.
+- subject/구조/억제 slot의 Danbooru tag는 README 작성 시점에 로컬 Danbooru taxonomy SQLite에서 active/non-deprecated 존재를 확인한 것만 적습니다.
+- 제작자 권장 wrapper는 Danbooru tag gate 검증 대상에서 분리하여 보존할 수 있습니다. 이 workflow의 현재 positive wrapper는 `masterpiece, best quality, amazing quality, very aesthetic, absurdres, highres, newest`입니다. `scenery`는 wrapper가 아니라 drift-prone subject tag로 취급하여 negative에 둡니다.
 - `alert`, `warning`, `prohibition`, `system message frame`, `frame overlay asset`, `large blank central panel` 같은 임의 자연어/pseudo-tag는 사용하지 않습니다.
 - 중앙 영역의 “읽기 좋음”은 Danbooru tag만으로 완전히 보장하기 어렵습니다. pure T2I source 생성에서는 `border`, `outside_border`, `corner`, color border/theme 계열로 시스템 backdrop 성격을 유도하고, `window_(computing)`, `dialogue_box`, positive `scenery`, `user_interface`는 기본 positive에서 제외합니다. 중앙 gem/cross/vertical flare/medallion/character/HUD는 QA reject 또는 다음 prompt-change 대상으로 처리합니다.
 - 중앙 내용은 ComfyUI가 아니라 Ren'Py/후편집 overlay로 처리합니다.
 - raw source가 좋지만 중앙이 깨끗하지 않으면 `V08`~`V10` 같은 deterministic cleanplate review candidate로 정리합니다.
 
-#### 1-1. 검증된 Danbooru CSV 태그 메모와 wrapper 예외
+#### 1-1. 검증된 Danbooru SQLite 태그 메모와 wrapper 예외
 
-출처: 루트 `danbooru_tag.csv`. 아래 subject/억제 태그들은 README 작성 시점에 CSV의 `tag` 또는 `aliases` 존재를 확인했습니다. 제작자 권장 quality/style wrapper는 별도 예외로 취급합니다.
+출처: 로컬 Danbooru taxonomy SQLite tag oracle. 아래 subject/억제 태그들은 README 작성 시점에 DB의 active/non-deprecated tag 또는 alias 존재를 확인했습니다. 제작자 권장 quality/style wrapper는 별도 예외로 취급합니다.
 
 - UI/게임 맥락: `game_cg`, `visual_novel`, `user_interface`, `window_(computing)`, `dialogue_box`
 - 프레임/장식: `border`, `outside_border`, `corner`, `gold_border`, `red_border`, `black_border`, `blue_border`, `purple_border`, `green_border`, `orange_border`, `empty_picture_frame`, `picture_frame`, `inset_border`, `gradient_border`, `ornate_border`, `ornate`, `filigree`, `gold_trim`

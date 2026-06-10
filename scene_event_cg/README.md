@@ -4,7 +4,7 @@
 - modality: `image`
 - input_requirement: 없음 (no-ref)
 - output: 16:9 event CG PNG
-- prompt_policy: `danbooru_csv+readme_wrapper`
+- prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 100.inputs.lora_name, 100.inputs.strength_model, 100.inputs.strength_clip, 9.inputs.text, 10.inputs.text, 11.inputs.width, 11.inputs.height, 12.inputs.seed, 12.inputs.steps, 12.inputs.cfg, 12.inputs.denoise, 14.inputs.filename_prefix
 
 운영 원칙:
@@ -56,12 +56,12 @@ E:/workspace/renpy-project/<game_slug>/docs/assets/characters/<character_id>.ass
 
 1. creator/model wrapper를 유지합니다.
 2. 캐릭터 특징 block을 `{연령대, 헤어스타일, 눈매, 머리색, 눈색}`으로 고정합니다.
-3. 의상 block을 `{의상 이름, 색상_의상종류}` CSV 태그 묶음으로 고정합니다.
+3. 의상 block을 `{의상 이름, 색상_의상종류}` SQLite 태그 묶음으로 고정합니다.
 4. 구도/카메라 강제 태그(`upper_body`, `cowboy_shot`, `from_above`, `from_below`, `dutch_angle` 등)는 기본 positive에 넣지 않습니다.
 5. scene/background/time tag는 최소한으로만 추가합니다.
-6. 모든 variable tag는 루트 `danbooru_tag.csv`의 `tag` 또는 `aliases`에 존재하는지 검증합니다.
-7. README에 문서화된 wrapper/운영 태그와 CSV 검증을 통과한 태그만 사용합니다.
-8. CSV에 없는 자연어 chunk, pseudo-tag, 오래된 helper script 출력은 사용하지 않습니다.
+6. 모든 variable tag는 로컬 Danbooru taxonomy SQLite에서 active/non-deprecated tag 또는 alias로 존재하는지 검증합니다.
+7. README에 문서화된 wrapper/운영 태그와 DB 검증을 통과한 태그만 사용합니다.
+8. DB에 없는 자연어 chunk, pseudo-tag, 오래된 helper script 출력은 사용하지 않습니다.
 
 Metadata 원본 특징 guard:
 
@@ -69,7 +69,7 @@ Metadata 원본 특징 guard:
 - 다른 캐릭터를 만들 때는 이 README의 Lia 예시 anchor를 그대로 쓰지 말고, 해당 캐릭터 metadata anchor로 교체합니다.
 - 원본/승인 캐릭터의 `identity_anchor`와 선택한 outfit block을 임의로 바꾸지 않습니다. 머리 길이/스타일/색, 눈색, 핵심 의상색/소품이 바뀌면 event CG가 아니라 다른 캐릭터처럼 drift합니다.
 - scene/background/time/small staging tag는 identity/outfit block 뒤에 소량 추가하고, identity/outfit과 충돌하는 태그를 넣지 않습니다.
-- 의상 드리프트를 줄이겠다고 CSV에 없는 자연어/pseudo-tag를 넣지 않습니다.
+- 의상 드리프트를 줄이겠다고 DB에 없는 자연어/pseudo-tag를 넣지 않습니다.
 
 #### 3. 기본 안전 tag 세트
 
@@ -167,12 +167,12 @@ classroom, chalkboard, blackboard, whiteboard
 규칙:
 
 - `classroom`을 magic demo hall proxy로 쓰지 않습니다.
-- 정확한 장소 tag가 CSV에 없으면 자연어로 억지 설명하지 말고, 배경 workflow / 별도 prop / Ren'Py staging / overlay로 해결합니다.
+- 정확한 장소 tag가 DB에 없으면 자연어로 억지 설명하지 말고, 배경 workflow / 별도 prop / Ren'Py staging / overlay로 해결합니다.
 - text, sign, board가 나올 가능성이 있는 장소는 fake text QA를 필수로 합니다.
 
-#### 6. 검증된 Danbooru CSV tag 메모
+#### 6. 검증된 Danbooru SQLite tag 메모
 
-출처: 루트 `danbooru_tag.csv`. 아래 tag는 README 작성 시점에 CSV 존재를 확인한 운영 후보입니다.
+출처: 로컬 Danbooru taxonomy SQLite tag oracle. 아래 tag는 README 작성 시점에 DB에서 active/non-deprecated 존재를 확인한 운영 후보입니다.
 
 - 캐릭터/의상: `long_hair`, `wavy_hair`, `blunt_bangs`, `sidelocks`, `pink_hair`, `purple_eyes`, `school_uniform`, `white_shirt`, `red_bow`, `blue_jacket`, `gold_trim`, `capelet`
 - 구도/대상: `upper_body`, `close-up`, `portrait`, `headshot`, `1girl`, `solo`, `cowboy_shot`, `wide_shot`, `full_body`
@@ -187,8 +187,8 @@ classroom, chalkboard, blackboard, whiteboard
 1. 기본은 no-ref + pose LoRA on입니다.
 2. 출력은 event_cg 규칙상 항상 16:9만 사용합니다(기본 1024x576).
 3. 이 canonical route에는 `LoadImage`/PuLID reference conditioning을 추가하지 않습니다.
-4. 자연어 prompt chunk나 CSV에 없는 pseudo-tag를 추가하지 않습니다.
-5. `danbooru_tag.csv`에 있는 `tag` 또는 `aliases`만 variable prompt에 사용합니다.
+4. 자연어 prompt chunk나 DB에 없는 pseudo-tag를 추가하지 않습니다.
+5. 로컬 Danbooru taxonomy SQLite에서 active/non-deprecated로 검증되는 `tag` 또는 active alias만 variable prompt에 사용합니다.
 6. 기본 positive는 identity/outfit 중심으로 유지하고, 구도/카메라 강제 태그는 기본값에서 제외합니다.
 7. 의상 드리프트를 더 줄이겠다고 기본 prompt를 장황하게 늘리지 않습니다. 같은 anchor에서 seed 후보를 더 뽑고 QA로 고릅니다.
 8. QA 전에는 생성 에셋을 production-ready/final이라고 부르지 않습니다.

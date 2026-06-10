@@ -1,0 +1,130 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "novaAnimeXL_ilV190.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "CLIPSetLastLayer",
+    "inputs": {
+      "clip": [
+        "100",
+        1
+      ],
+      "stop_at_clip_layer": -2
+    }
+  },
+  "9": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "text": "masterpiece, best_quality, visual_novel, game_cg, 1girl, solo, upper_body, pink_hair, purple_eyes, blue_jacket, red_bow, serious, looking_at_viewer, dark_noble_room, red_light, dramatic_lighting"
+    },
+    "_meta": {
+      "title": "Positive prompt: no-ref identity/outfit-first baseline (char_base no-composition style, 16:9 event cg)"
+    }
+  },
+  "10": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "text": "text, watermark, logo, duplicate_character, bad_anatomy, bad_hands, extra_fingers, lowres, worst_quality, bad_quality"
+    },
+    "_meta": {
+      "title": "Negative prompt: suppress quality failures plus composition-forcing camera/pose tags by default"
+    }
+  },
+  "11": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1024,
+      "height": 576,
+      "batch_size": 1
+    },
+    "_meta": {
+      "title": "Blank latent: no-reference txt2img event CG from prompt"
+    }
+  },
+  "12": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "100",
+        0
+      ],
+      "positive": [
+        "9",
+        0
+      ],
+      "negative": [
+        "10",
+        0
+      ],
+      "latent_image": [
+        "11",
+        0
+      ],
+      "seed": 360610304,
+      "steps": 8,
+      "cfg": 4.5,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "normal",
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "KSampler: LoRA-enabled no-ref event CG baseline; cinematic tag sets are runtime beat-matched candidates"
+    }
+  },
+  "13": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "12",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    }
+  },
+  "14": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "13",
+        0
+      ],
+      "filename_prefix": "unit3_dryrun/scene_event_cg/candidate"
+    },
+    "_meta": {
+      "title": "Save final no-ref pose-LoRA upper-body white-serafuku event CG candidate"
+    }
+  },
+  "100": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "clip": [
+        "1",
+        1
+      ],
+      "lora_name": "hinaMaybeBetterPoseXL_v5-NoobAI.safetensors",
+      "strength_model": 0.65,
+      "strength_clip": 0.65
+    },
+    "_meta": {
+      "title": "Pose LoRA for natural event-CG staging; keep enabled by default"
+    }
+  }
+}

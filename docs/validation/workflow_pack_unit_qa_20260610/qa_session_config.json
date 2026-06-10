@@ -1,0 +1,4 @@
+{
+  "comfyui_endpoint_locked_for_validation": "http://127.0.0.1:8000",
+  "note": "User approved using 127.0.0.1:8000 and ignoring 8001 for this workflow-pack validation session."
+}

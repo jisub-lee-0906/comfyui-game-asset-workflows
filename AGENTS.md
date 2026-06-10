@@ -25,8 +25,7 @@
 - `scene_prop_cg`
 - `scene_event_cg`
 - `ui_system_alert_frame`
-- `audio_bgm_ace`
-- `audio_sfx_mmaudio`
+- `audio_bgm_with_sfx`
 
 각 canonical API graph는 해당 folder 바로 아래의 `*_workflow_api.json`입니다.
 
@@ -42,14 +41,15 @@
 - 캐릭터 없는 VN 배경 → `scene_background`
 - 소품 CG, 단서 이미지, item cut-in → `scene_prop_cg`
 - VN 시스템 알림창, 경고/계약 알림 UI frame, Ren'Py text overlay용 textless message frame → `ui_system_alert_frame`
-- 장면 BGM, 배경음악, loopable music → `audio_bgm_ace`
-- 문소리, 발소리, 마법 소리, 짧은 효과음 → `audio_sfx_mmaudio`
+- 장면 BGM, 배경음악, loopable music → `audio_bgm_with_sfx` engine + `audio_bgm` role
+- 문소리, 발소리, 마법 소리, 효과음, UI one-shot → `audio_bgm_with_sfx` engine + `audio_sfx` role
 
 주의:
 
 - “캐릭터 CG”를 `char_base`로 처리하지 않습니다. 사용자가 anchor/source/base를 명시하지 않았다면 `scene_event_cg`입니다.
 - `pose_variations`는 제거되었습니다. 포즈/액션 CG는 `scene_event_cg`로 처리합니다.
 - Dialogue sprite는 보통 `char_base` same-seed outfit 후보 → `char_expression` → `char_alpha` route를 사용합니다.
+- BGM/SFX는 workflow folder를 물리적으로 나누지 않습니다. 같은 `audio_bgm_with_sfx` JSON을 사용하되 role contract를 반드시 적용합니다: BGM은 `instrumentation + form/rhythm + mood + short role`, SFX는 짧은 positive cue + 재질/음색 1~2개가 기본입니다.
 
 ## Canonical template 수정 금지
 
@@ -74,7 +74,7 @@
 - workflow notes가 허용하는 `KSampler.inputs.steps/cfg/denoise`
 - `LoadImage.inputs.image`
 - `SaveImage.inputs.filename_prefix`
-- audio workflow의 `SaveAudioMP3.inputs.filename_prefix` 또는 MMAudio `SaveAudio.inputs.filename_prefix`
+- audio workflow의 `SaveAudioMP3.inputs.filename_prefix`
 - audio workflow의 prompt/duration/seed/BPM/loop 같은 README/index 허용 field
 - no-input txt2img workflow에서 명시적으로 필요한 `EmptyLatentImage.inputs.width/height`
 - workflow에서 명시적으로 허용한 LoRA/PuLID strength 등의 runtime parameter
@@ -156,9 +156,9 @@ Windows ComfyUI는 공유 환경으로 취급합니다. 사용자 승인 없이 
 각 workflow folder README가 해당 workflow의 prompt contract입니다.
 
 - target README를 읽고 그 템플릿 순서를 기본적으로 따릅니다.
-- 한국어 placeholder를 실제 Danbooru tag 또는 해당 workflow README가 명시한 audio 자연어 prompt로 채웁니다. 이미지 workflow의 variable prompt는 local `danbooru_tag.csv`에 있는 tag/alias만 사용합니다.
+- 한국어 placeholder를 실제 Danbooru tag 또는 해당 workflow README가 명시한 audio 자연어 prompt로 채웁니다. 이미지 workflow의 variable prompt는 local Danbooru taxonomy SQLite tag oracle에서 active/non-deprecated로 검증되는 tag/alias만 사용합니다.
 - README에 사용자가 최근 수정한 prompt가 있으면 그 내용을 우선합니다.
-- 단일 소품처럼 local `danbooru_tag.csv`에 정확한 태그가 없는 경우, README에 적힌 대체 전략을 따릅니다.
+- 단일 소품처럼 local Danbooru taxonomy SQLite tag oracle에 정확한 태그가 없는 경우, README에 적힌 대체 전략을 따릅니다.
 - 캐릭터 보존이 중요하면 metadata/source 기준의 identity/hair/eye/outfit tag를 유지하고, 큰 action/pose tag는 줄입니다. `char_base` outfit variant는 같은 seed에서 outfit block만 교체합니다. `scene_event_cg`는 현재 no-ref route이므로 source image reference가 아니라 metadata anchor를 사용합니다.
 
 ## Reporting style

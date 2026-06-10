@@ -1,0 +1,489 @@
+{
+  "pack_name": "comfyui-game-asset-workflows",
+  "version": "2026-06-03-ui-system-alert-frame",
+  "root_windows": "E:\\workspace\\comfyui-game-asset-workflows",
+  "root_windows_bash": "E:/workspace/comfyui-game-asset-workflows",
+  "comfyui_paths": {
+    "windows_output_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\output",
+    "wsl_output_root": "C:/Users/Desktop/Documents/ComfyUI/output",
+    "windows_input_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\input",
+    "wsl_input_root": "C:/Users/Desktop/Documents/ComfyUI/input",
+    "output_rule": "SaveImage.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated files via /history/{prompt_id} or output-folder scan before reporting.",
+    "audio_output_rule": "SaveAudio/SaveAudioMP3.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated audio files via /history/{prompt_id}, output-folder scan, and ffprobe before reporting."
+  },
+  "structure": "flat semantic workflow folders; each folder contains README.md and one canonical *_workflow_api.json",
+  "numbered_folder_contract": "deprecated; do not assume old 01_* through 07_* folders exist",
+  "agent_entrypoint": [
+    "README.md",
+    "WORKFLOW_INDEX.json",
+    "AGENTS.md",
+    "<target workflow>/README.md",
+    "<target workflow>/*_workflow_api.json"
+  ],
+  "global_rules": [
+    "Do not overwrite canonical API JSONs during normal generation; copy to a runtime/sandbox file and patch the copy.",
+    "Replace TEMPLATE_* and Korean brace placeholders before live ComfyUI submission unless explicitly testing placeholder behavior.",
+    "Keep generated images outside this canonical workflow pack.",
+    "Do not claim quality or production readiness without artifact/contact-sheet/Ren'Py QA.",
+    "When user performs visual QA, report output paths and seeds without inventing visual judgments."
+  ],
+  "workflows": [
+    {
+      "order": 1,
+      "id": "char_base",
+      "folder": "char_base",
+      "readme": "char_base/README.md",
+      "api": "char_base/char_base_workflow_api.json",
+      "purpose": "Generate opaque base/source character images and same-seed outfit/costume variants from identity + outfit prompt tags.",
+      "output_type": "opaque character source or outfit-variant image, 1152x1536 by default",
+      "requires_input_images": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "positive_prompt": "3",
+        "negative_prompt": "4",
+        "latent_size": "5",
+        "sampler": "6",
+        "save": "8"
+      },
+      "editable_fields": [
+        "3.inputs.text",
+        "4.inputs.text",
+        "5.inputs.width",
+        "5.inputs.height",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "width": 1152,
+        "height": 1536,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 28,
+        "cfg": 5.0,
+        "seed": 260526204,
+        "same_seed_outfit_route": "validated 2026-05-26; keep identity/framing tags and seed fixed, vary only outfit block + filename_prefix",
+        "default_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, medium_hair, straight_hair, blunt_bangs, brown_hair, brown_eyes, school_uniform, white_shirt, necktie, pleated_skirt, cardigan, grey_background",
+        "default_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, school_emblem"
+      },
+      "downstream": [
+        "char_expression",
+        "char_alpha",
+        "scene_event_cg"
+      ],
+      "status": "canonical_template_executable_same_seed_outfit_route",
+      "input_placeholders": []
+    },
+    {
+      "order": 2,
+      "id": "char_expression",
+      "folder": "char_expression",
+      "readme": "char_expression/README.md",
+      "api": "char_expression/char_expression_workflow_api.json",
+      "purpose": "Generate facial/emotional expression variants from a source character image using YOLO+SAM face mask + inpaint/composite workflow.",
+      "output_type": "opaque composited expression variant image",
+      "requires_input_images": true,
+      "input_placeholders": [
+        "TEMPLATE_character_anchor_source.png"
+      ],
+      "primary_nodes": {
+        "source_image": "1",
+        "checkpoint": "2",
+        "positive_prompt": "6",
+        "negative_prompt": "7",
+        "sampler": "13",
+        "save_composited": "19",
+        "face_detector": "1000",
+        "face_bbox_segs": "1002",
+        "face_sam_mask": "1003",
+        "mask_enhancer": "5"
+      },
+      "editable_fields": [
+        "1.inputs.image",
+        "6.inputs.text",
+        "7.inputs.text",
+        "13.inputs.seed",
+        "13.inputs.denoise",
+        "19.inputs.filename_prefix",
+        "5.inputs.mask_blur",
+        "5.inputs.mask_offset",
+        "1000.inputs.model_name",
+        "1002.inputs.threshold",
+        "1002.inputs.crop_factor",
+        "1003.inputs.detection_hint",
+        "1003.inputs.threshold"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "sampler": "euler_ancestral",
+        "scheduler": "karras",
+        "steps": 26,
+        "cfg": 5.0,
+        "denoise": 0.4,
+        "face_mask_route": "YOLO face_yolov9c bbox + SAM center-1",
+        "face_detector": "bbox/face_yolov9c.pt",
+        "sam_model": "sam_vit_b_01ec64.pth",
+        "face_bbox_threshold": 0.35,
+        "face_sam_threshold": 0.93
+      },
+      "upstream": [
+        "char_base"
+      ],
+      "downstream": [
+        "char_alpha"
+      ],
+      "status": "canonical_template_requires_runtime_input_yolosam_face_mask_composited_only"
+    },
+    {
+      "order": 3,
+      "id": "char_alpha",
+      "folder": "char_alpha",
+      "readme": "char_alpha/README.md",
+      "api": "char_alpha/char_alpha_workflow_api.json",
+      "purpose": "Remove background / create transparent PNG alpha output from a character/source image.",
+      "output_type": "transparent PNG / alpha character asset",
+      "requires_input_images": true,
+      "input_placeholders": [
+        "TEMPLATE_source_image.png"
+      ],
+      "primary_nodes": {
+        "source_image": "1",
+        "background_removal": "2",
+        "save": "3"
+      },
+      "editable_fields": [
+        "1.inputs.image",
+        "3.inputs.filename_prefix"
+      ],
+      "upstream": [
+        "char_base",
+        "char_expression"
+      ],
+      "status": "canonical_template_requires_runtime_input",
+      "fixed_defaults_observed": {
+        "background_removal_model": "BiRefNet_toonout",
+        "mask_blur": 1,
+        "mask_offset": 0,
+        "invert_output": false,
+        "refine_foreground": true,
+        "background": "Alpha"
+      }
+    },
+    {
+      "order": 5,
+      "id": "scene_background",
+      "folder": "scene_background",
+      "readme": "scene_background/README.md",
+      "api": "scene_background/scene_background_workflow_api.json",
+      "purpose": "Generate 16:9 visual-novel background art with no characters or text.",
+      "output_type": "opaque 16:9 background image, 1024x576 by default",
+      "requires_input_images": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "clip_last_layer": "2",
+        "positive_prompt": "3",
+        "negative_prompt": "4",
+        "latent_size": "5",
+        "sampler": "6",
+        "save": "8"
+      },
+      "editable_fields": [
+        "3.inputs.text",
+        "4.inputs.text",
+        "5.inputs.width",
+        "5.inputs.height",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "width": 1024,
+        "height": 576,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 24,
+        "cfg": 5.5
+      },
+      "known_placeholders_in_current_json": [
+        "{배경 테마 및 장소}",
+        "{시간대 및 광원 디테일}"
+      ],
+      "status": "canonical_template_but_prompt_placeholders_require_runtime_patch",
+      "input_placeholders": []
+    },
+    {
+      "order": 6,
+      "id": "scene_event_cg",
+      "folder": "scene_event_cg",
+      "readme": "scene_event_cg/README.md",
+      "api": "scene_event_cg/scene_event_cg_workflow_api.json",
+      "purpose": "Generate 16:9 no-reference event CG; character/outfit consistency is prompt-driven by metadata identity/outfit tags, with close upper_body framing and pose LoRA enabled by default. Minor outfit drift is accepted; do not revert to PuLID/source-image by default.",
+      "output_type": "opaque 16:9 event CG",
+      "requires_input_images": false,
+      "input_placeholders": [],
+      "primary_nodes": {
+        "checkpoint": "1",
+        "pose_lora": "100",
+        "positive_prompt": "9",
+        "negative_prompt": "10",
+        "latent_size": "11",
+        "sampler": "12",
+        "save": "14"
+      },
+      "editable_fields": [
+        "100.inputs.lora_name",
+        "100.inputs.strength_model",
+        "100.inputs.strength_clip",
+        "9.inputs.text",
+        "10.inputs.text",
+        "11.inputs.width",
+        "11.inputs.height",
+        "12.inputs.seed",
+        "12.inputs.steps",
+        "12.inputs.cfg",
+        "12.inputs.denoise",
+        "14.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "pose_lora": "hinaMaybeBetterPoseXL_v5-NoobAI.safetensors",
+        "pose_lora_strength_model": 0.65,
+        "pose_lora_strength_clip": 0.65,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 30,
+        "cfg": 5.2,
+        "denoise": 1.0,
+        "latent_size": "1024x576",
+        "identity_reference": "none; no-ref txt2img, character consistency from explicit character/outfit tags",
+        "scene_reference": "none; prompt-generated background from blank latent",
+        "direction": "canonical no-reference event CG route; keep metadata identity/outfit tags plus close upper_body framing for neutral/default candidates; vary one staging family at a time; tested cinematic tag blocks (cowboy_shot/from_below/from_above with dutch_angle/reaching/pointing/etc.) are safe candidate sets when beat-matched, not a mandate to mix all presets every batch; avoid wide_shot/full_body as defaults; do not reintroduce PuLID/source image by default",
+        "canonical_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, long_hair, wavy_hair, blunt_bangs, sidelocks, pink_hair, purple_eyes, school_uniform, white_shirt, red_bow, blue_jacket, gold_trim, capelet, upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, auditorium, stage, curtains, spotlight, indoors, podium, presentation, depth_of_field",
+        "canonical_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, very_displeasing, (worst_quality, bad_quality:1.2), sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, classroom, chalkboard, blackboard, whiteboard",
+        "default_seed": 260521401,
+        "identity_anchor_tags": "long_hair, wavy_hair, blunt_bangs, sidelocks, pink_hair, purple_eyes",
+        "outfit_anchor_tags": "school_uniform, white_shirt, red_bow, blue_jacket, gold_trim, capelet",
+        "framing_anchor_tags": "upper_body, straight-on, facing_viewer, looking_at_viewer",
+        "accepted_tradeoff": "minor outfit/color/layer drift is acceptable in exchange for cleaner no-ref composition and integrated background lighting",
+        "recommended_action_presets": {
+          "safe_static_serious": "upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides, serious, closed_mouth",
+          "stable_explain_or_stop_dialogue": "upper_body, straight-on, facing_viewer, looking_at_viewer, standing, open_hands, reaching, serious, open_mouth, motion_lines",
+          "close_cinematic_shock_reveal": "upper_body, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines",
+          "cinematic_general_shock_reveal_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines",
+          "cinematic_stable_fallback_candidate": "cowboy_shot, from_below, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines",
+          "cinematic_stop_reveal_presentation_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, outstretched_arms, open_hands, surprised, open_mouth, motion_lines",
+          "cinematic_command_accusation_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, pointing_at_viewer, outstretched_arm, serious, open_mouth, motion_lines",
+          "cinematic_reaching_pov_involvement_candidate": "cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning_forward, open_hands, reaching, serious, open_mouth, motion_lines",
+          "cinematic_vulnerability_panic_shock_candidate": "cowboy_shot, from_above, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines"
+        },
+        "owner_taste_note": "Cinematic testing should not be read as a requirement to mix many presets into every batch. The practical rule is that the tested tag blocks responded well and are relatively safe candidate sets when the script beat matches. Keep close/upper_body as neutral default; use reaching/POV-involvement and from_above shock candidates only when beat-matched; avoid wide_shot/full_body defaults.",
+        "cinematic_candidate_rule": "Use the cinematic candidate blocks as reusable beat-matched tag sets, not as mandatory batch composition. Keep generated outputs QA-gated for face, identity, hands, outfit, background, and RenPy textbox/safe-area fit."
+      },
+      "upstream": [
+        "char_base",
+        "char_expression"
+      ],
+      "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added"
+    },
+    {
+      "order": 7,
+      "id": "scene_prop_cg",
+      "folder": "scene_prop_cg",
+      "readme": "scene_prop_cg/README.md",
+      "api": "scene_prop_cg/scene_prop_cg_workflow_api.json",
+      "purpose": "Generate separate 16:9 close-up prop, clue, or story cut-in CG images for Ren'Py staging.",
+      "output_type": "opaque 16:9 prop close-up CG, 1024x576 by default",
+      "requires_input_images": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "clip_last_layer": "2",
+        "positive_prompt": "3",
+        "negative_prompt": "4",
+        "latent_size": "5",
+        "sampler": "6",
+        "save": "8"
+      },
+      "editable_fields": [
+        "3.inputs.text",
+        "4.inputs.text",
+        "5.inputs.width",
+        "5.inputs.height",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "width": 1024,
+        "height": 576,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 30,
+        "cfg": 5.2,
+        "default_subject": "brass_key"
+      },
+      "status": "canonical_template",
+      "input_placeholders": []
+    },
+    {
+      "order": 8,
+      "id": "ui_system_alert_frame",
+      "folder": "ui_system_alert_frame",
+      "readme": "ui_system_alert_frame/README.md",
+      "api": "ui_system_alert_frame/ui_system_alert_frame_workflow_api.json",
+      "purpose": "Generate dedicated textless red/ornate visual-novel system alert frame candidates as a ComfyUI production workflow; use procedural cleanplate variants and RenPy Korean overlay previews as QA/integration diagnostics only; separate from scene_prop_cg.",
+      "output_type": "opaque 16:9 UI frame source or cleanplate review candidate, 1024x576 source by default, review-only until explicit approval",
+      "requires_input_images": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "clip_last_layer": "2",
+        "positive_prompt": "3",
+        "negative_prompt": "4",
+        "latent_size": "5",
+        "sampler": "6",
+        "save": "8"
+      },
+      "editable_fields": [
+        "3.inputs.text",
+        "4.inputs.text",
+        "5.inputs.width",
+        "5.inputs.height",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "novaAnimeXL_ilV190.safetensors",
+        "width": 1024,
+        "height": 576,
+        "sampler": "euler_ancestral",
+        "scheduler": "normal",
+        "steps": 30,
+        "cfg": 4.2,
+        "qa_rule": "frame identity, central plate cleanliness, and outer ornament separation must be QA'd separately; avoid positive alert/warning/prohibition/icon trigger language; no baked text/logos/symbols/nameplates/central objects; do not promote smoke candidates to game/images/ui",
+        "pipeline_rule": "Production route is source frame/ornament generation plus deterministic procedural cleanup variants V08-V10 when the source center contains medallions/ghosting; Korean overlay/contrast previews are diagnostics, not the design objective.",
+        "best_current_variant_pattern": "Do not select by text fit alone. 2026-06-04 final cleanplate: V08_production_solid_cleanplate_balanced, V09_production_solid_cleanplate_wide, and V10_production_deep_red_cleanplate resolve visible center ghosting with fully opaque textless plates; V08 is the current balanced review candidate, V09 is widest/readability-safe, V10 is the redder alternate."
+      },
+      "status": "canonical_two_stage_ui_alert_frame_source_plus_cleanplate_qa_pipeline_runtime_patch_required",
+      "input_placeholders": [],
+      "companion_scripts": [
+        "ui_system_alert_frame/scripts/make_cleanplate_variants.py"
+      ],
+      "templates": [
+        "ui_system_alert_frame/templates/renpy_screen_snippet.rpy"
+      ],
+      "references": [
+        "ui_system_alert_frame/references/qa_policy.md"
+      ]
+    },
+    {
+      "order": 9,
+      "id": "audio_bgm_ace",
+      "folder": "audio_bgm_ace",
+      "readme": "audio_bgm_ace/README.md",
+      "api": "audio_bgm_ace/audio_bgm_ace_workflow_api.json",
+      "purpose": "Generate lyric-free instrumental visual-novel BGM candidates with ACE-Step 1.5.",
+      "output_type": "MP3 BGM candidate; convert to OGG before Ren'Py promotion",
+      "requires_input_images": false,
+      "requires_auth": false,
+      "primary_nodes": {
+        "checkpoint": "1",
+        "audio_text_encode": "2",
+        "negative_conditioning": "3",
+        "latent_audio": "4",
+        "model_sampling": "5",
+        "sampler": "6",
+        "audio_decode": "7",
+        "save": "8"
+      },
+      "editable_fields": [
+        "2.inputs.tags",
+        "2.inputs.lyrics",
+        "2.inputs.seed",
+        "2.inputs.bpm",
+        "2.inputs.duration",
+        "2.inputs.keyscale",
+        "2.inputs.cfg_scale",
+        "2.inputs.temperature",
+        "4.inputs.seconds",
+        "6.inputs.seed",
+        "6.inputs.steps",
+        "6.inputs.cfg",
+        "8.inputs.filename_prefix",
+        "8.inputs.quality"
+      ],
+      "fixed_defaults_observed": {
+        "checkpoint": "ace_step_1.5_turbo_aio.safetensors",
+        "duration": 30.0,
+        "bpm": 90,
+        "timesignature": "4",
+        "language": "en",
+        "keyscale": "C major",
+        "sampler": "euler",
+        "scheduler": "simple",
+        "steps": 20,
+        "cfg": 1.0,
+        "model_sampling": "AuraFlow shift=1.73",
+        "save_format": "MP3 V0"
+      },
+      "status": "canonical_template_audio_bgm_requires_runtime_prompt_and_listening_qa",
+      "input_placeholders": []
+    },
+    {
+      "order": 10,
+      "id": "audio_sfx_mmaudio",
+      "folder": "audio_sfx_mmaudio",
+      "readme": "audio_sfx_mmaudio/README.md",
+      "api": "audio_sfx_mmaudio/audio_sfx_mmaudio_workflow_api.json",
+      "purpose": "Generate short VN/game SFX candidates with MMAudio video-to-audio using an 8-second visual cue video.",
+      "output_type": "FLAC SFX candidate; convert approved candidate to OGG before Ren'Py promotion",
+      "requires_input_images": false,
+      "requires_input_video": true,
+      "requires_auth": false,
+      "primary_nodes": {
+        "video_loader": "1",
+        "model_loader": "2",
+        "feature_utils_loader": "3",
+        "sampler": "4",
+        "save": "5"
+      },
+      "editable_fields": [
+        "1.inputs.video",
+        "1.inputs.custom_width",
+        "1.inputs.custom_height",
+        "4.inputs.duration",
+        "4.inputs.steps",
+        "4.inputs.cfg",
+        "4.inputs.seed",
+        "4.inputs.prompt",
+        "4.inputs.negative_prompt",
+        "5.inputs.filename_prefix"
+      ],
+      "fixed_defaults_observed": {
+        "custom_node": "ComfyUI-MMAudio",
+        "model_dir": "C:\\Users\\Desktop\\Documents\\ComfyUI\\models\\mmaudio",
+        "mmaudio_model": "mmaudio_large_44k.safetensors",
+        "vae_model": "mmaudio_vae_44k_fp16.safetensors",
+        "synchformer_model": "mmaudio_synchformer_fp16.safetensors",
+        "clip_model": "apple_DFN5B-CLIP-ViT-H-14-384_fp16.safetensors",
+        "mode": "44k",
+        "precision": "fp16",
+        "duration": 8.0,
+        "steps": 25,
+        "cfg": 4.5,
+        "seed": 202,
+        "sample_rate": 44100,
+        "baseline_input_video": "mmaudio_official_car_horn_8s_25fps_384.mp4",
+        "baseline_reference": "official-style 8s car-horn visual cue; keep exact run prompt IDs and output paths in .analysis/skill references, not in the canonical index"
+      },
+      "status": "canonical_template_mmaudio_video_sfx_requires_runtime_video_prompt_ffprobe_and_listening_qa",
+      "input_placeholders": []
+    }
+  ]
+}

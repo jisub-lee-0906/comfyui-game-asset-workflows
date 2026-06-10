@@ -1,0 +1,106 @@
+{
+  "unit": "Unit 5B — BGM music-first prompt smoke",
+  "endpoint": "http://127.0.0.1:8000",
+  "workflow_path": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\audio_bgm_with_sfx_workflow_api.json",
+  "prompting_rule": "music identity first; concise prompt; negative blank",
+  "no_promotion": true,
+  "results": [
+    {
+      "id": "bgm_music_first_minor_waltz",
+      "label": "A_music_first_minor_waltz",
+      "intent": "music-first dark romantic fantasy dialogue BGM; waltz pulse",
+      "prompt": "Soft felt piano and low strings, slow minor waltz, dark romantic fantasy, quiet dialogue underscore.",
+      "duration": 24.0,
+      "seed": 360610511,
+      "workflow_id": "audio_bgm_with_sfx",
+      "mode": "Music",
+      "negative": "",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5b_bgm_music_first_smoke\\runtime_payloads\\bgm_music_first_minor_waltz_workflow_api.json",
+      "prompt_id": "01641498-4f54-4206-aa8c-65ec975ce889",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5b_bgm_music_first_smoke\\runtime_payloads\\bgm_music_first_minor_waltz_history.json",
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5b_bgm_music_first_smoke\\candidates\\A_music_first_minor_waltz_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "230402"
+              }
+            ],
+            "format": {
+              "duration": "23.962993",
+              "size": "724590",
+              "bit_rate": "241903"
+            }
+          },
+          "duration": 23.962993,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -22.1,
+          "max_volume_db": -6.5,
+          "silencedetect_-45dB_d1.0": [
+            "[Parsed_silencedetect_0 @ 000001b68687e6c0] silence_start: 22.389524",
+            "[Parsed_silencedetect_0 @ 000001b68687e6c0] silence_end: 23.962993 | silence_duration: 1.573469"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    },
+    {
+      "id": "bgm_music_first_nocturne",
+      "label": "B_music_first_nocturne",
+      "intent": "music-first melancholic noble fantasy BGM; less waltz, more nocturne",
+      "prompt": "Felt piano nocturne, warm cello sustain, sparse harp, melancholic noble fantasy, quiet background music.",
+      "duration": 24.0,
+      "seed": 360610512,
+      "workflow_id": "audio_bgm_with_sfx",
+      "mode": "Music",
+      "negative": "",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5b_bgm_music_first_smoke\\runtime_payloads\\bgm_music_first_nocturne_workflow_api.json",
+      "prompt_id": "c5ec2077-cc13-4678-9820-11482e8035a8",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5b_bgm_music_first_smoke\\runtime_payloads\\bgm_music_first_nocturne_history.json",
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5b_bgm_music_first_smoke\\candidates\\B_music_first_nocturne_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "234065"
+              }
+            ],
+            "format": {
+              "duration": "23.962993",
+              "size": "735583",
+              "bit_rate": "245572"
+            }
+          },
+          "duration": 23.962993,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -22.4,
+          "max_volume_db": -5.3,
+          "silencedetect_-45dB_d1.0": [
+            "[Parsed_silencedetect_0 @ 000001ee2cb999c0] silence_start: 22.349116",
+            "[Parsed_silencedetect_0 @ 000001ee2cb999c0] silence_end: 23.962993 | silence_duration: 1.613878"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    }
+  ],
+  "errors": []
+}

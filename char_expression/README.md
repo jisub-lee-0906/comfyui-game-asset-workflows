@@ -4,7 +4,7 @@
 - modality: `image`
 - input_requirement: source character image 필요
 - output: expression variant PNG
-- prompt_policy: `danbooru_csv+readme_wrapper`
+- prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 1.inputs.image, 6.inputs.text, 7.inputs.text, 13.inputs.seed, 13.inputs.denoise, 19.inputs.filename_prefix, 5.inputs.mask_blur, 5.inputs.mask_offset, 1000.inputs.model_name, 1002.inputs.threshold, 1002.inputs.crop_factor, 1003.inputs.detection_hint, 1003.inputs.threshold
 
 운영 원칙:
@@ -94,9 +94,9 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 * **Positive:** `smug, smirk, raised_eyebrows`
 * **Negative:** `sad, crying, scared, flustered, pale_skin, wide_eyed`
 
-#### 3. 검증된 Danbooru CSV 태그 메모
+#### 3. 검증된 Danbooru SQLite 태그 메모
 
-출처: 루트 `danbooru_tag.csv`. 아래 태그들은 README에 적기 전에 해당 CSV에 실제 존재하는지 확인했습니다. 제작자 추천 wrapper prompt는 CSV 예외로 보존하고, `{감정표현}` / `{상극 감정표현}`에 들어가는 variable 태그만 CSV에 실제 존재하는 태그로 제한합니다. `{감정표현}` / `{상극 감정표현}`에는 얼굴에 영향을 주는 태그만 넣고, 의상/배경/카메라 태그는 expression patch에 넣지 않습니다.
+출처: 로컬 Danbooru taxonomy SQLite tag oracle. 아래 태그들은 README에 적기 전에 DB에서 active/non-deprecated로 확인했습니다. 제작자 추천 wrapper prompt는 Danbooru tag gate 예외로 보존하고, `{감정표현}` / `{상극 감정표현}`에 들어가는 variable 태그만 DB에서 검증되는 태그로 제한합니다. `{감정표현}` / `{상극 감정표현}`에는 얼굴에 영향을 주는 태그만 넣고, 의상/배경/카메라 태그는 expression patch에 넣지 않습니다.
 
 - 감정 기준 태그: `happy`, `sad`, `angry`, `surprised`, `scared`, `embarrassed`, `flustered`, `smug`, `crying`, `expressionless`
 - 눈/동공: `sparkling_eyes`, `empty_eyes`, `hollow_eyes`, `constricted_pupils`, `closed_eyes`

@@ -1,0 +1,268 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "UNIT3_DRYRUN_source_character.png"
+    }
+  },
+  "2": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "novaAnimeXL_ilV190.safetensors"
+    }
+  },
+  "5": {
+    "class_type": "AILab_MaskEnhancer",
+    "inputs": {
+      "mask": [
+        "1003",
+        0
+      ],
+      "sensitivity": 1.0,
+      "mask_blur": 3,
+      "mask_offset": 0,
+      "smooth": 1.0,
+      "fill_holes": true,
+      "invert_output": false
+    },
+    "_meta": {
+      "title": "Expression face edit mask enhancer: YOLO+SAM face mask"
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        1
+      ],
+      "text": "masterpiece, best_quality, 1girl, solo, same character, worried expression, open_mouth, brown_hair, brown_eyes, medium_hair, school_uniform"
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        1
+      ],
+      "text": "happy, smile, text, watermark, bad_anatomy, identity_drift, outfit_drift"
+    }
+  },
+  "8": {
+    "class_type": "DifferentialDiffusion",
+    "inputs": {
+      "model": [
+        "2",
+        0
+      ],
+      "strength": 1.0
+    }
+  },
+  "9": {
+    "class_type": "InpaintModelConditioning",
+    "inputs": {
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "vae": [
+        "2",
+        2
+      ],
+      "pixels": [
+        "1",
+        0
+      ],
+      "mask": [
+        "5",
+        0
+      ],
+      "noise_mask": true
+    }
+  },
+  "10": {
+    "class_type": "ControlNetLoader",
+    "inputs": {
+      "control_net_name": "xinsir-controlnet-union-sdxl-1.0-promax.safetensors"
+    }
+  },
+  "11": {
+    "class_type": "SetUnionControlNetType",
+    "inputs": {
+      "control_net": [
+        "10",
+        0
+      ],
+      "type": "repaint"
+    }
+  },
+  "12": {
+    "class_type": "ControlNetApplyAdvanced",
+    "inputs": {
+      "positive": [
+        "9",
+        0
+      ],
+      "negative": [
+        "9",
+        1
+      ],
+      "control_net": [
+        "11",
+        0
+      ],
+      "image": [
+        "1",
+        0
+      ],
+      "strength": 0.55,
+      "start_percent": 0.0,
+      "end_percent": 0.85,
+      "vae": [
+        "2",
+        2
+      ]
+    }
+  },
+  "13": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "8",
+        0
+      ],
+      "positive": [
+        "12",
+        0
+      ],
+      "negative": [
+        "12",
+        1
+      ],
+      "latent_image": [
+        "9",
+        2
+      ],
+      "seed": 360610302,
+      "steps": 26,
+      "cfg": 5.0,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "karras",
+      "denoise": 0.35
+    }
+  },
+  "14": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "13",
+        0
+      ],
+      "vae": [
+        "2",
+        2
+      ]
+    }
+  },
+  "18": {
+    "class_type": "ImageCompositeMasked",
+    "inputs": {
+      "destination": [
+        "1",
+        0
+      ],
+      "source": [
+        "14",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "resize_source": false,
+      "mask": [
+        "5",
+        0
+      ]
+    }
+  },
+  "19": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "18",
+        0
+      ],
+      "filename_prefix": "unit3_dryrun/char_expression/candidate"
+    }
+  },
+  "1000": {
+    "class_type": "UltralyticsDetectorProvider",
+    "inputs": {
+      "model_name": "bbox/face_yolov9c.pt"
+    },
+    "_meta": {
+      "title": "Expression face detector: YOLO face9c"
+    }
+  },
+  "1001": {
+    "class_type": "SAMLoader",
+    "inputs": {
+      "model_name": "sam_vit_b_01ec64.pth",
+      "device_mode": "AUTO"
+    },
+    "_meta": {
+      "title": "Expression face SAM model"
+    }
+  },
+  "1002": {
+    "class_type": "BboxDetectorSEGS",
+    "inputs": {
+      "bbox_detector": [
+        "1000",
+        0
+      ],
+      "image": [
+        "1",
+        0
+      ],
+      "threshold": 0.35,
+      "dilation": 0,
+      "crop_factor": 2.0,
+      "drop_size": 10,
+      "labels": "all"
+    },
+    "_meta": {
+      "title": "Expression face bbox SEGS: threshold .35 / crop 2.0"
+    }
+  },
+  "1003": {
+    "class_type": "SAMDetectorCombined",
+    "inputs": {
+      "sam_model": [
+        "1001",
+        0
+      ],
+      "segs": [
+        "1002",
+        0
+      ],
+      "image": [
+        "1",
+        0
+      ],
+      "detection_hint": "center-1",
+      "dilation": 0,
+      "threshold": 0.93,
+      "bbox_expansion": 0,
+      "mask_hint_threshold": 0.7,
+      "mask_hint_use_negative": "False"
+    },
+    "_meta": {
+      "title": "Expression face mask: YOLO face9c + SAM center-1"
+    }
+  }
+}

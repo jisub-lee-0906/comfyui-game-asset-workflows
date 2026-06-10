@@ -1,0 +1,59 @@
+{
+  "unit": "Unit 5 — BGM single smoke",
+  "endpoint": "http://127.0.0.1:8000",
+  "workflow_path": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\audio_bgm_with_sfx_workflow_api.json",
+  "prompting_rule": "short natural-language BGM prompt with instruments, negative prompt intentionally blank",
+  "no_promotion": true,
+  "result": {
+    "id": "bgm_dialogue_dark_romantic_bed",
+    "label": "A_dialogue_dark_romantic_bed",
+    "intent": "continuous dialogue-friendly BGM bed; B2/B2-anchor style direction, but not prompt/seed clone",
+    "mode": "Music",
+    "duration": 24.0,
+    "seed": 360610501,
+    "positive": "A quiet dark romantic fantasy background music bed for visual novel dialogue, with soft felt piano, low strings, and gentle harp texture.",
+    "negative": "",
+    "workflow_id": "audio_bgm_with_sfx",
+    "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5_bgm_smoke\\runtime_payloads\\bgm_dialogue_dark_romantic_bed_workflow_api.json",
+    "prompt_id": "fe3d76de-50ab-437c-b1e6-ee0e6123adc5",
+    "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5_bgm_smoke\\runtime_payloads\\bgm_dialogue_dark_romantic_bed_history.json",
+    "output_paths": [
+      "C:\\Users\\Desktop\\Documents\\ComfyUI\\output\\workflow_pack_unit5\\bgm_dialogue_dark_romantic_bed_00001_.mp3"
+    ],
+    "candidate_copies": [
+      "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit5_bgm_smoke\\candidates\\A_dialogue_dark_romantic_bed_candidate_01.mp3"
+    ],
+    "analyses": [
+      {
+        "ffprobe": {
+          "programs": [],
+          "stream_groups": [],
+          "streams": [
+            {
+              "codec_name": "mp3",
+              "sample_rate": "44100",
+              "channels": 2,
+              "bit_rate": "238376"
+            }
+          ],
+          "format": {
+            "duration": "23.962993",
+            "size": "748556",
+            "bit_rate": "249904"
+          }
+        },
+        "duration": 23.962993,
+        "sample_rate": "44100",
+        "channels": 2,
+        "mean_volume_db": -23.2,
+        "max_volume_db": -4.3,
+        "silencedetect_-45dB_d1.0": [
+          "[Parsed_silencedetect_0 @ 000001dab6a0efc0] silence_start: 22.590317",
+          "[Parsed_silencedetect_0 @ 000001dab6a0efc0] silence_end: 23.962993 | silence_duration: 1.372676"
+        ]
+      }
+    ],
+    "verified_output_count": 1
+  },
+  "errors": []
+}

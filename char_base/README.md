@@ -4,7 +4,7 @@
 - modality: `image`
 - input_requirement: 없음
 - output: opaque character base/outfit variant PNG
-- prompt_policy: `danbooru_csv+readme_wrapper`
+- prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
 
 운영 원칙:
@@ -32,7 +32,7 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 1. 먼저 기준 캐릭터 후보를 제작합니다.
 2. 기준 캐릭터 후보의 시드값과 캐릭터 특징을 그대로 사용합니다.
-3. `{의상 디테일}` block만 CSV 검증된 의상 tag 묶음으로 교체합니다.
+3. `{의상 디테일}` block만 DB 검증된 의상 tag 묶음으로 교체합니다.
 4. 후보별 filename_prefix는 고유하게 바꿉니다.
 5. 얼굴/머리/체형/손/의상 반영을 QA합니다.
 
@@ -56,7 +56,7 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 Positive prompt의 `{의상 디테일}` 자리에 아래 텍스트를 넣습니다.
 원칙: `{의상 이름, 색상_의상종류}` 중심으로 짧고 고정된 block을 우선 사용합니다.
-모든 variable outfit tag는 루트 `danbooru_tag.csv` 기준으로 검증합니다.
+모든 variable outfit tag는 로컬 Danbooru taxonomy SQLite tag oracle 기준으로 검증합니다.
 
 아래 5세트는 현재 char_base same-seed 비교에 자주 쓰는 canonical 예시입니다.
 
@@ -91,13 +91,13 @@ witch, purple_cape, black_corset, long_skirt, pendant
 - 예: `frills`, `belt`, `gloves`, `leather`, `wool` 같은 재질/디테일 tag는 A/B로만 추가합니다.
 
 주의:
-- `black_kneehighs`, `black_boots`는 local CSV 미존재이므로 기본 세트에서 사용하지 않습니다.
+- `black_kneehighs`, `black_boots`는 local DB 미검증이므로 기본 세트에서 사용하지 않습니다.
 - 의상 block에는 표정/카메라/배경 tag를 넣지 않습니다.
 - 예시 목록 확장/수정은 소규모 QA(최소 same-seed 3~5장) 후 반영합니다.
 
-#### 4. 검증된 Danbooru CSV 태그 메모
+#### 4. 검증된 Danbooru SQLite 태그 메모
 
-출처: 루트 `danbooru_tag.csv`. 아래 태그들은 runtime placeholder 선택지로만 사용하고, 태그를 더 넣기 위해 장황하게 prompt를 늘리지 않습니다.
+출처: 로컬 Danbooru taxonomy SQLite tag oracle. 아래 태그들은 runtime placeholder 선택지로만 사용하고, 태그를 더 넣기 위해 장황하게 prompt를 늘리지 않습니다.
 
 현재 char_base 기본 템플릿은 `1girl, solo` 기준이므로 여성 캐릭터 생성만 지원합니다.
 

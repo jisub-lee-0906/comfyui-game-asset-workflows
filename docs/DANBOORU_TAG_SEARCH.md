@@ -1,15 +1,16 @@
 # Danbooru tag search helper
 
-This pack keeps image prompt slots fail-closed against the root `danbooru_tag.csv`: generation prompts should still use only canonical tags or aliases present in that file unless a workflow README explicitly says otherwise.
+This pack keeps image prompt slots fail-closed against the local Danbooru taxonomy SQLite DB (`danbooru-taxonomy.release.sqlite`). The old CSV flow is retained only as an explicit compatibility mode for tests or external one-off inputs; the root CSV file is no longer required for normal pack operation.
 
-`./scripts/danbooru_tag_search.py` upgrades the discovery step before prompt authoring. It borrows the lightweight normalization/search pattern from `cksdnfas/danbooru-db-viewer` commit `147e1a605d9e9e35a28482e6a77f2ae840a0ef64`:
+`./scripts/danbooru_tag_search.py` is the primary local tag oracle before prompt authoring. It borrows the lightweight normalization/search pattern from `cksdnfas/danbooru-db-viewer`:
 
 - normalize user text by trimming, lowercasing, and replacing spaces with underscores;
 - search canonical tags and aliases;
 - rank exact matches before alias, prefix, substring, token, lightweight stem-token, and partial-token suggestions;
-- optionally enrich results with read-only `tags.category_name` and `tags.post_count` when a `danbooru-taxonomy.sqlite` database from the viewer project is available.
+- read-only SQLite validation/search against `tags.name`, `tags.normalized_name`, `tags.display_name`, and active `tag_aliases`;
+- category/post-count evidence from `tags.category_name` and `tags.post_count`.
 
-## CSV-only search
+## Primary DB search/check with legacy CSV fallback
 
 ```bash
 python scripts/danbooru_tag_search.py search "computer window" --limit 10
@@ -29,14 +30,14 @@ window_(computing)	alias	950	computer_window
 Use `check` on a comma-separated prompt slot before placing it into a workflow README/runtime JSON:
 
 ```bash
-python scripts/danbooru_tag_search.py check "red border, train station"
+python scripts/danbooru_tag_search.py check "red border, train station" --mode auto
 ```
 
 Exit code:
 
-- `0`: every token resolves to a CSV tag/alias.
+- `0`: every token resolves to a SQLite tag/alias.
 - `1`: at least one token is missing; suggestions may be printed.
-- `2`: input/CSV/SQLite error.
+- `2`: input/SQLite/legacy CSV error.
 
 The command prints canonicalized OK tags and suggestions for missing tokens:
 
@@ -56,7 +57,7 @@ If a viewer database exists, pass it explicitly:
 python scripts/danbooru_tag_search.py search "red border" --db /path/to/danbooru-taxonomy.sqlite --limit 20
 ```
 
-The helper opens SQLite with `mode=ro` and `PRAGMA query_only = ON`, ignores deprecated rows, and adds `category`/`post_count` columns. This metadata is advisory for search/rationale only; it does not expand the local CSV validation gate.
+The helper opens SQLite with `mode=ro` and `PRAGMA query_only = ON`, ignores deprecated rows, and uses `category`/`post_count` columns as first-class prompt-selection evidence. With `--mode auto`, `check` validates against SQLite when the local DB is available; CSV is only an explicit legacy fallback.
 
 ## Intended VN workflow use
 

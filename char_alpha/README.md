@@ -18,7 +18,7 @@
 
 이 workflow는 이미 QA된 캐릭터/source/outfit/expression 이미지를 transparent PNG/sprite cutout 후보로 변환합니다.
 
-프롬프트를 사용하지 않습니다. 루트 `danbooru_tag.csv`는 upstream 이미지 생성 단계에서만 관련이 있고, alpha 생성 단계에서는 시각적으로 승인된 source image를 그대로 넣어야 합니다.
+프롬프트를 사용하지 않습니다. Danbooru tag oracle은 upstream 이미지 생성 단계에서만 관련이 있고, alpha 생성 단계에서는 시각적으로 승인된 source image를 그대로 넣어야 합니다.
 
 #### 2. Runtime patch 대상
 

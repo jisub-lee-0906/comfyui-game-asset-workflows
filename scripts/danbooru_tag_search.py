@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Danbooru tag search/check helper for the VN ComfyUI workflow pack.
 
-The pack's generation prompts remain fail-closed against the local
-``danbooru_tag.csv`` tag/alias list.  This helper improves discovery by using
-viewer-style normalization/ranking and, when a Danbooru taxonomy SQLite DB from
-cksdnfas/danbooru-db-viewer is available, optional read-only count/category
-metadata.
+The local Danbooru taxonomy SQLite DB exported for ``cksdnfas/danbooru-db-viewer``
+is the primary tag oracle when it is present next to this workflow pack.  The
+legacy ``danbooru_tag.csv`` file is still supported as a compatibility/fallback
+source, but the helper no longer requires it for normal search/check operation.
 """
 
 from __future__ import annotations
@@ -18,7 +17,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
-DEFAULT_CSV = Path(__file__).resolve().parents[1] / "danbooru_tag.csv"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_CSV = ROOT / "danbooru_tag.csv"
+DEFAULT_DB_CANDIDATES = (
+    ROOT / "danbooru-taxonomy.release.sqlite",
+    ROOT / "danbooru-taxonomy.sqlite",
+    ROOT / "danbooru.sqlite",
+)
 
 
 @dataclass(frozen=True)
@@ -35,6 +40,16 @@ class SearchResult:
     aliases: tuple[str, ...]
     category: str = ""
     post_count: str = ""
+    source: str = "csv"
+
+
+@dataclass(frozen=True)
+class DbTag:
+    tag: str
+    category: str
+    post_count: int
+    match: str
+    score: int
 
 
 def normalize_search_key(value: str | None) -> str:
@@ -50,14 +65,48 @@ def escape_like(value: str) -> str:
     return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
-def load_csv_tags(path: Path) -> list[CsvTag]:
+def default_db_path() -> Path | None:
+    for path in DEFAULT_DB_CANDIDATES:
+        if path.exists():
+            return path
+    return None
+
+
+def csv_path_is_default(path: Path) -> bool:
+    try:
+        return path.resolve() == DEFAULT_CSV.resolve()
+    except OSError:
+        return path == DEFAULT_CSV
+
+
+def effective_db_path(args: argparse.Namespace) -> Path | None:
+    """Return the SQLite DB path to use.
+
+    Auto-detection is intentionally disabled when callers pass a non-default
+    CSV path (unit tests or one-off legacy checks) unless they explicitly pass
+    ``--db``.  Normal workflow-pack usage with the default root files gets the
+    local release SQLite DB automatically.
+    """
+    if getattr(args, "no_db", False):
+        return None
+    explicit = getattr(args, "db", None)
+    if explicit:
+        return explicit
+    if not csv_path_is_default(getattr(args, "csv", DEFAULT_CSV)):
+        return None
+    return default_db_path()
+
+
+def load_csv_tags(path: Path, *, required: bool = False) -> list[CsvTag]:
     if not path.exists():
-        raise FileNotFoundError(f"CSV not found: {path}")
+        if required:
+            raise FileNotFoundError(f"CSV not found: {path}")
+        return []
     rows: list[CsvTag] = []
     with path.open("r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
-        required = {"tag", "aliases"}
-        if not required.issubset(reader.fieldnames or []):
+        required_columns = {"tag", "aliases"}
+        if not required_columns.issubset(reader.fieldnames or []):
             raise ValueError(f"{path} must contain columns: tag, aliases")
         for row in reader:
             tag = (row.get("tag") or "").strip()
@@ -166,14 +215,13 @@ def search_csv(rows: Iterable[CsvTag], query: str, limit: int) -> list[SearchRes
         if match is None:
             continue
         match_name, score = match
-        # Prefer shorter exact-ish canonical tags after score, then stable alpha.
-        results.append(SearchResult(row.tag, match_name, score, row.aliases))
+        results.append(SearchResult(row.tag, match_name, score, row.aliases, source="csv"))
     results.sort(key=lambda r: (-r.score, len(r.tag), r.tag))
     return results[:limit]
 
 
-def sqlite_available(db_path: Path) -> bool:
-    if not db_path.exists():
+def sqlite_available(db_path: Path | None) -> bool:
+    if db_path is None or not db_path.exists():
         return False
     try:
         with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as conn:
@@ -185,10 +233,11 @@ def sqlite_available(db_path: Path) -> bool:
         return False
 
 
-def search_sqlite(db_path: Path, query: str, limit: int) -> list[SearchResult]:
+def search_sqlite(db_path: Path | None, query: str, limit: int) -> list[SearchResult]:
     query_key = normalize_search_key(query)
     if not query_key or not sqlite_available(db_path):
         return []
+    assert db_path is not None
     pattern = f"%{escape_like(query_key)}%"
     display_pattern = f"%{escape_like(display_query(query))}%"
     with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as conn:
@@ -234,9 +283,55 @@ def search_sqlite(db_path: Path, query: str, limit: int) -> list[SearchResult]:
                 aliases=(),
                 category=str(row["category_name"]),
                 post_count=str(int(row["post_count"])),
+                source="db",
             )
         )
     return results
+
+
+def lookup_sqlite_tag(db_path: Path | None, token: str) -> DbTag | None:
+    token_key = normalize_search_key(token)
+    if not token_key or not sqlite_available(db_path):
+        return None
+    assert db_path is not None
+    token_display = token_key.replace("_", " ")
+    with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as conn:
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA query_only = ON")
+        row = conn.execute(
+            """
+            SELECT name, category_name, post_count, 'db_exact' AS match, 1000 AS score
+            FROM tags
+            WHERE is_deprecated = 0
+              AND (normalized_name = ? OR name = ? OR display_name = ?)
+            ORDER BY post_count DESC, name ASC
+            LIMIT 1
+            """,
+            [token_key, token_key, token_display],
+        ).fetchone()
+        if row is None:
+            row = conn.execute(
+                """
+                SELECT t.name, t.category_name, t.post_count, 'db_alias' AS match, 950 AS score
+                FROM tag_aliases a
+                JOIN tags t ON t.id = a.target_tag_id
+                WHERE a.status = 'active'
+                  AND t.is_deprecated = 0
+                  AND a.alias_normalized_name = ?
+                ORDER BY t.post_count DESC, t.name ASC
+                LIMIT 1
+                """,
+                [token_key],
+            ).fetchone()
+    if row is None:
+        return None
+    return DbTag(
+        tag=str(row["name"]),
+        category=str(row["category_name"]),
+        post_count=int(row["post_count"]),
+        match=str(row["match"]),
+        score=int(row["score"]),
+    )
 
 
 def merge_results(csv_results: list[SearchResult], db_results: list[SearchResult], limit: int) -> list[SearchResult]:
@@ -251,6 +346,7 @@ def merge_results(csv_results: list[SearchResult], db_results: list[SearchResult
                 aliases=existing.aliases,
                 category=db_result.category,
                 post_count=db_result.post_count,
+                source="csv+db",
             )
         else:
             by_tag[db_result.tag] = db_result
@@ -273,54 +369,84 @@ def parse_prompt_tokens(prompt: str) -> list[str]:
 def print_results(results: list[SearchResult], *, include_db_columns: bool) -> None:
     columns = ["tag", "match", "score", "aliases"]
     if include_db_columns:
-        columns.extend(["category", "post_count"])
+        columns.extend(["category", "post_count", "source"])
     print("\t".join(columns))
     for result in results:
         values = [result.tag, result.match, str(result.score), ",".join(result.aliases)]
         if include_db_columns:
-            values.extend([result.category, result.post_count])
+            values.extend([result.category, result.post_count, result.source])
         print("\t".join(values))
 
 
 def command_search(args: argparse.Namespace) -> int:
-    rows = load_csv_tags(args.csv)
+    db_path = effective_db_path(args)
+    rows = load_csv_tags(args.csv, required=not sqlite_available(db_path))
     csv_results = search_csv(rows, args.query, args.limit)
-    db_results = search_sqlite(args.db, args.query, args.limit) if args.db else []
+    db_results = search_sqlite(db_path, args.query, args.limit)
     results = merge_results(csv_results, db_results, args.limit)
-    print_results(results, include_db_columns=bool(args.db))
+    print_results(results, include_db_columns=sqlite_available(db_path))
     return 0 if results else 1
 
 
 def command_check(args: argparse.Namespace) -> int:
-    rows = load_csv_tags(args.csv)
+    db_path = effective_db_path(args)
+    db_ok = sqlite_available(db_path)
+    rows = load_csv_tags(args.csv, required=args.mode == "csv" or (args.mode in {"auto", "csv-or-db"} and not db_ok))
     index = csv_index(rows)
+    mode = args.mode
+    if mode == "auto":
+        mode = "db" if db_ok else "csv"
     had_missing = False
     for token in parse_prompt_tokens(args.prompt):
-        found = index.get(token)
-        if found:
-            print(f"OK\t{found.tag}\tinput={token}")
+        db_found = lookup_sqlite_tag(db_path, token) if mode in {"db", "csv-or-db"} else None
+        csv_found = index.get(token) if mode in {"csv", "csv-or-db"} else None
+        if db_found:
+            print(
+                f"OK\t{db_found.tag}\tinput={token}\tsource=db\tcategory={db_found.category}\tpost_count={db_found.post_count}"
+            )
+            continue
+        if csv_found:
+            print(f"OK\t{csv_found.tag}\tinput={token}\tsource=csv")
             continue
         had_missing = True
         print(f"MISSING\t{token}")
+        # DB suggestions first when available; they carry count/category evidence.
+        for suggestion in search_sqlite(db_path, token, args.suggestions):
+            print(
+                f"SUGGEST\t{suggestion.tag}\t{suggestion.match}\t{suggestion.score}"
+                f"\tsource=db\tcategory={suggestion.category}\tpost_count={suggestion.post_count}"
+            )
         for suggestion in search_csv(rows, token, args.suggestions):
-            print(f"SUGGEST\t{suggestion.tag}\t{suggestion.match}\t{suggestion.score}")
+            print(f"SUGGEST\t{suggestion.tag}\t{suggestion.match}\t{suggestion.score}\tsource=csv")
     return 1 if had_missing else 0
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Search/check local Danbooru tags for workflow prompts.")
-    parser.add_argument("--csv", type=Path, default=DEFAULT_CSV, help="Path to local danbooru_tag.csv")
+    parser.add_argument("--csv", type=Path, default=DEFAULT_CSV, help="Optional legacy CSV fallback path")
+    parser.add_argument("--db", type=Path, help="Danbooru taxonomy SQLite DB from danbooru-db-viewer; auto-detected by default")
+    parser.add_argument("--no-db", action="store_true", help="Disable SQLite auto-detection and use CSV only")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    search = subparsers.add_parser("search", help="Search local CSV, optionally enriched by viewer SQLite DB")
+    search = subparsers.add_parser("search", help="Search local DB, optionally merged with legacy CSV aliases")
     search.add_argument("query")
     search.add_argument("--limit", type=int, default=20)
-    search.add_argument("--db", type=Path, help="Optional danbooru-taxonomy SQLite DB from danbooru-db-viewer")
+    # Keep historical placement working: `search QUERY --db path`.
+    search.add_argument("--db", type=Path, help=argparse.SUPPRESS)
+    search.add_argument("--no-db", action="store_true", help=argparse.SUPPRESS)
     search.set_defaults(func=command_search)
 
     check = subparsers.add_parser("check", help="Fail-closed check of comma-separated prompt tags")
     check.add_argument("prompt")
     check.add_argument("--suggestions", type=int, default=5)
+    check.add_argument("--db", type=Path, help=argparse.SUPPRESS)
+    check.add_argument("--no-db", action="store_true", help=argparse.SUPPRESS)
+    check.add_argument(
+        "--mode",
+        choices=("auto", "db", "csv", "csv-or-db"),
+        default="auto",
+        help="Validation gate. auto uses DB when available, otherwise CSV.",
+    )
     check.set_defaults(func=command_check)
     return parser
 

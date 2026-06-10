@@ -4,7 +4,7 @@
 - modality: `image`
 - input_requirement: 없음
 - output: 16:9 background PNG
-- prompt_policy: `danbooru_csv+readme_wrapper`
+- prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
 
 운영 원칙:
@@ -19,9 +19,11 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, no_humans, wide_shot, landscape, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, no_humans, wide_shot, landscape, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting, BREAK, {짧은 자연어 semantic_prompt/style_prompt if needed}
 
 ```
+
+자동화 주의: `hallway`, `window`, `night`처럼 일반 tag만 넣으면 학교/병원 같은 범용 복도로 drift할 수 있습니다. 귀족 저택, 성, 고딕 실내, 특정 재질/건축 양식처럼 tag만으로 부족한 장소 의도는 `semantic_prompt`/`style_prompt`에 짧은 자연어로 넣어 live prompt에 반영합니다.
 
 **Negative prompt:**
 
@@ -61,9 +63,9 @@ masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution,
 * **밤 (Night):** `night, starry_sky, moonlight, dark`
 * **새벽/비 (Atmosphere):** `morning, fog` 또는 `rain, overcast`
 
-#### 3. 검증된 Danbooru CSV 태그 메모
+#### 3. 검증된 Danbooru SQLite 태그 메모
 
-출처: 루트 `danbooru_tag.csv`. 아래 태그들은 README에 적기 전에 해당 CSV에 실제 존재하는지 확인했습니다. `{배경 테마 및 장소}`와 `{시간대 및 분위기 태그}`를 런타임에서 패치할 때 사용합니다.
+출처: 로컬 Danbooru taxonomy SQLite tag oracle. 아래 태그들은 README에 적기 전에 DB에서 active/non-deprecated로 확인했습니다. `{배경 테마 및 장소}`와 `{시간대 및 분위기 태그}`를 런타임에서 패치할 때 사용합니다.
 
 - 장면 기본 태그: `scenery`, `no_humans`, `indoors`, `outdoors`
 - 장소: `classroom`, `school`, `hallway`, `rooftop`, `bedroom`, `living_room`, `street`, `park`, `forest`, `library`

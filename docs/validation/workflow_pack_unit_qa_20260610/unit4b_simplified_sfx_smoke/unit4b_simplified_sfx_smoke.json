@@ -1,0 +1,164 @@
+{
+  "unit": "Unit 4B — simplified positive-only SFX prompts",
+  "endpoint": "http://127.0.0.1:8000",
+  "workflow_path": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\audio_bgm_with_sfx_workflow_api.json",
+  "prompting_rule": "short positive-only natural language sentence; negative prompt intentionally blank",
+  "no_promotion": true,
+  "scenario_count": 3,
+  "results": [
+    {
+      "id": "simple_ui_system_chime",
+      "label": "A_simple_ui_system_chime",
+      "intent": "short UI/system cue using simple positive-only prompt",
+      "mode": "One-shot",
+      "duration": 2.5,
+      "seed": 360610411,
+      "positive": "A short glass chime rings when a visual novel system notification appears, with a clear crystal bell tone.",
+      "negative": "",
+      "workflow_id": "audio_bgm_with_sfx",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\runtime_payloads\\simple_ui_system_chime_workflow_api.json",
+      "prompt_id": "8d407f7b-24c1-4398-bd11-3eb0f406a90a",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\runtime_payloads\\simple_ui_system_chime_history.json",
+      "output_paths": [
+        "C:\\Users\\Desktop\\Documents\\ComfyUI\\output\\workflow_pack_unit4b\\simple_ui_system_chime_00001_.mp3"
+      ],
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\candidates\\A_simple_ui_system_chime_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "253771"
+              }
+            ],
+            "format": {
+              "duration": "2.507755",
+              "size": "113576",
+              "bit_rate": "362319"
+            }
+          },
+          "duration": 2.507755,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -24.7,
+          "max_volume_db": -2.4,
+          "silencedetect_-45dB_d0.5": [
+            "[Parsed_silencedetect_0 @ 000001ee50bdce00] silence_start: 1.185533",
+            "[Parsed_silencedetect_0 @ 000001ee50bdce00] silence_end: 2.507755 | silence_duration: 1.322222"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    },
+    {
+      "id": "simple_old_wooden_door",
+      "label": "B_simple_old_wooden_door",
+      "intent": "medium foley/action cue using simple positive-only prompt",
+      "mode": "SFX",
+      "duration": 3.5,
+      "seed": 360610412,
+      "positive": "An old wooden door opens slowly with one clear metal hinge creak and a soft wooden handle click.",
+      "negative": "",
+      "workflow_id": "audio_bgm_with_sfx",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\runtime_payloads\\simple_old_wooden_door_workflow_api.json",
+      "prompt_id": "3b2cf8db-02f7-4374-89fd-23ac2e973a64",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\runtime_payloads\\simple_old_wooden_door_history.json",
+      "output_paths": [
+        "C:\\Users\\Desktop\\Documents\\ComfyUI\\output\\workflow_pack_unit4b\\simple_old_wooden_door_00001_.mp3"
+      ],
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\candidates\\B_simple_old_wooden_door_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "219103"
+              }
+            ],
+            "format": {
+              "duration": "3.529433",
+              "size": "131198",
+              "bit_rate": "297380"
+            }
+          },
+          "duration": 3.529433,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -37.9,
+          "max_volume_db": -4.3,
+          "silencedetect_-45dB_d0.5": [
+            "[Parsed_silencedetect_0 @ 000001c5c392c200] silence_start: 1.852336",
+            "[Parsed_silencedetect_0 @ 000001c5c392c200] silence_end: 3.529433 | silence_duration: 1.677098"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    },
+    {
+      "id": "simple_contract_magic_seal",
+      "label": "C_simple_contract_magic_seal",
+      "intent": "longer sustained contract magic cue using simple positive-only prompt",
+      "mode": "SFX",
+      "duration": 7.0,
+      "seed": 360610413,
+      "positive": "A dark fantasy contract seal activates with a soft arcane hum, parchment shimmer, and gentle crystal resonance.",
+      "negative": "",
+      "workflow_id": "audio_bgm_with_sfx",
+      "runtime_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\runtime_payloads\\simple_contract_magic_seal_workflow_api.json",
+      "prompt_id": "abfa34ec-0f58-413c-b82a-80045f87b2c4",
+      "history_path": "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\runtime_payloads\\simple_contract_magic_seal_history.json",
+      "output_paths": [
+        "C:\\Users\\Desktop\\Documents\\ComfyUI\\output\\workflow_pack_unit4b\\simple_contract_magic_seal_00001_.mp3"
+      ],
+      "candidate_copies": [
+        "E:\\workspace\\comfyui-game-asset-workflows\\docs\\validation\\workflow_pack_unit_qa_20260610\\unit4b_simplified_sfx_smoke\\candidates\\C_simple_contract_magic_seal_candidate_01.mp3"
+      ],
+      "analyses": [
+        {
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "mp3",
+                "sample_rate": "44100",
+                "channels": 2,
+                "bit_rate": "229825"
+              }
+            ],
+            "format": {
+              "duration": "6.965986",
+              "size": "234322",
+              "bit_rate": "269104"
+            }
+          },
+          "duration": 6.965986,
+          "sample_rate": "44100",
+          "channels": 2,
+          "mean_volume_db": -24.0,
+          "max_volume_db": -3.5,
+          "silencedetect_-45dB_d0.5": [
+            "[Parsed_silencedetect_0 @ 000001db061dbbc0] silence_start: 4.592562",
+            "[Parsed_silencedetect_0 @ 000001db061dbbc0] silence_end: 6.965986 | silence_duration: 2.373424"
+          ]
+        }
+      ],
+      "verified_output_count": 1
+    }
+  ],
+  "errors": []
+}

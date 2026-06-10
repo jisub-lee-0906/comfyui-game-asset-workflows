@@ -1,0 +1,481 @@
+{
+  "root": "E:\\workspace\\comfyui-game-asset-workflows",
+  "candidate_endpoints": [
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:8188",
+    "http://127.0.0.1:8001"
+  ],
+  "endpoint_results": [
+    {
+      "endpoint": "http://127.0.0.1:8000",
+      "checks": {
+        "/system_stats": {
+          "ok": true,
+          "status": 200,
+          "elapsed_s": 0.006,
+          "top_level_type": "dict",
+          "top_level_count": 2
+        },
+        "/queue": {
+          "ok": true,
+          "status": 200,
+          "elapsed_s": 0.012,
+          "top_level_type": "dict",
+          "top_level_count": 2
+        },
+        "/object_info": {
+          "ok": true,
+          "status": 200,
+          "elapsed_s": 0.643,
+          "top_level_type": "dict",
+          "top_level_count": 1938
+        }
+      },
+      "all_ok": true
+    },
+    {
+      "endpoint": "http://127.0.0.1:8188",
+      "checks": {
+        "/system_stats": {
+          "ok": false,
+          "error": "URLError: <urlopen error [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다>"
+        },
+        "/queue": {
+          "ok": false,
+          "error": "URLError: <urlopen error [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다>"
+        },
+        "/object_info": {
+          "ok": false,
+          "error": "URLError: <urlopen error [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다>"
+        }
+      },
+      "all_ok": false
+    },
+    {
+      "endpoint": "http://127.0.0.1:8001",
+      "checks": {
+        "/system_stats": {
+          "ok": true,
+          "status": 200,
+          "elapsed_s": 0.007,
+          "top_level_type": "dict",
+          "top_level_count": 2
+        },
+        "/queue": {
+          "ok": true,
+          "status": 200,
+          "elapsed_s": 0.001,
+          "top_level_type": "dict",
+          "top_level_count": 2
+        },
+        "/object_info": {
+          "ok": true,
+          "status": 200,
+          "elapsed_s": 0.184,
+          "top_level_type": "dict",
+          "top_level_count": 1938
+        }
+      },
+      "all_ok": true
+    }
+  ],
+  "live_endpoint": "http://127.0.0.1:8000",
+  "system_stats_summary": {
+    "keys": [
+      "devices",
+      "system"
+    ],
+    "devices": [
+      {
+        "name": "cuda:0 NVIDIA GeForce RTX 5070 Ti : cudaMallocAsync",
+        "type": "cuda",
+        "index": 0,
+        "vram_total": 17094475776,
+        "vram_free": 10336501370,
+        "torch_vram_total": 33554432,
+        "torch_vram_free": 19562106
+      }
+    ]
+  },
+  "queue_summary": {
+    "queue_running": [],
+    "queue_pending": []
+  },
+  "object_info_class_count": 1938,
+  "required_class_count": 35,
+  "missing_classes": [],
+  "choice_mismatches": [],
+  "workflow_rows": [
+    {
+      "workflow_id": "char_base",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\char_base\\char_base_workflow_api.json",
+      "class_count": 6,
+      "classes": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "char_base",
+          "node_id": "1",
+          "class_type": "CheckpointLoaderSimple",
+          "input": "ckpt_name",
+          "value": "novaAnimeXL_ilV190.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 6
+        },
+        {
+          "workflow_id": "char_base",
+          "node_id": "6",
+          "class_type": "KSampler",
+          "input": "sampler_name",
+          "value": "euler_ancestral",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 44
+        }
+      ]
+    },
+    {
+      "workflow_id": "char_expression",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\char_expression\\char_expression_workflow_api.json",
+      "class_count": 17,
+      "classes": [
+        "AILab_MaskEnhancer",
+        "BboxDetectorSEGS",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "ControlNetApplyAdvanced",
+        "ControlNetLoader",
+        "DifferentialDiffusion",
+        "ImageCompositeMasked",
+        "InpaintModelConditioning",
+        "KSampler",
+        "LoadImage",
+        "SAMDetectorCombined",
+        "SAMLoader",
+        "SaveImage",
+        "SetUnionControlNetType",
+        "UltralyticsDetectorProvider",
+        "VAEDecode"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "char_expression",
+          "node_id": "2",
+          "class_type": "CheckpointLoaderSimple",
+          "input": "ckpt_name",
+          "value": "novaAnimeXL_ilV190.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 6
+        },
+        {
+          "workflow_id": "char_expression",
+          "node_id": "10",
+          "class_type": "ControlNetLoader",
+          "input": "control_net_name",
+          "value": "xinsir-controlnet-union-sdxl-1.0-promax.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 12
+        },
+        {
+          "workflow_id": "char_expression",
+          "node_id": "13",
+          "class_type": "KSampler",
+          "input": "sampler_name",
+          "value": "euler_ancestral",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 44
+        },
+        {
+          "workflow_id": "char_expression",
+          "node_id": "1000",
+          "class_type": "UltralyticsDetectorProvider",
+          "input": "model_name",
+          "value": "bbox/face_yolov9c.pt",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 8
+        },
+        {
+          "workflow_id": "char_expression",
+          "node_id": "1001",
+          "class_type": "SAMLoader",
+          "input": "model_name",
+          "value": "sam_vit_b_01ec64.pth",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 1
+        }
+      ]
+    },
+    {
+      "workflow_id": "char_alpha",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\char_alpha\\char_alpha_workflow_api.json",
+      "class_count": 3,
+      "classes": [
+        "BiRefNetRMBG",
+        "LoadImage",
+        "SaveImage"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "char_alpha",
+          "node_id": "2",
+          "class_type": "BiRefNetRMBG",
+          "input": "model",
+          "value": "BiRefNet_toonout",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 11
+        }
+      ]
+    },
+    {
+      "workflow_id": "scene_background",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\scene_background\\scene_background_workflow_api.json",
+      "class_count": 7,
+      "classes": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "scene_background",
+          "node_id": "1",
+          "class_type": "CheckpointLoaderSimple",
+          "input": "ckpt_name",
+          "value": "novaAnimeXL_ilV190.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 6
+        },
+        {
+          "workflow_id": "scene_background",
+          "node_id": "6",
+          "class_type": "KSampler",
+          "input": "sampler_name",
+          "value": "euler_ancestral",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 44
+        }
+      ]
+    },
+    {
+      "workflow_id": "scene_event_cg",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\scene_event_cg\\scene_event_cg_workflow_api.json",
+      "class_count": 8,
+      "classes": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "LoraLoader",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "scene_event_cg",
+          "node_id": "1",
+          "class_type": "CheckpointLoaderSimple",
+          "input": "ckpt_name",
+          "value": "novaAnimeXL_ilV190.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 6
+        },
+        {
+          "workflow_id": "scene_event_cg",
+          "node_id": "12",
+          "class_type": "KSampler",
+          "input": "sampler_name",
+          "value": "euler_ancestral",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 44
+        },
+        {
+          "workflow_id": "scene_event_cg",
+          "node_id": "100",
+          "class_type": "LoraLoader",
+          "input": "lora_name",
+          "value": "hinaMaybeBetterPoseXL_v5-NoobAI.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 3
+        }
+      ]
+    },
+    {
+      "workflow_id": "scene_prop_cg",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\scene_prop_cg\\scene_prop_cg_workflow_api.json",
+      "class_count": 7,
+      "classes": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "scene_prop_cg",
+          "node_id": "1",
+          "class_type": "CheckpointLoaderSimple",
+          "input": "ckpt_name",
+          "value": "novaAnimeXL_ilV190.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 6
+        },
+        {
+          "workflow_id": "scene_prop_cg",
+          "node_id": "6",
+          "class_type": "KSampler",
+          "input": "sampler_name",
+          "value": "euler_ancestral",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 44
+        }
+      ]
+    },
+    {
+      "workflow_id": "ui_system_alert_frame",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\ui_system_alert_frame\\ui_system_alert_frame_workflow_api.json",
+      "class_count": 7,
+      "classes": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "ui_system_alert_frame",
+          "node_id": "1",
+          "class_type": "CheckpointLoaderSimple",
+          "input": "ckpt_name",
+          "value": "novaAnimeXL_ilV190.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 6
+        },
+        {
+          "workflow_id": "ui_system_alert_frame",
+          "node_id": "6",
+          "class_type": "KSampler",
+          "input": "sampler_name",
+          "value": "euler_ancestral",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 44
+        }
+      ]
+    },
+    {
+      "workflow_id": "audio_bgm_with_sfx",
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\audio_bgm_with_sfx_workflow_api.json",
+      "class_count": 17,
+      "classes": [
+        "CLIPLoader",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "ComfyMathExpression",
+        "ComfySwitchNode",
+        "CustomCombo",
+        "EmptyLatentAudio",
+        "JsonExtractString",
+        "KSampler",
+        "PreviewAny",
+        "PrimitiveBoolean",
+        "PrimitiveFloat",
+        "PrimitiveStringMultiline",
+        "SaveAudioMP3",
+        "StringReplace",
+        "TextGenerate",
+        "VAEDecodeAudio"
+      ],
+      "missing_classes": [],
+      "model_choice_checks": [
+        {
+          "workflow_id": "audio_bgm_with_sfx",
+          "node_id": "52:3",
+          "class_type": "KSampler",
+          "input": "sampler_name",
+          "value": "lcm",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 44
+        },
+        {
+          "workflow_id": "audio_bgm_with_sfx",
+          "node_id": "52:29",
+          "class_type": "CLIPLoader",
+          "input": "clip_name",
+          "value": "qwen3.5_2b_bf16.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 7
+        },
+        {
+          "workflow_id": "audio_bgm_with_sfx",
+          "node_id": "52:28",
+          "class_type": "TextGenerate",
+          "input": "sampling_mode",
+          "value": "on",
+          "choices_known": false,
+          "ok": null
+        },
+        {
+          "workflow_id": "audio_bgm_with_sfx",
+          "node_id": "52:25",
+          "class_type": "CheckpointLoaderSimple",
+          "input": "ckpt_name",
+          "value": "stable_audio_3_medium.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 6
+        },
+        {
+          "workflow_id": "audio_bgm_with_sfx",
+          "node_id": "52:26",
+          "class_type": "CLIPLoader",
+          "input": "clip_name",
+          "value": "t5gemma_b_b_ul2.safetensors",
+          "choices_known": true,
+          "ok": true,
+          "choice_count": 7
+        }
+      ]
+    }
+  ]
+}

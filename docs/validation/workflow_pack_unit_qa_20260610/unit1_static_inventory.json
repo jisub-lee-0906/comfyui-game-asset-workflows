@@ -1,0 +1,342 @@
+{
+  "root": "E:\\workspace\\comfyui-game-asset-workflows",
+  "index_version": "2026-06-10-unified-audio-bgm-with-sfx",
+  "workflow_count": 8,
+  "workflow_ids": [
+    "char_base",
+    "char_expression",
+    "char_alpha",
+    "scene_background",
+    "scene_event_cg",
+    "scene_prop_cg",
+    "ui_system_alert_frame",
+    "audio_bgm_with_sfx"
+  ],
+  "actual_workflow_like_folders": [
+    "audio_bgm_with_sfx",
+    "char_alpha",
+    "char_base",
+    "char_expression",
+    "scene_background",
+    "scene_event_cg",
+    "scene_prop_cg",
+    "ui_system_alert_frame"
+  ],
+  "extra_workflow_like_folders": [],
+  "missing_workflow_like_folders": [],
+  "errors": [],
+  "warnings": [],
+  "old_active_refs": [],
+  "placeholders": [
+    {
+      "workflow_id": "char_base",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\char_base\\README.md",
+      "placeholders": [
+        "{의상 디테일(의상 이름, 색상_의상종류)}",
+        "{의상 디테일}",
+        "{의상 이름, 색상_의상종류}",
+        "{캐릭터 특징(연령대, 헤어스타일, 머리길이, 머리색, 눈매, 눈색)}"
+      ]
+    },
+    {
+      "workflow_id": "char_expression",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\char_expression\\char_expression_workflow_api.json",
+      "placeholders": [
+        "TEMPLATE_CHARACTER_happy_composited",
+        "TEMPLATE_character_anchor_source.png",
+        "{감정표현}",
+        "{눈색}",
+        "{머리색}",
+        "{상극 감정표현}",
+        "{헤어 길이}",
+        "{헤어 스타일}"
+      ]
+    },
+    {
+      "workflow_id": "char_expression",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\char_expression\\README.md",
+      "placeholders": [
+        "{감정표현}",
+        "{상극 감정표현}"
+      ]
+    },
+    {
+      "workflow_id": "char_alpha",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\char_alpha\\char_alpha_workflow_api.json",
+      "placeholders": [
+        "TEMPLATE_CHARACTER_VARIANT_b1_ref1",
+        "TEMPLATE_source_image.png"
+      ]
+    },
+    {
+      "workflow_id": "scene_background",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\scene_background\\scene_background_workflow_api.json",
+      "placeholders": [
+        "{배경 테마 및 장소}",
+        "{시간대 및 분위기 태그}"
+      ]
+    },
+    {
+      "workflow_id": "scene_background",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\scene_background\\README.md",
+      "placeholders": [
+        "{배경 테마 및 장소}",
+        "{시간대 및 분위기 태그}"
+      ]
+    },
+    {
+      "workflow_id": "scene_event_cg",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\scene_event_cg\\README.md",
+      "placeholders": [
+        "{prompt_id}",
+        "{연령대, 헤어스타일, 눈매, 머리색, 눈색}",
+        "{의상 디테일(의상 이름, 색상_의상종류)}",
+        "{의상 이름, 색상_의상종류}",
+        "{캐릭터 특징(연령대, 헤어스타일, 눈매, 머리색, 눈색)}"
+      ]
+    },
+    {
+      "workflow_id": "scene_prop_cg",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\scene_prop_cg\\scene_prop_cg_workflow_api.json",
+      "placeholders": [
+        "{놓여있는 장소/배경}",
+        "{아이템 이름 및 형태}",
+        "{재질 및 질감 디테일}"
+      ]
+    },
+    {
+      "workflow_id": "scene_prop_cg",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\scene_prop_cg\\README.md",
+      "placeholders": [
+        "{놓여있는 장소/배경}",
+        "{아이템 이름 및 형태}",
+        "{재질 및 질감 디테일}"
+      ]
+    },
+    {
+      "workflow_id": "audio_bgm_with_sfx",
+      "file": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\README.md",
+      "placeholders": [
+        "{prompt_id}"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "char_base",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\char_base",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\char_base\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\char_base\\char_base_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": false,
+      "requires_input_video": false,
+      "editable_fields_count": 8,
+      "status": "canonical_template_executable_same_seed_outfit_route",
+      "api_node_count": 7,
+      "api_sha256": "76d5625652f7ff5f8ee607ecc4fa97b4ac17113b3456fd38a266fa0da896d0df",
+      "class_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "dangling_refs": []
+    },
+    {
+      "id": "char_expression",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\char_expression",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\char_expression\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\char_expression\\char_expression_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": true,
+      "requires_input_video": false,
+      "editable_fields_count": 13,
+      "status": "canonical_template_requires_runtime_input_yolosam_face_mask_composited_only",
+      "api_node_count": 18,
+      "api_sha256": "7da381381ab012094225e5a1e2b53609246c47febfe7faae68d4691846cac660",
+      "class_types": [
+        "AILab_MaskEnhancer",
+        "BboxDetectorSEGS",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "ControlNetApplyAdvanced",
+        "ControlNetLoader",
+        "DifferentialDiffusion",
+        "ImageCompositeMasked",
+        "InpaintModelConditioning",
+        "KSampler",
+        "LoadImage",
+        "SAMDetectorCombined",
+        "SAMLoader",
+        "SaveImage",
+        "SetUnionControlNetType",
+        "UltralyticsDetectorProvider",
+        "VAEDecode"
+      ],
+      "dangling_refs": []
+    },
+    {
+      "id": "char_alpha",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\char_alpha",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\char_alpha\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\char_alpha\\char_alpha_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": true,
+      "requires_input_video": false,
+      "editable_fields_count": 2,
+      "status": "canonical_template_requires_runtime_input",
+      "api_node_count": 3,
+      "api_sha256": "86ab85ed7417837903c0ee057f524a9523eb70fdddc5885e54e48b812719f100",
+      "class_types": [
+        "BiRefNetRMBG",
+        "LoadImage",
+        "SaveImage"
+      ],
+      "dangling_refs": []
+    },
+    {
+      "id": "scene_background",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\scene_background",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\scene_background\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\scene_background\\scene_background_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": false,
+      "requires_input_video": false,
+      "editable_fields_count": 8,
+      "status": "canonical_template_but_prompt_placeholders_require_runtime_patch",
+      "api_node_count": 8,
+      "api_sha256": "1a6691bf85c38be95ab4f1e5bd9c89cb1a4cc8b0cc14ae92751e9916907d89e3",
+      "class_types": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "dangling_refs": []
+    },
+    {
+      "id": "scene_event_cg",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\scene_event_cg",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\scene_event_cg\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\scene_event_cg\\scene_event_cg_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": false,
+      "requires_input_video": false,
+      "editable_fields_count": 12,
+      "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added",
+      "api_node_count": 9,
+      "api_sha256": "d05eb9215fa80be85dcc0fdc3fe1c3e56a55b4d3fc8cad925caae018aaeb1bbd",
+      "class_types": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "LoraLoader",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "dangling_refs": []
+    },
+    {
+      "id": "scene_prop_cg",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\scene_prop_cg",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\scene_prop_cg\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\scene_prop_cg\\scene_prop_cg_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": false,
+      "requires_input_video": false,
+      "editable_fields_count": 8,
+      "status": "canonical_template",
+      "api_node_count": 8,
+      "api_sha256": "a9d596ad5ffe32a818e6408e17dd3d7cbebb9e853be3d719c758a64ae9b27343",
+      "class_types": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "dangling_refs": []
+    },
+    {
+      "id": "ui_system_alert_frame",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\ui_system_alert_frame",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\ui_system_alert_frame\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\ui_system_alert_frame\\ui_system_alert_frame_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": false,
+      "requires_input_video": false,
+      "editable_fields_count": 8,
+      "status": "canonical_two_stage_ui_alert_frame_source_plus_cleanplate_qa_pipeline_runtime_patch_required",
+      "api_node_count": 8,
+      "api_sha256": "827681a640d13a0276b1a59a0802781b30d649feda4659412e4d660b48f32dba",
+      "class_types": [
+        "CLIPSetLastLayer",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "dangling_refs": []
+    },
+    {
+      "id": "audio_bgm_with_sfx",
+      "folder": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx",
+      "folder_exists": true,
+      "readme": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\README.md",
+      "readme_exists": true,
+      "api": "E:\\workspace\\comfyui-game-asset-workflows\\audio_bgm_with_sfx\\audio_bgm_with_sfx_workflow_api.json",
+      "api_exists": true,
+      "requires_input_images": false,
+      "requires_input_video": false,
+      "editable_fields_count": 13,
+      "status": "canonical_unified_audio_engine_with_logical_bgm_sfx_role_contracts_runtime_prompt_slots_required",
+      "api_node_count": 21,
+      "api_sha256": "3803134c350c4721e38e8d8c3bf7b8420457b51ec0caaa623c3e6b281bf35ce1",
+      "class_types": [
+        "CLIPLoader",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "ComfyMathExpression",
+        "ComfySwitchNode",
+        "CustomCombo",
+        "EmptyLatentAudio",
+        "JsonExtractString",
+        "KSampler",
+        "PreviewAny",
+        "PrimitiveBoolean",
+        "PrimitiveFloat",
+        "PrimitiveStringMultiline",
+        "SaveAudioMP3",
+        "StringReplace",
+        "TextGenerate",
+        "VAEDecodeAudio"
+      ],
+      "dangling_refs": []
+    }
+  ]
+}

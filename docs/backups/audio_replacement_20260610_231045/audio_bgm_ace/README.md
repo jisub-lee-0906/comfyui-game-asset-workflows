@@ -26,7 +26,7 @@
 
 #### 2. Prompt 작성법
 
-ACE-Step BGM prompt는 Danbooru image tag가 아니라 audio tag / natural-language music direction입니다. 이미지 workflow의 `danbooru_tag.csv` 규칙을 그대로 적용하지 않습니다.
+ACE-Step BGM prompt는 Danbooru image tag가 아니라 audio tag / natural-language music direction입니다. 이미지 workflow의 Danbooru tag-oracle 규칙을 그대로 적용하지 않습니다.
 
 **Tags 기본형:**
 
