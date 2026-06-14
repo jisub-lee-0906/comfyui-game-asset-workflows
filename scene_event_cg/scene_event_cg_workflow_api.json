@@ -35,7 +35,7 @@
         "2",
         0
       ],
-      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, cowboy_shot, upper_body, full_body, standing, sitting, facing_viewer, looking_at_viewer, from_above, from_below, dutch_angle, classroom, chalkboard, blackboard, whiteboard"
+      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, cowboy_shot, upper_body, full_body, standing, sitting, facing_viewer, looking_at_viewer, from_above, from_below, dutch_angle, classroom, chalkboard, blackboard, whiteboard"
     },
     "_meta": {
       "title": "Negative prompt: suppress quality failures plus composition-forcing camera/pose tags by default"

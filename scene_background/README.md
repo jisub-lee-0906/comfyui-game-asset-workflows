@@ -25,6 +25,8 @@ masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution,
 
 자동화 주의: `hallway`, `window`, `night`처럼 일반 tag만 넣으면 학교/병원 같은 범용 복도로 drift할 수 있습니다. 귀족 저택, 성, 고딕 실내, 특정 재질/건축 양식처럼 tag만으로 부족한 장소 의도는 `semantic_prompt`/`style_prompt`에 짧은 자연어로 넣어 live prompt에 반영합니다.
 
+프롬프트 주의: background live prompt에는 `visual novel setting`, `dialogue overlay`, `text box`, `caption`처럼 VN UI/자막을 연상시키는 표현을 넣지 않습니다. Unit 6D 현대 침실 smoke에서 이런 표현이 하단 black subtitle bar와 fake text를 유도했습니다. VN에서 쓸 배경이라는 의도는 `visual_brief`/metadata에 남기고, live prompt는 `empty modern bedroom background`, `clean full-frame interior`, `open central wall and floor space`처럼 순수 배경 묘사로 유지합니다. fake caption/letterbox가 생기면 `negative_tags`에 `caption`, `letterboxed`, `black_border`, `text_focus`를 추가합니다.
+
 **Negative prompt:**
 
 ```text

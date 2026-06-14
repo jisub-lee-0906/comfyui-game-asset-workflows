@@ -22,6 +22,38 @@
 
 #### 2. Runtime patch 대상
 
+Toolkit runner:
+
+```bash
+python tools/run_char_alpha_smoke.py \
+  --project-root <REN PY PROJECT ROOT> \
+  --asset-id <transparent sprite asset id> \
+  --source-image <project-confined source image> \
+  --prepare-only
+```
+
+또는 source metadata에서 첫 번째 usable `candidate_copies`/`output_paths` 이미지를 가져올 수 있습니다:
+
+```bash
+python tools/run_char_alpha_smoke.py \
+  --project-root <REN PY PROJECT ROOT> \
+  --asset-id <transparent sprite asset id> \
+  --source-metadata <project-confined source metadata.json> \
+  --prepare-only
+```
+
+Runner contract:
+
+- `--source-image`와 `--source-metadata` 중 정확히 하나만 사용합니다.
+- source image/source metadata는 selected project root 아래에 있어야 합니다.
+- source image는 active ComfyUI input root로 staged copy됩니다. Project contract에 `comfyui_input_root`가 없으면 `docs/automation/comfyui_input/` fallback을 사용합니다.
+- `LoadImage.inputs.image`에는 staged file name만 넣습니다.
+- `SaveImage.inputs.filename_prefix`는 run마다 `hermes_vn_char_alpha/<run_id>`로 patch합니다.
+- `--prepare-only`는 ComfyUI 제출 없이 patched workflow와 metadata만 기록합니다.
+- live generation output은 후보로만 기록되며 promotion은 별도 owner approval gate가 필요합니다.
+
+Runtime patch fields:
+
 - `LoadImage.inputs.image`: active Windows ComfyUI `input/` 폴더에 존재하는 source image filename.
 - `SaveImage.inputs.filename_prefix`: run마다 고유한 output prefix.
 

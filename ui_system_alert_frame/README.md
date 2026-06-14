@@ -186,7 +186,16 @@ Operational rule: start from the minimal base, add only one structure/color toke
 #### 3. 운영 가이드
 
 1. `ui_system_alert_frame_workflow_api.json`을 target project의 runtime/run directory로 복사합니다.
-2. runtime copy에서만 seed/prompt/output prefix를 patch합니다.
+2. runtime copy에서만 seed/prompt/output prefix를 patch합니다. 자동화 smoke는 toolkit runner를 사용합니다:
+
+```bash
+python E:/workspace/vn-automation-toolkit/tools/run_ui_system_alert_frame_smoke.py \
+  --project-root E:/workspace/renpy-project/<game_slug> \
+  --asset-id ui_alert_smoke \
+  --prompt-shape corner_alert_backdrop \
+  --seed 260604913
+```
+
 3. smoke batch는 보통 3~5장부터 시작합니다.
 4. baked text/logos/symbols/icons/nameplates/central objects가 있으면 reject합니다.
 5. source의 corner/border identity는 좋지만 중앙이 바쁘면 `scripts/make_cleanplate_variants.py`로 cleanplate review variant를 만들 수 있습니다.

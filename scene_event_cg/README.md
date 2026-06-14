@@ -73,7 +73,9 @@ Metadata 원본 특징 guard:
 
 #### 3. 기본 안전 tag 세트
 
-중립/대화/설명용 기본값:
+Unit 10C automation audit note: the fixed README/model wrapper keeps `depth_of_field` as a positive quality/composition cue, so `depth_of_field` has been removed from the canonical workflow negative prompt. The canonical negative still intentionally contains several composition/camera/body-pose tags (`cowboy_shot`, `upper_body`, `full_body`, `standing`, `sitting`, `facing_viewer`, `looking_at_viewer`, `from_above`, `from_below`, `dutch_angle`) to prevent placeholder-driven pose/camera drift. The toolkit runner fails closed if any agent-authored positive placeholder tag, or any fixed positive wrapper token, also appears in the canonical negative prompt. Do not put those negative-reserved tags into `prompt_slots.scene_context`; use non-conflicting setting/mood tags such as `indoors`, `auditorium`, `spotlight`, `stage`, etc.
+
+Legacy/historical candidate sets below contain several now negative-reserved tags. Treat them as examples of *unsafe old presets* unless the canonical negative policy is deliberately changed:
 
 ```text
 upper_body, straight-on, facing_viewer, looking_at_viewer, standing, arms_at_sides
@@ -104,51 +106,71 @@ upper_body, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, su
 - `pointing_forward`는 양팔 대칭 지시가 나올 수 있으므로 지목/명령 연출은 `pointing_at_viewer`를 우선합니다.
 - 기본/중립 event CG는 얼굴 품질과 캐릭터 동일성을 위해 `upper_body` 중심으로 둡니다.
 
-#### 4. Cinematic 후보 tag 세트
+#### 4. Cinematic pose/camera policy status
 
-아래 블록들은 “한 batch에 다 섞는 목록”이 아닙니다. 테스트에서 잘 먹힌 안전 후보 태그 세트이며, script beat에 맞는 블록 하나를 고르고 seed reroll로 후보를 뽑습니다.
+Unit 10F decision: do **not** use the old cinematic pose/camera tag presets as current `prompt_slots.scene_context` recipes. The canonical negative prompt currently reserves pose/camera/body-framing tags such as:
 
-General cinematic shock/reveal:
+```text
+cowboy_shot, upper_body, full_body, standing, sitting, facing_viewer, looking_at_viewer, from_above, from_below, dutch_angle
+```
+
+The toolkit runner intentionally fails closed if these tags are reintroduced through agent-authored positive placeholders. This keeps the automation route stable and prevents hidden prompt self-conflicts, but it also means old event-CG cinematic recipes are **disabled until a deliberate pose/camera policy redesign is performed**.
+
+Historical disabled examples — do not paste into current `prompt_slots.scene_context` without redesigning the canonical negative policy first:
 
 ```text
 cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines
-```
-
-Stable cinematic fallback:
-
-```text
 cowboy_shot, from_below, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines
-```
-
-Stop/reveal/presentation event:
-
-```text
 cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, outstretched_arms, open_hands, surprised, open_mouth, motion_lines
-```
-
-Directed command/accusation event:
-
-```text
 cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, pointing_at_viewer, outstretched_arm, serious, open_mouth, motion_lines
-```
-
-Reaching / POV involvement / rescue / interruption:
-
-```text
 cowboy_shot, from_below, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning_forward, open_hands, reaching, serious, open_mouth, motion_lines
-```
-
-Vulnerability / panic / overwhelmed shock:
-
-```text
 cowboy_shot, from_above, dutch_angle, facing_viewer, looking_at_viewer, standing, leaning, surprised, open_mouth, motion_blur, motion_lines
 ```
 
-주의:
+Current safe event-CG `scene_context` should be limited to non-conflicting setting/mood/time/lighting tags such as:
 
-- `cowboy_shot`, `from_below`, `from_above`는 기본 대화/중립 프리셋이 아니라 beat-matched cinematic 후보입니다.
-- `wide_shot`, `full_body`는 얼굴/identity/anatomy 리스크 때문에 기본 후보에서 제외합니다.
-- cinematic 후보도 production-ready가 아니라 generation recipe입니다. contact sheet + asset QA + Ren'Py textbox/safe-area QA 후에만 사용자 리뷰 후보로 올립니다.
+```text
+indoors, auditorium, stage, curtains, spotlight, podium, presentation, night, sunset, window, sunlight
+```
+
+Unit 10I update: same-seed framing experiments showed that face proximity materially improves eye/face quality on the active local model. For production character event CGs, the best prompt-only direction so far is the H6 identity/outfit policy plus `upper_body, looking_at_viewer`, with those exact tokens removed from the production-route negative prompt. `facing_viewer` is also viable for frontal VN event CGs. Unit 10J formalized this in `run_scene_event_cg_smoke.py` as route modes: `conservative`, `production_character`, `production_character_front`, and `cut_in`. The route mode can be passed as `--route-mode` or recorded in prompt slots as `scene_event_route_mode`. Do not apply this by silently changing the conservative fixture route; split policy modes instead:
+
+1. conservative fixture/no-ref route: keep pose/camera tags mostly negative-reserved for broad smoke tests;
+2. production character event route: use `scene_event_route_mode: production_character`, allow `upper_body` + `looking_at_viewer`, and carry full source outfit/accessory tags (`red_bow`, `brown_cardigan`, `white_shirt`, `blue_skirt`, `brown_pantyhose`). Unit 10K confirmed this route is robust enough as the default prompt-only production event route, but still requires small seed-batch QA; seed `260529217` was the best candidate in that batch. Unit 10L found a better neutral-scene micro policy: add `expressionless, closed_mouth` for neutral event CGs only;
+3. production frontal route: use `scene_event_route_mode: production_character_front` only when a direct front-facing VN event CG is desired;
+4. special cut-in route: use `scene_event_route_mode: cut_in` and reserve `portrait`/`close-up`/`headshot`/`solo_focus` for intentional face cut-ins, not default event CGs;
+5. future reference route: add image/reference conditioning if prompt-only identity lock is still insufficient.
+
+Unit 10M emotion/framing matrix expanded route policy:
+
+- neutral default: `production_character` + `expressionless, closed_mouth` + `upper_body, looking_at_viewer`;
+- happy default: `production_character_front` + `smile, open_mouth`;
+- serious default: `production_character_front` + `serious, closed_mouth` (use `cut_in` for stronger intensity);
+- surprised default: `production_character_front` + `surprised, open_mouth`;
+- sad default: `production_character_front` + `sad, tears, frown, closed_mouth`;
+- emotional close-up/cut-in: `cut_in` + `portrait, close-up, headshot, solo_focus`;
+- medium/cowboy shot: `production_character_cowboy` + `cowboy_shot, looking_at_viewer`, optional only, not default.
+
+
+
+
+#### Automation v2 tool flow
+
+The VN toolkit now has v2 helper tools that turn Unit 10L/10M policy into repeatable production automation:
+
+```bash
+# 1) Create one resolved prompt-slot file from compact intent.
+python tools/create_scene_event_cg_prompt_slots.py   --project-root <renpy-project>   --asset-id <asset-id>   --emotion sad   --framing default
+
+# 2) Generate or prepare-check a seed batch.
+python tools/run_scene_event_cg_batch.py   --project-root <renpy-project>   --asset-id-prefix <asset-prefix>   --emotion sad   --framing default   --seeds 260529217,260530001,260529203   --char-base-metadata <char_base metadata.json>
+
+# 3) Build review sheets from the batch summary.
+python tools/make_event_cg_contact_sheet.py   --batch-summary <..._scene_event_cg_batch.json>   --output <..._contact_sheet.jpg>
+```
+
+This is the recommended production path: batch first, contact-sheet review second, approval-gated promotion last. Do not auto-promote a single seed.
+
 
 #### 5. 장소/장면 tag 운영
 
@@ -186,7 +208,7 @@ classroom, chalkboard, blackboard, whiteboard
 
 1. 기본은 no-ref + pose LoRA on입니다.
 2. 출력은 event_cg 규칙상 항상 16:9만 사용합니다(기본 1024x576).
-3. 이 canonical route에는 `LoadImage`/PuLID reference conditioning을 추가하지 않습니다.
+3. 이 canonical route에는 `LoadImage`/PuLID reference conditioning을 추가하지 않습니다. Unit 10G live smoke confirmed that this no-ref seed-only route can produce a mechanically valid 16:9 event CG, but it may not preserve production-grade identity/outfit details from the source char_base metadata (example drift: bow color/cardigan/face impression). Treat source metadata/seed handoff as provenance and weak continuity only, not as reference conditioning. Unit 10H prompt-only same-seed experiments showed that the current model responds much better when full source outfit/accessory tags are carried forward explicitly: put fragile identity tags early (`brown_eyes`, `tareme`, `blunt_bangs`), include exact outfit tags (`red_bow`, `brown_cardigan`, `white_shirt`, `blue_skirt`, `brown_pantyhose`), and keep scene context compact (`auditorium`, `spotlight`) before adding extra scenery.
 4. 자연어 prompt chunk나 DB에 없는 pseudo-tag를 추가하지 않습니다.
 5. 로컬 Danbooru taxonomy SQLite에서 active/non-deprecated로 검증되는 `tag` 또는 active alias만 variable prompt에 사용합니다.
 6. 기본 positive는 identity/outfit 중심으로 유지하고, 구도/카메라 강제 태그는 기본값에서 제외합니다.
