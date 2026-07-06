@@ -177,8 +177,8 @@
       "folder": "scene_background",
       "readme": "scene_background/README.md",
       "api": "scene_background/scene_background_workflow_api.json",
-      "purpose": "Generate 16:9 visual-novel background art with no characters or text.",
-      "output_type": "opaque 16:9 background image, 1024x576 by default",
+      "purpose": "Generate visual-novel background art with no characters or text. Mobile portrait projects use contract/runner true 9:16 dimensions; legacy 16:9 remains available for older projects.",
+      "output_type": "opaque background image, legacy 1024x576 by default; portrait profiles commonly use true 9:16 832x1472 generation override, fallback 768x1344",
       "requires_input_images": false,
       "primary_nodes": {
         "checkpoint": "1",
@@ -213,7 +213,11 @@
         "{시간대 및 광원 디테일}"
       ],
       "status": "canonical_template_but_prompt_placeholders_require_runtime_patch",
-      "input_placeholders": []
+      "input_placeholders": [],
+      "display_profile_policy": {
+        "legacy_default": "16:9 1024x576 where applicable",
+        "mobile_portrait_9_16": "use project contract/runner true 9:16 width-height, usually 832x1472 with 768x1344 fallback; record aspect/runtime/generation resolution in metadata"
+      }
     },
     {
       "order": 6,
@@ -221,8 +225,8 @@
       "folder": "scene_event_cg",
       "readme": "scene_event_cg/README.md",
       "api": "scene_event_cg/scene_event_cg_workflow_api.json",
-      "purpose": "Generate 16:9 no-reference event CG; character/outfit consistency is prompt-driven by metadata identity/outfit tags, with close upper_body framing and pose LoRA enabled by default. Minor outfit drift is accepted; do not revert to PuLID/source-image by default.",
-      "output_type": "opaque 16:9 event CG",
+      "purpose": "Generate no-reference event CG; mobile portrait projects use explicit/contract true 9:16 dimensions, while legacy 16:9 remains available for older projects. Character/outfit consistency is prompt-driven by metadata identity/outfit tags.",
+      "output_type": "opaque event CG, legacy 16:9 or mobile portrait according to project display_profile/runtime width-height",
       "requires_input_images": false,
       "input_placeholders": [],
       "primary_nodes": {
@@ -287,7 +291,11 @@
         "char_base",
         "char_expression"
       ],
-      "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added"
+      "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added",
+      "display_profile_policy": {
+        "legacy_default": "16:9 1024x576 where applicable",
+        "mobile_portrait_9_16": "use project contract/runner true 9:16 width-height, usually 832x1472 with 768x1344 fallback; record aspect/runtime/generation resolution in metadata"
+      }
     },
     {
       "order": 7,
@@ -295,8 +303,8 @@
       "folder": "scene_prop_cg",
       "readme": "scene_prop_cg/README.md",
       "api": "scene_prop_cg/scene_prop_cg_workflow_api.json",
-      "purpose": "Generate separate 16:9 close-up prop, clue, or story cut-in CG images for Ren'Py staging.",
-      "output_type": "opaque 16:9 prop close-up CG, 1024x576 by default",
+      "purpose": "Generate separate prop, clue, card insert, or story cut-in CG images for RenPy staging. Legacy default is 16:9; mobile portrait projects must record portrait cut-in/card/crop intent.",
+      "output_type": "opaque prop/cutin/card CG, legacy 1024x576 by default; portrait profiles commonly use true 9:16 832x1472 generation override, fallback 768x1344",
       "requires_input_images": false,
       "primary_nodes": {
         "checkpoint": "1",
@@ -328,7 +336,11 @@
         "default_subject": "brass_key"
       },
       "status": "canonical_template",
-      "input_placeholders": []
+      "input_placeholders": [],
+      "display_profile_policy": {
+        "legacy_default": "16:9 1024x576 where applicable",
+        "mobile_portrait_9_16": "use project contract/runner true 9:16 width-height, usually 832x1472 with 768x1344 fallback; record aspect/runtime/generation resolution in metadata"
+      }
     },
     {
       "order": 8,
@@ -336,8 +348,8 @@
       "folder": "ui_system_alert_frame",
       "readme": "ui_system_alert_frame/README.md",
       "api": "ui_system_alert_frame/ui_system_alert_frame_workflow_api.json",
-      "purpose": "Generate dedicated textless red/ornate visual-novel system alert frame candidates as a ComfyUI production workflow; use procedural cleanplate variants and RenPy Korean overlay previews as QA/integration diagnostics only; separate from scene_prop_cg.",
-      "output_type": "opaque 16:9 UI frame source or cleanplate review candidate, 1024x576 source by default, review-only until explicit approval",
+      "purpose": "Generate dedicated textless VN system alert frame/card/backdrop candidates. Legacy default is 16:9; mobile portrait projects require phone-scale card/frame overlay QA.",
+      "output_type": "opaque UI frame/card/backdrop source or cleanplate review candidate, legacy 1024x576 by default; portrait profiles may use 832x1472 (fallback 768x1344) runtime override",
       "requires_input_images": false,
       "primary_nodes": {
         "checkpoint": "1",
@@ -380,7 +392,11 @@
       ],
       "references": [
         "ui_system_alert_frame/references/qa_policy.md"
-      ]
+      ],
+      "display_profile_policy": {
+        "legacy_default": "16:9 1024x576 where applicable",
+        "mobile_portrait_9_16": "use project contract/runner true 9:16 width-height, usually 832x1472 with 768x1344 fallback; record aspect/runtime/generation resolution in metadata"
+      }
     },
     {
       "order": 9,

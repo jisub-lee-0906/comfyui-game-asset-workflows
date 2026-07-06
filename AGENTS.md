@@ -2,7 +2,7 @@
 
 이 문서는 AI agent가 `comfyui-game-asset-workflows` pack을 사용해 게임 제작 중 필요한 에셋 후보를 ComfyUI에서 자동 생성할 때 따르는 실행 규칙입니다.
 
-이 pack은 사용자가 workflow 이름을 직접 말하지 않아도, agent가 현재 게임 제작 맥락에서 필요한 에셋을 판단해 적절한 workflow를 선택하는 것을 전제로 합니다. 예를 들어 장면 구현 중 캐릭터가 들어간 16:9 일러스트가 필요하면 `scene_event_cg`, 단서 소품 이미지가 필요하면 `scene_prop_cg`, 대사용 표정 variant가 필요하면 `char_expression`를 선택합니다.
+이 pack은 사용자가 workflow 이름을 직접 말하지 않아도, agent가 현재 게임 제작 맥락에서 필요한 에셋을 판단해 적절한 workflow를 선택하는 것을 전제로 합니다. 예를 들어 장면 구현 중 캐릭터가 들어간 일러스트가 필요하면 `scene_event_cg`, 단서 소품 이미지가 필요하면 `scene_prop_cg`, 대사용 표정 variant가 필요하면 `char_expression`를 선택합니다. 출력 비율은 project `display_profile`을 확인합니다: `mobile_portrait_9_16_*` 프로젝트에서는 portrait-first로 runner/contract가 true 9:16 해상도(예: 832x1472, fallback 768x1344)를 적용해야 하며, legacy 16:9는 기존 호환 또는 명시 요청 전용입니다.
 
 ## 필수 읽기 순서
 
@@ -33,7 +33,7 @@
 
 사용자 지시나 게임 장면 맥락을 보고 가장 작은 적절한 workflow를 고릅니다.
 
-- “캐릭터 CG”, “이벤트 CG”, “장면 일러스트”, 포즈/액션이 있는 16:9 캐릭터 그림 → `scene_event_cg`
+- “캐릭터 CG”, “이벤트 CG”, “장면 일러스트”, 포즈/액션이 있는 캐릭터 그림 → `scene_event_cg` (legacy 16:9 또는 project display_profile 기반 mobile portrait)
 - 새 캐릭터의 기준 source/base/anchor image 또는 same-seed 의상 variant → `char_base`
 - 표정 변경, 대사용 표정 variant → `char_expression`
 - 배경 제거, transparent PNG, sprite cutout → `char_alpha`
@@ -190,7 +190,7 @@ Windows ComfyUI는 공유 환경으로 취급합니다. 사용자 승인 없이 
 - outfit drift가 과한지
 - 손/팔/몸 anatomy가 깨졌는지
 - duplicate character가 생겼는지
-- 16:9 framing이 장면에 쓸 수 있는지
+- project display_profile에 맞는 9:16 portrait framing과 textbox/choice safe-area가 장면에 쓸 수 있는지
 - 배경과 캐릭터 조명 통합이 자연스러운지
 
 ### Prop CG

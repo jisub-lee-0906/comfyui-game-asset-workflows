@@ -3,7 +3,7 @@
 - workflow_id: `scene_prop_cg`
 - modality: `image`
 - input_requirement: 없음
-- output: 16:9 prop CG PNG
+- output: prop/cutin/card CG PNG; legacy default 16:9, mobile portrait projects may run 832x1472 or another contract-defined portrait size
 - prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
 
@@ -99,6 +99,7 @@ small plain smartphone on wooden tabletop, featureless empty black glass front, 
 - `ring`은 단일 소품으로는 가능하지만 보석 장식이 커져 bracelet/ornamental object처럼 보일 수 있으므로 seed 후보를 여러 장 뽑습니다.
 - `pocket_watch`는 단서 분위기는 좋지만 문자판/뚜껑/체인 때문에 화면상 여러 물체처럼 분리될 수 있습니다. 단일 소품 기준에서는 QA 후보로만 봅니다.
 - 문서, 책, 편지, 스마트폰 화면, 시계 문자판처럼 텍스트/기호가 들어가기 쉬운 소품은 fake text 여부를 반드시 확인합니다.
-- 단순 금속/보석/병/칼/크리스탈류는 상대적으로 안전한 첫 후보입니다.
+- 단순 칼/열쇠류는 상대적으로 안전한 첫 후보입니다.
+- Unit 7Q 기준으로 `knife`/`kitchen_knife`는 `object_first_compact`에서 단일 소품으로 안정적이었지만, `ring`/보석류와 `vial`/병류는 주의 class입니다. `ring`은 domed ornament, plate, jewelry box, extra ring처럼 drift할 수 있으므로 visible band/hole geometry를 강하게 요구하고 QA에서 reject합니다. `vial`은 cup/tumbler/dropper/multiple bottles로 분열하기 쉬우므로 one closed upright corked vial only를 요구하고, 단일 객체가 안 잡히면 seed batch/후보선별 또는 workflow 보강이 필요합니다. 자동화 감사 모드에서는 특정 fixture 최적화로 과도하게 reroll하지 말고 class limitation으로 기록합니다.
 - 읽을 수 있는 정보가 필요한 단서는 ComfyUI에서 직접 생성하지 말고 빈 소품을 만든 뒤 Ren'Py/후편집으로 텍스트를 합성합니다.
 

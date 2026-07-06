@@ -19,7 +19,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, {캐릭터 특징(연령대, 헤어스타일, 머리길이, 머리색, 눈매, 눈색)}, {의상 디테일(의상 이름, 색상_의상종류)}, grey_background
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, {선택적 체형 태그(body_shape)}, {캐릭터 특징(연령대, 헤어스타일, 머리길이, 머리색, 눈매, 눈색)}, {의상 디테일(의상 이름, 색상_의상종류)}, grey_background
 ```
 
 **Negative prompt:**
@@ -30,6 +30,8 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 #### 2. Same-seed outfit variant 규칙
 
+Unit 9D-prime 정책 보정: 기본 wrapper는 더 이상 `medium_breasts`를 강제하지 않습니다. 체형은 선택적 `prompt_slots.body_shape`에서 캐릭터 의도에 맞게 `small_breasts`, `medium_breasts`, `flat_chest` 등을 명시합니다. 학교 의상에서 배지/문장/bow drift를 피하려면 `negative_tags`에 `badge`, `emblem`, `crest`, `school_emblem`, `bow`, `ribbon`을 넣고, 넥타이가 중요할 때는 `necktie`보다 `red_necktie`/`blue_necktie`처럼 색상 지정 necktie 태그를 우선합니다.
+
 1. 먼저 기준 캐릭터 후보를 제작합니다.
 2. 기준 캐릭터 후보의 시드값과 캐릭터 특징을 그대로 사용합니다.
 3. `{의상 디테일}` block만 DB 검증된 의상 tag 묶음으로 교체합니다.
@@ -38,9 +40,10 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 고정하는 것:
 - 기준 후보와 동일한 시드값
-- `masterpiece`, `best_quality`, `amazing_quality`, `4k`, `very_aesthetic`, `high_resolution`, `ultra-detailed`, `absurdres`, `newest`, `1girl`, `solo`, `medium_breasts`, `cowboy_shot`, `standing`, `facing_viewer`, `looking_at_viewer`
+- `masterpiece`, `best_quality`, `amazing_quality`, `4k`, `very_aesthetic`, `high_resolution`, `ultra-detailed`, `absurdres`, `newest`, `1girl`, `solo`, `cowboy_shot`, `standing`, `facing_viewer`, `looking_at_viewer`
 - `expressionless`, `closed_mouth`, `arms_at_sides`
 - 기준 후보와 동일한 캐릭터 특징
+- 필요한 경우에만 동일한 `body_shape` slot
 
 바꾸는 것:
 - `{의상 디테일(의상 이름, 색상_의상종류)}`
@@ -48,6 +51,7 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 주의:
 - 의상만 바꾸고 얼굴/머리 identity는 바꾸지 않습니다.
+- same seed는 얼굴/머리 identity consistency에 도움이 되지만 체형/성숙도/실루엣을 완전히 고정하지는 않습니다. Unit 9C winter_coat variant에서 `white_sweater`와 기본 `medium_breasts`가 상체 강조를 키웠습니다. 의상 variant도 승인 전 개별 visual QA가 필요합니다.
 - 의상 slot에 표정, 카메라, 배경, 성격 단어를 섞지 않습니다.
 - 손 주변에 소품/가방이 생기면 먼저 `arms_at_sides`를 유지하고 seed 후보를 봅니다. 무리하게 negative를 넓히지 않습니다.
 - 어깨/다리 노출 태그(`bare_shoulders`, `bare_legs`)를 쓸 때는 의상 레이어 태그(`dress`, `shirt`, `skirt`, `gloves`)를 함께 명시합니다.

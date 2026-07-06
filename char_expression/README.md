@@ -16,6 +16,39 @@
 
 #### 1. 프롬프팅 방법
 
+Toolkit runner:
+
+```bash
+python tools/run_char_expression_smoke.py \
+  --project-root <REN PY PROJECT ROOT> \
+  --asset-id <expression asset id> \
+  --source-image <project-confined source image> \
+  --prompt-slots <project/docs/production/prompt_slots/*.json> \
+  --prepare-only
+```
+
+또는 source metadata에서 첫 번째 usable `candidate_copies`/`output_paths` 이미지를 가져올 수 있습니다:
+
+```bash
+python tools/run_char_expression_smoke.py \
+  --project-root <REN PY PROJECT ROOT> \
+  --asset-id <expression asset id> \
+  --source-metadata <project-confined source metadata.json> \
+  --prompt-slots <project/docs/production/prompt_slots/*.json> \
+  --prepare-only
+```
+
+Runner contract:
+
+- `--source-image`와 `--source-metadata` 중 정확히 하나만 사용합니다.
+- source image/source metadata는 selected project root 아래에 있어야 합니다.
+- prompt slots는 `docs/production/prompt_slots/` 아래 agent-authored JSON이어야 합니다.
+- required slots: `identity_tags`, `expression_positive`, `expression_negative`.
+- all slot tags are validated through the workflow-pack Danbooru SQLite taxonomy gate.
+- source image는 active ComfyUI input root로 staged copy됩니다. Project contract에 `comfyui_input_root`가 없으면 `docs/automation/comfyui_input/` fallback을 사용합니다.
+- `--prepare-only`는 ComfyUI 제출 없이 patched workflow와 metadata만 기록합니다.
+- live generation output은 후보로만 기록되며, expression readability/identity drift/alpha handoff QA와 owner approval 없이는 production-ready가 아닙니다.
+
 **Positive prompt:**
 
 ```text
