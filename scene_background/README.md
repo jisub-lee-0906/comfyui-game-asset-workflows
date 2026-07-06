@@ -3,7 +3,7 @@
 - workflow_id: `scene_background`
 - modality: `image`
 - input_requirement: 없음
-- output: 16:9 background PNG
+- output: background PNG; legacy default 16:9, mobile portrait projects may run 832x1472 or another contract-defined portrait size
 - prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
 
@@ -19,7 +19,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, no_humans, wide_shot, landscape, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting, BREAK, {짧은 자연어 semantic_prompt/style_prompt if needed}
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, no_humans, {배경 테마 및 장소}, {시간대 및 분위기 태그}, BREAK, depth_of_field, volumetric_lighting, BREAK, {짧은 자연어 semantic_prompt/style_prompt if needed}
 
 ```
 

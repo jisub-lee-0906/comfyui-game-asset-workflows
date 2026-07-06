@@ -30,10 +30,10 @@ Legacy Linux-bridge source paths are historical reference only and should not be
 | `char_base` | 기본 캐릭터/source image와 same-seed outfit/costume variant 생성. | `char_base/char_base_workflow_api.json` |
 | `char_expression` | 캐릭터 source image에서 얼굴/표정 variant 생성. | `char_expression/char_expression_workflow_api.json` |
 | `char_alpha` | source character image를 transparent PNG / alpha output으로 변환. | `char_alpha/char_alpha_workflow_api.json` |
-| `scene_background` | 캐릭터 없는 16:9 VN 배경 생성. | `scene_background/scene_background_workflow_api.json` |
-| `scene_prop_cg` | 16:9 소품 / 단서 / item cut-in CG 생성. | `scene_prop_cg/scene_prop_cg_workflow_api.json` |
-| `scene_event_cg` | no-reference txt2img + pose LoRA로 16:9 character event CG 생성. 캐릭터/의상 일관성은 캐릭터 metadata anchor와 prompt tag로 유지합니다. | `scene_event_cg/scene_event_cg_workflow_api.json` |
-| `ui_system_alert_frame` | Textless red/ornate VN system alert frame 후보 생성. Ren'Py text overlay preview는 QA/통합 확인용이며, `scene_prop_cg`와 분리된 UI 전용 route입니다. | `ui_system_alert_frame/ui_system_alert_frame_workflow_api.json` |
+| `scene_background` | 캐릭터 없는 VN 배경 생성. Legacy 기본은 16:9이나, project `display_profile=mobile_portrait_9_16_*`에서는 runner가 portrait 해상도(예: 832x1472)를 명시 적용합니다. | `scene_background/scene_background_workflow_api.json` |
+| `scene_prop_cg` | 소품 / 단서 / item cut-in CG 생성. Legacy 기본은 16:9이며, mobile portrait 프로젝트에서는 portrait cut-in / card insert / legacy crop 중 용도를 기록해야 합니다. | `scene_prop_cg/scene_prop_cg_workflow_api.json` |
+| `scene_event_cg` | no-reference txt2img + pose LoRA character event CG 생성. Legacy 기본은 16:9이나 mobile portrait 프로젝트에서는 832x1472 같은 portrait override를 사용합니다. 캐릭터/의상 일관성은 캐릭터 metadata anchor와 prompt tag로 유지합니다. | `scene_event_cg/scene_event_cg_workflow_api.json` |
+| `ui_system_alert_frame` | Textless red/ornate VN system alert frame/card 후보 생성. Legacy 기본은 16:9 frame이며, mobile portrait 프로젝트에서는 phone-scale card/frame variant와 Korean overlay QA가 필요합니다. | `ui_system_alert_frame/ui_system_alert_frame_workflow_api.json` |
 | `audio_bgm_with_sfx` | Stable Audio 3 기반 통합 BGM/SFX/One-shot 후보 생성. | `audio_bgm_with_sfx/audio_bgm_with_sfx_workflow_api.json` |
 
 ## AI agent 시작 지점
@@ -55,13 +55,13 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 
 | 사용자 또는 장면 맥락 | 사용할 workflow | 입력 이미지 | 판단 기준 / 주의사항 |
 |---|---|---|---|
-| “캐릭터 CG 만들어줘”, “이벤트 CG 뽑아줘”, “이 장면용 캐릭터 일러스트가 필요해” | `scene_event_cg` | 없음 | 16:9 캐릭터 CG입니다. 사용자가 source/base/anchor를 명시하지 않았다면 `char_base`로 가지 않습니다. 기존 캐릭터 기반이면 캐릭터 metadata의 identity/outfit/framing anchor를 먼저 사용합니다. |
+| “캐릭터 CG 만들어줘”, “이벤트 CG 뽑아줘”, “이 장면용 캐릭터 일러스트가 필요해” | `scene_event_cg` | 없음 | Project `display_profile`이 mobile portrait이면 runner `--width/--height` 또는 contract 기본값으로 true 9:16 portrait 후보를 생성합니다. Legacy 16:9는 기존 호환/명시 요청 전용입니다. 사용자가 source/base/anchor를 명시하지 않았다면 `char_base`로 가지 않습니다. 기존 캐릭터 기반이면 캐릭터 metadata의 identity/outfit/framing anchor를 먼저 사용합니다. |
 | 새 캐릭터의 기본 source, anchor, base image가 필요함 | `char_base` | 없음 | downstream expression/event workflow에 넣을 기준 캐릭터 이미지를 만듭니다. |
 | 표정만 바꾸고 싶음, 대사창용 표정 variation이 필요함 | `char_expression` | source character image | 몸/의상을 유지하고 얼굴/표정만 바꾸는 route입니다. |
 | 투명 배경 PNG, sprite cutout, 배경 제거가 필요함 | `char_alpha` | source image | QA된 캐릭터/표정/의상 이미지를 transparent PNG 후보로 만듭니다. |
 | 의상 변경, costume variation이 필요함 | `char_base` | 없음 | 같은 seed와 identity/framing tag를 유지하고 outfit block만 바꾸는 route를 사용합니다. 기존 `char_outfit` source-image inpaint route는 backup으로 이동했습니다. |
-| 교실, 복도, 방, 거리 같은 VN 배경이 필요함 | `scene_background` | 없음 | 캐릭터 없는 16:9 배경을 생성합니다. |
-| 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | 16:9 단일 소품 후보를 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄입니다. |
+| 교실, 복도, 방, 거리 같은 VN 배경이 필요함 | `scene_background` | 없음 | mobile portrait 프로젝트에서는 캐릭터 없는 9:16 portrait 배경을 우선 생성합니다. Legacy 16:9는 기존 자산 호환 또는 명시 요청 시에만 사용합니다. |
+| 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | mobile portrait 프로젝트에서는 9:16 portrait card/cut-in 후보를 우선 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄이고 card-safe 중앙 배치를 기록합니다. |
 | VN 시스템 알림창, 경고/계약 알림 UI frame, textless message frame이 필요함 | `ui_system_alert_frame` | 없음 | 소품이 아니라 UI frame입니다. frame/ornament 제작이 1차 목표이고, Ren'Py overlay preview는 QA입니다. 중앙 plate와 외곽 ornament를 분리 QA하고, baked text/logo/symbol/nameplate/object는 reject합니다. |
 | 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_bgm` role로 사용합니다. prompt는 `instrumentation + musical form/rhythm + mood + short role`처럼 음악 정체성을 먼저 둡니다. raw MP3는 source 후보이며, Ren'Py용은 무음 trim + fade loop edit + OGG 변환 후 loop preview 청감 QA가 필요합니다. |
 | 문 열림, 발소리, 마법 crack 같은 짧은/중간/긴 효과음이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_sfx` role로 사용합니다. prompt는 짧은 positive 자연어 cue + 재질/음색 1~2개가 기본이며, 상황에 따라 `One-shot`/`SFX` mode와 duration을 조절합니다. trim/normalize와 listening QA가 필요합니다. |
@@ -105,9 +105,9 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 1. `char_base` — opaque base/source character와 same-seed outfit/costume variant를 생성합니다.
 2. `char_alpha` — 승인된 character source/outfit/expression 후보를 transparent PNG로 변환합니다.
 3. `char_expression` — source character image에서 표정 variant를 만듭니다.
-4. `scene_background` — 16:9 scene background를 만듭니다.
-5. `scene_prop_cg` — Ren'Py 연출용 16:9 prop/clue cut-in을 만듭니다.
-6. `scene_event_cg` — no-reference txt2img + pose LoRA로 full 16:9 event CG를 만듭니다. 캐릭터/의상 일관성은 metadata anchor와 prompt tag로 유지하며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
+4. `scene_background` — mobile portrait 프로젝트에서는 9:16 scene background를 만듭니다.
+5. `scene_prop_cg` — Ren'Py 연출용 9:16 prop/clue card 또는 portrait cut-in을 만듭니다.
+6. `scene_event_cg` — no-reference txt2img + pose LoRA로 9:16 portrait event CG를 우선 만듭니다. 캐릭터/의상 일관성은 metadata anchor와 prompt tag로 유지하며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
 7. `ui_system_alert_frame` — textless VN system alert frame 후보를 만듭니다. 소품 CG와 분리하고, frame identity / 중앙 plate / 외곽 ornament / baked content를 별도로 QA합니다. Ren'Py overlay preview는 통합 QA입니다.
 8. `audio_bgm_with_sfx` — Stable Audio 3 기반 통합 route로 BGM/SFX/One-shot 후보를 만듭니다.
 
@@ -240,7 +240,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 
 ## 고정 상태
 
-현재 canonical pack은 위에 적힌 8개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 16:9 `scene_event_cg`로 처리합니다.
+현재 canonical pack은 위에 적힌 8개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 project display_profile에 맞는 `scene_event_cg` portrait route로 처리합니다.
 
 고정 전 audit 상태:
 
@@ -256,7 +256,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 ## 현재 주의사항
 
 - 현재 폴더명은 번호식 이름이 아니라 flat semantic name입니다. 예전 `01_*`부터 `07_*`까지의 참조는 stale일 수 있습니다.
-- `scene_background`와 `scene_prop_cg`는 이미지 입력이 없는 16:9 txt2img 계열 workflow입니다.
+- `scene_background`와 `scene_prop_cg`는 이미지 입력이 없는 txt2img 계열 workflow이며, mobile portrait 프로젝트에서는 true 9:16 runtime override를 필수로 기록합니다.
 - `audio_bgm_with_sfx`는 이미지/영상 입력이 없는 local Stable Audio 3 workflow입니다. BGM, SFX, One-shot 모두 이 통합 route로 생성합니다.
 - `char_expression`, `char_alpha`는 runtime에서 `LoadImage.inputs.image`를 실제 ComfyUI input 파일명으로 패치해야 합니다. `char_base`와 `scene_event_cg`는 현재 canonical 기준으로 `LoadImage`가 없는 txt2img route입니다.
 - `pose_variations`는 pose/action sprite 테스트에서 색감/의상/구도/해부학 drift가 커서 canonical pack에서 제거했습니다. 포즈/액션 CG는 `scene_event_cg`로 처리하고, dialogue sprite는 `char_base` same-seed outfit → `char_expression` → `char_alpha` 경로를 유지합니다.

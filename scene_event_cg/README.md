@@ -3,7 +3,7 @@
 - workflow_id: `scene_event_cg`
 - modality: `image`
 - input_requirement: 없음 (no-ref)
-- output: 16:9 event CG PNG
+- output: event CG PNG; legacy default 16:9, mobile/portrait production tests may override resolution explicitly
 - prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 100.inputs.lora_name, 100.inputs.strength_model, 100.inputs.strength_clip, 9.inputs.text, 10.inputs.text, 11.inputs.width, 11.inputs.height, 12.inputs.seed, 12.inputs.steps, 12.inputs.cfg, 12.inputs.denoise, 14.inputs.filename_prefix
 
@@ -14,26 +14,26 @@
 
 ### 🖼️ 0. 이벤트 CG 제작 워크플로우
 
-이 워크플로우는 이미지 reference 없이 Nova Anime XL IL v19 텍스트 프롬프트만으로 16:9 이벤트 CG를 생성합니다. canonical JSON은 no-ref + pose LoRA on을 기본으로 합니다.
+이 워크플로우는 이미지 reference 없이 Nova Anime XL IL v19 텍스트 프롬프트만으로 이벤트 CG를 생성합니다. canonical JSON은 no-ref + pose LoRA on을 기본으로 하며, 기본 해상도는 legacy 16:9입니다. 모바일/세로형 전환 검증에서는 runner의 명시적 `--width/--height` override로 portrait 후보를 생성합니다.
 
 핵심 운영 원칙:
 
 - 이미지 reference / PuLID 없음.
 - checkpoint: `novaAnimeXL_ilV190.safetensors`.
 - pose LoRA: `hinaMaybeBetterPoseXL_v5-NoobAI.safetensors`, strength `0.65 / 0.65`.
-- 출력 비율은 event_cg 규칙에 따라 항상 16:9(기본 1024x576)만 사용합니다.
+- 출력 비율은 기본 legacy route에서 16:9(1024x576)를 사용합니다. 다만 모바일/세로형 VN 전환 검증 또는 세로형 production route에서는 명시적으로 portrait 해상도(예: 832x1472)를 사용합니다.
 - 캐릭터 일관성은 이미지 참조가 아니라 고정 identity/outfit block으로 유지합니다.
 - 프롬프트는 `char_base no-composition 테스트 방식`을 event_cg에 이식한 계약을 사용합니다.
 - README는 실행 가이드입니다. 과거 출력 경로, prompt_id, contact sheet 같은 기록은 README가 아니라 skill reference / `.analysis/` / `WORKFLOW_INDEX.json`에 둡니다.
 
 #### 1. 기본 canonical prompt
 
-아래 prompt는 바로 실행 가능한 기본 샘플입니다. char_base no-composition 테스트 방식 그대로, 구도/카메라 강제 태그를 기본 positive에서 제거하고 identity/outfit block 중심으로 운용합니다. event_cg 특성상 장면 태그는 최소한으로만 추가하고, 16:9 출력은 고정합니다.
+아래 prompt는 바로 실행 가능한 기본 샘플입니다. char_base no-composition 테스트 방식 그대로, 구도/카메라 강제 태그를 기본 positive에서 제거하고 identity/outfit block 중심으로 운용합니다. event_cg 특성상 장면 태그는 최소한으로만 추가합니다. 출력 비율은 runner 인자로 고정 기록되며, legacy 기본은 16:9이고 모바일 route는 portrait로 override합니다.
 
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, {캐릭터 특징(연령대, 헤어스타일, 눈매, 머리색, 눈색)}, {의상 디테일(의상 이름, 색상_의상종류)}, auditorium, indoors, spotlight, depth_of_field
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, {캐릭터/subject 특징(1girl/1boy/solo/male_focus 등 포함)}, {의상 디테일(의상 이름, 색상_의상종류)}, auditorium, indoors, spotlight, depth_of_field
 ```
 
 **Negative prompt:**
@@ -207,7 +207,7 @@ classroom, chalkboard, blackboard, whiteboard
 #### 7. 실행 / QA 규칙
 
 1. 기본은 no-ref + pose LoRA on입니다.
-2. 출력은 event_cg 규칙상 항상 16:9만 사용합니다(기본 1024x576).
+2. 출력은 legacy 기본 16:9(1024x576)이나, 모바일/세로형 production에서는 runner 인자 `--width 832 --height 1472` 또는 fallback `--width 768 --height 1344` 같은 true 9:16 portrait override를 사용합니다. 비율 변경은 metadata에 기록되어야 합니다.
 3. 이 canonical route에는 `LoadImage`/PuLID reference conditioning을 추가하지 않습니다. Unit 10G live smoke confirmed that this no-ref seed-only route can produce a mechanically valid 16:9 event CG, but it may not preserve production-grade identity/outfit details from the source char_base metadata (example drift: bow color/cardigan/face impression). Treat source metadata/seed handoff as provenance and weak continuity only, not as reference conditioning. Unit 10H prompt-only same-seed experiments showed that the current model responds much better when full source outfit/accessory tags are carried forward explicitly: put fragile identity tags early (`brown_eyes`, `tareme`, `blunt_bangs`), include exact outfit tags (`red_bow`, `brown_cardigan`, `white_shirt`, `blue_skirt`, `brown_pantyhose`), and keep scene context compact (`auditorium`, `spotlight`) before adding extra scenery.
 4. 자연어 prompt chunk나 DB에 없는 pseudo-tag를 추가하지 않습니다.
 5. 로컬 Danbooru taxonomy SQLite에서 active/non-deprecated로 검증되는 `tag` 또는 active alias만 variable prompt에 사용합니다.

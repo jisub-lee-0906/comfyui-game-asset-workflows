@@ -3,7 +3,7 @@
 - workflow_id: `ui_system_alert_frame`
 - modality: `image`
 - input_requirement: 없음
-- output: 16:9 textless VN system alert backdrop/frame PNG
+- output: textless VN system alert/card backdrop PNG; legacy default 16:9, mobile portrait projects may run 832x1472 or another contract-defined phone card/frame size
 - prompt_policy: `pure_t2i_creator_wrapper+danbooru_sqlite_backdrop_slots+runtime_patch+overlay_readability_qa`
 - editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
 
@@ -19,7 +19,7 @@
 이 workflow는 VN/Ren'Py에서 재사용할 **textless system alert backdrop/frame** 후보를 만듭니다. `scene_prop_cg`와 분리된 전용 workflow입니다. UI 프레임은 소품 CG가 아니며, prop workflow를 쓰면 중앙 소품, 가짜 텍스트, 기호, 이름표, 로고가 생기기 쉽습니다.
 
 목표 산출물:
-- 16:9 PNG 후보, 기본 source generation `1024x576`.
+- portrait/mobile PNG 후보, 기본 source generation은 legacy `1024x576`이나 project `display_profile=mobile_portrait_9_16_*`에서는 runner가 `832x1472` 같은 portrait 크기를 적용할 수 있습니다.
 - red/crimson + dark + corner ornament 계열의 로판/VN 시스템 알림 배경/패널.
 - Ren'Py에서 한국어를 overlay할 수 있는 어둡고 읽기 좋은 중앙 영역.
 - literal picture frame에 고정하지 않고, corner/border/backdrop identity와 overlay readability를 우선할 것.
@@ -178,7 +178,7 @@ Operational rule: start from the minimal base, add only one structure/color toke
 | `2` | `CLIPSetLastLayer` | CLIP skip `-2` |
 | `3` | `CLIPTextEncode` | Positive prompt |
 | `4` | `CLIPTextEncode` | Negative prompt |
-| `5` | `EmptyLatentImage` | 기본 `1024x576`, batch `1` |
+| `5` | `EmptyLatentImage` | Legacy 기본 `1024x576`, mobile portrait profile에서는 runner/contract가 `832x1472` 등으로 runtime patch |
 | `6` | `KSampler` | 기본 smoke settings: 30 steps, CFG 3.6, euler ancestral, normal scheduler |
 | `7` | `VAEDecode` | Decode latent |
 | `8` | `SaveImage` | Output prefix; run마다 patch |

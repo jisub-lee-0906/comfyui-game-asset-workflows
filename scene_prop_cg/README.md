@@ -3,7 +3,7 @@
 - workflow_id: `scene_prop_cg`
 - modality: `image`
 - input_requirement: 없음
-- output: 16:9 prop CG PNG
+- output: prop/cutin/card CG PNG; legacy default 16:9, mobile portrait projects may run 832x1472 or another contract-defined portrait size
 - prompt_policy: `danbooru_sqlite+readme_wrapper`
 - editable_fields: 3.inputs.text, 4.inputs.text, 5.inputs.width, 5.inputs.height, 6.inputs.seed, 6.inputs.steps, 6.inputs.cfg, 8.inputs.filename_prefix
 
