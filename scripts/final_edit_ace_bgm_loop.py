@@ -19,11 +19,10 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 
-def run(cmd: List[str], *, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(cmd, check=check, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+def run(cmd: list[str], *, check: bool = True) -> subprocess.CompletedProcess:
+    return subprocess.run(cmd, check=check, text=True, capture_output=True)
 
 
 def ffprobe_duration(path: Path) -> float:
@@ -34,15 +33,15 @@ def ffprobe_duration(path: Path) -> float:
     return float(p.stdout.strip())
 
 
-def detect_silence(path: Path, noise: str, min_silence: float) -> Tuple[List[Tuple[float, float]], str]:
+def detect_silence(path: Path, noise: str, min_silence: float) -> tuple[list[tuple[float, float]], str]:
     p = run([
         "ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
         "-af", f"silencedetect=noise={noise}:d={min_silence}",
         "-f", "null", "-"
     ], check=False)
     text = p.stderr
-    starts: List[float] = []
-    ranges: List[Tuple[float, float]] = []
+    starts: list[float] = []
+    ranges: list[tuple[float, float]] = []
     for line in text.splitlines():
         m = re.search(r"silence_start: ([0-9.]+)", line)
         if m:
@@ -55,7 +54,7 @@ def detect_silence(path: Path, noise: str, min_silence: float) -> Tuple[List[Tup
     return ranges, text
 
 
-def choose_trim(duration: float, silence_ranges: List[Tuple[float, float]], pad_start: float, pad_end: float, min_keep: float, merge_gap: float) -> Tuple[float, float]:
+def choose_trim(duration: float, silence_ranges: list[tuple[float, float]], pad_start: float, pad_end: float, min_keep: float, merge_gap: float) -> tuple[float, float]:
     start = 0.0
     end = duration
     # Leading silence that starts near 0.
@@ -66,20 +65,19 @@ def choose_trim(duration: float, silence_ranges: List[Tuple[float, float]], pad_
     # Trailing silence cluster that reaches file end. ACE can produce a near-silent
     # tail with tiny residual blips; merge close silence ranges so we cut at the
     # first silence_start of that tail instead of preserving mostly-dead audio.
-    trailing_start: Optional[float] = None
-    last_a: Optional[float] = None
-    last_b: Optional[float] = None
+    trailing_start: float | None = None
+    last_a: float | None = None
     for a, b in reversed(silence_ranges):
         if trailing_start is None:
             if b >= duration - 0.25:
                 trailing_start = a
-                last_a, last_b = a, b
+                last_a = a
             continue
         assert last_a is not None
         gap = last_a - b
         if gap <= merge_gap:
             trailing_start = a
-            last_a, last_b = a, b
+            last_a = a
         else:
             break
     if trailing_start is not None:

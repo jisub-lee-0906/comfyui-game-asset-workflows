@@ -246,10 +246,10 @@ scheduler                default simple
 
 ## 10. Output and QA
 
-`SaveAudioMP3.inputs.filename_prefix` is relative to the active ComfyUI output root, currently usually:
+`SaveAudioMP3.inputs.filename_prefix` is relative to the active ComfyUI output root:
 
 ```text
-C:/Users/Desktop/Documents/ComfyUI/output
+$COMFYUI_OUTPUT_DIR
 ```
 
 After generation, agents must verify exact output files through `/history/{prompt_id}` and filesystem existence. Do not report guessed paths.

@@ -12,16 +12,14 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import os
 import subprocess
 import sys
 import tempfile
 import wave
 from pathlib import Path
-from typing import List, Tuple
 
 
-def run(cmd: List[str], *, capture: bool = True) -> subprocess.CompletedProcess:
+def run(cmd: list[str], *, capture: bool = True) -> subprocess.CompletedProcess:
     return subprocess.run(
         cmd,
         check=True,
@@ -43,9 +41,9 @@ def decode_mono_wav(src: Path, dst: Path, sr: int = 44100) -> None:
     run(["ffmpeg", "-y", "-v", "error", "-i", str(src), "-ac", "1", "-ar", str(sr), "-sample_fmt", "s16", str(dst)])
 
 
-def frame_rms(samples: List[int], sr: int, frame_ms: float) -> Tuple[List[float], int]:
+def frame_rms(samples: list[int], sr: int, frame_ms: float) -> tuple[list[float], int]:
     frame = max(1, int(sr * frame_ms / 1000.0))
-    out: List[float] = []
+    out: list[float] = []
     for i in range(0, len(samples), frame):
         chunk = samples[i:i+frame]
         if not chunk:
@@ -54,7 +52,7 @@ def frame_rms(samples: List[int], sr: int, frame_ms: float) -> Tuple[List[float]
     return out, frame
 
 
-def smooth(vals: List[float], radius: int) -> List[float]:
+def smooth(vals: list[float], radius: int) -> list[float]:
     if radius <= 0:
         return vals[:]
     out = []
@@ -65,7 +63,7 @@ def smooth(vals: List[float], radius: int) -> List[float]:
     return out
 
 
-def read_samples(wav_path: Path) -> Tuple[List[int], int]:
+def read_samples(wav_path: Path) -> tuple[list[int], int]:
     with wave.open(str(wav_path), "rb") as w:
         sr = w.getframerate()
         nch = w.getnchannels()
@@ -77,7 +75,7 @@ def read_samples(wav_path: Path) -> Tuple[List[int], int]:
     return [int.from_bytes(raw[i:i+2], "little", signed=True) for i in range(0, len(raw), 2)], sr
 
 
-def pick_segment(rms: List[float], frame_sec: float, total_sec: float, *,
+def pick_segment(rms: list[float], frame_sec: float, total_sec: float, *,
                  min_duration: float, max_duration: float, pre: float, post: float,
                  threshold_ratio: float) -> dict:
     if not rms:
@@ -124,7 +122,7 @@ def pick_segment(rms: List[float], frame_sec: float, total_sec: float, *,
     }
 
 
-def export_segment(src: Path, out_base: Path, start: float, duration: float, fade_ms: int, ogg_quality: int) -> Tuple[Path, Path]:
+def export_segment(src: Path, out_base: Path, start: float, duration: float, fade_ms: int, ogg_quality: int) -> tuple[Path, Path]:
     out_base.parent.mkdir(parents=True, exist_ok=True)
     flac = out_base.with_suffix(".flac")
     ogg = out_base.with_suffix(".ogg")
