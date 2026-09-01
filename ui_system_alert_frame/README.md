@@ -199,11 +199,10 @@ Operational rule: start from the minimal base, add only one structure/color toke
 `make_cleanplate_variants.py`는 pure T2I 후보가 중앙 장식/세로 glow 때문에惜しい 경우에만 사용하는 optional fallback입니다. source backdrop/frame 하나를 review-only variant와 QA preview로 변환하며, 이 스크립트는 `game/images/ui/`에 쓰지 않습니다.
 
 ```bash
-python E:/workspace/comfyui-game-asset-workflows/ui_system_alert_frame/scripts/make_cleanplate_variants.py \
-  --source E:/workspace/renpy-project/<game_slug>/docs/automation/generated_candidates/ui/<run>/<candidate>.png \
-  --outdir E:/workspace/renpy-project/<game_slug>/docs/automation/generated_candidates/ui/<new_cleanplate_run> \
-  --font E:/workspace/renpy-project/<game_slug>/game/fonts/source_han_sans_lite.ttf \
-  --background E:/workspace/renpy-project/<game_slug>/game/images/backgrounds/bg_example.png
+python ui_system_alert_frame/scripts/make_cleanplate_variants.py \
+  --source "$CANDIDATE_ROOT/ui/<run>/<candidate>.png" \
+  --outdir "$CANDIDATE_ROOT/ui/<new_cleanplate_run>" \
+  --font "$GAME_ROOT/game/fonts/source_han_sans_lite.ttf"
 ```
 
 주요 출력:

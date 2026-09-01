@@ -12,7 +12,7 @@
         "1",
         0
       ],
-      "model": "BiRefNet_toonout",
+      "model": "BiRefNet-portrait",
       "mask_blur": 1,
       "mask_offset": 0,
       "invert_output": false,

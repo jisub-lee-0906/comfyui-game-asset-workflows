@@ -7,10 +7,10 @@ It never writes into a Ren'Py game/images directory unless the caller deliberate
 from __future__ import annotations
 
 import argparse
-import json
 import hashlib
+import json
+from datetime import datetime, timezone
 from pathlib import Path
-from datetime import datetime
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -25,8 +25,8 @@ def load_font(font_path: str | None, size: int):
         if p.exists():
             try:
                 return ImageFont.truetype(str(p), size)
-            except Exception:
-                pass
+            except OSError:
+                return ImageFont.load_default()
     return ImageFont.load_default()
 
 
@@ -136,7 +136,7 @@ def main() -> int:
         "status": "review_candidate_not_promoted",
         "promotion_allowed": False,
         "route": "optional_fallback_cleanplate_after_pure_t2i_direction_probe",
-        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "outputs": [{"path": str(p), "sha256": sha256(p), "bytes": p.stat().st_size} for p in outputs],
     }
     meta_path = outdir / "cleanplate_metadata.json"

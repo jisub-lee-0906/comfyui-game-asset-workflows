@@ -1,16 +1,6 @@
 {
   "pack_name": "comfyui-game-asset-workflows",
-  "version": "2026-06-10-unified-audio-bgm-with-sfx",
-  "root_windows": "E:\\workspace\\comfyui-game-asset-workflows",
-  "root_windows_bash": "E:/workspace/comfyui-game-asset-workflows",
-  "comfyui_paths": {
-    "windows_output_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\output",
-    "wsl_output_root": "C:/Users/Desktop/Documents/ComfyUI/output",
-    "windows_input_root": "C:\\Users\\Desktop\\Documents\\ComfyUI\\input",
-    "wsl_input_root": "C:/Users/Desktop/Documents/ComfyUI/input",
-    "output_rule": "SaveImage.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated files via /history/{prompt_id} or output-folder scan before reporting.",
-    "audio_output_rule": "SaveAudio/SaveAudioMP3.inputs.filename_prefix is relative to the active ComfyUI output root. Agents must verify exact generated audio files via /history/{prompt_id}, output-folder scan, and ffprobe before reporting."
-  },
+  "version": "2026-09-02-portable-contract-v2",
   "structure": "flat semantic workflow folders; each folder contains README.md and one canonical *_workflow_api.json",
   "numbered_folder_contract": "deprecated; do not assume old 01_* through 07_* folders exist",
   "agent_entrypoint": [
@@ -74,7 +64,7 @@
         "scene_event_cg"
       ],
       "status": "canonical_template_executable_same_seed_outfit_route",
-      "input_placeholders": []
+      "placeholders": []
     },
     {
       "order": 2,
@@ -85,9 +75,6 @@
       "purpose": "Generate facial/emotional expression variants from a source character image using YOLO+SAM face mask + inpaint/composite workflow.",
       "output_type": "opaque composited expression variant image",
       "requires_input_images": true,
-      "input_placeholders": [
-        "TEMPLATE_character_anchor_source.png"
-      ],
       "primary_nodes": {
         "source_image": "1",
         "checkpoint": "2",
@@ -105,6 +92,8 @@
         "6.inputs.text",
         "7.inputs.text",
         "13.inputs.seed",
+        "13.inputs.steps",
+        "13.inputs.cfg",
         "13.inputs.denoise",
         "19.inputs.filename_prefix",
         "5.inputs.mask_blur",
@@ -134,7 +123,49 @@
       "downstream": [
         "char_alpha"
       ],
-      "status": "canonical_template_requires_runtime_input_yolosam_face_mask_composited_only"
+      "status": "canonical_template_requires_runtime_input_yolosam_face_mask_composited_only",
+      "placeholders": [
+        {
+          "node_id": "1",
+          "path": "1.inputs.image",
+          "token": "TEMPLATE_character_anchor_source.png"
+        },
+        {
+          "node_id": "6",
+          "path": "6.inputs.text",
+          "token": "{헤어 길이}"
+        },
+        {
+          "node_id": "6",
+          "path": "6.inputs.text",
+          "token": "{헤어 스타일}"
+        },
+        {
+          "node_id": "6",
+          "path": "6.inputs.text",
+          "token": "{머리색}"
+        },
+        {
+          "node_id": "6",
+          "path": "6.inputs.text",
+          "token": "{눈색}"
+        },
+        {
+          "node_id": "6",
+          "path": "6.inputs.text",
+          "token": "{감정표현}"
+        },
+        {
+          "node_id": "7",
+          "path": "7.inputs.text",
+          "token": "{상극 감정표현}"
+        },
+        {
+          "node_id": "19",
+          "path": "19.inputs.filename_prefix",
+          "token": "TEMPLATE_CHARACTER_happy_composited"
+        }
+      ]
     },
     {
       "order": 3,
@@ -145,9 +176,6 @@
       "purpose": "Remove background / create transparent PNG alpha output from a character/source image.",
       "output_type": "transparent PNG / alpha character asset",
       "requires_input_images": true,
-      "input_placeholders": [
-        "TEMPLATE_source_image.png"
-      ],
       "primary_nodes": {
         "source_image": "1",
         "background_removal": "2",
@@ -163,16 +191,28 @@
       ],
       "status": "canonical_template_requires_runtime_input",
       "fixed_defaults_observed": {
-        "background_removal_model": "BiRefNet_toonout",
+        "background_removal_model": "BiRefNet-portrait",
         "mask_blur": 1,
         "mask_offset": 0,
         "invert_output": false,
         "refine_foreground": true,
         "background": "Alpha"
-      }
+      },
+      "placeholders": [
+        {
+          "node_id": "1",
+          "path": "1.inputs.image",
+          "token": "TEMPLATE_source_image.png"
+        },
+        {
+          "node_id": "3",
+          "path": "3.inputs.filename_prefix",
+          "token": "TEMPLATE_CHARACTER_VARIANT_b1_ref1"
+        }
+      ]
     },
     {
-      "order": 5,
+      "order": 4,
       "id": "scene_background",
       "folder": "scene_background",
       "readme": "scene_background/README.md",
@@ -208,15 +248,22 @@
         "steps": 24,
         "cfg": 5.5
       },
-      "known_placeholders_in_current_json": [
-        "{배경 테마 및 장소}",
-        "{시간대 및 광원 디테일}"
-      ],
       "status": "canonical_template_but_prompt_placeholders_require_runtime_patch",
-      "input_placeholders": []
+      "placeholders": [
+        {
+          "node_id": "3",
+          "path": "3.inputs.text",
+          "token": "{배경 테마 및 장소}"
+        },
+        {
+          "node_id": "3",
+          "path": "3.inputs.text",
+          "token": "{시간대 및 분위기 태그}"
+        }
+      ]
     },
     {
-      "order": 6,
+      "order": 5,
       "id": "scene_event_cg",
       "folder": "scene_event_cg",
       "readme": "scene_event_cg/README.md",
@@ -224,7 +271,6 @@
       "purpose": "Generate 16:9 no-reference event CG; character/outfit consistency is prompt-driven by metadata identity/outfit tags, with close upper_body framing and pose LoRA enabled by default. Minor outfit drift is accepted; do not revert to PuLID/source-image by default.",
       "output_type": "opaque 16:9 event CG",
       "requires_input_images": false,
-      "input_placeholders": [],
       "primary_nodes": {
         "checkpoint": "1",
         "pose_lora": "100",
@@ -287,10 +333,11 @@
         "char_base",
         "char_expression"
       ],
-      "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added"
+      "status": "canonical_template_no_reference_txt2img_pose_lora_metadata_anchor_action_staging_guidance_added",
+      "placeholders": []
     },
     {
-      "order": 7,
+      "order": 6,
       "id": "scene_prop_cg",
       "folder": "scene_prop_cg",
       "readme": "scene_prop_cg/README.md",
@@ -328,10 +375,26 @@
         "default_subject": "brass_key"
       },
       "status": "canonical_template",
-      "input_placeholders": []
+      "placeholders": [
+        {
+          "node_id": "3",
+          "path": "3.inputs.text",
+          "token": "{아이템 이름 및 형태}"
+        },
+        {
+          "node_id": "3",
+          "path": "3.inputs.text",
+          "token": "{재질 및 질감 디테일}"
+        },
+        {
+          "node_id": "3",
+          "path": "3.inputs.text",
+          "token": "{놓여있는 장소/배경}"
+        }
+      ]
     },
     {
-      "order": 8,
+      "order": 7,
       "id": "ui_system_alert_frame",
       "folder": "ui_system_alert_frame",
       "readme": "ui_system_alert_frame/README.md",
@@ -371,7 +434,6 @@
         "best_current_variant_pattern": "Do not select by text fit alone. 2026-06-04 final cleanplate: V08_production_solid_cleanplate_balanced, V09_production_solid_cleanplate_wide, and V10_production_deep_red_cleanplate resolve visible center ghosting with fully opaque textless plates; V08 is the current balanced review candidate, V09 is widest/readability-safe, V10 is the redder alternate."
       },
       "status": "canonical_two_stage_ui_alert_frame_source_plus_cleanplate_qa_pipeline_runtime_patch_required",
-      "input_placeholders": [],
       "companion_scripts": [
         "ui_system_alert_frame/scripts/make_cleanplate_variants.py"
       ],
@@ -380,10 +442,11 @@
       ],
       "references": [
         "ui_system_alert_frame/references/qa_policy.md"
-      ]
+      ],
+      "placeholders": []
     },
     {
-      "order": 9,
+      "order": 8,
       "id": "audio_bgm_with_sfx",
       "folder": "audio_bgm_with_sfx",
       "readme": "audio_bgm_with_sfx/README.md",
@@ -446,13 +509,22 @@
         "role_routing": "asset_type bgm -> audio_bgm role, asset_type sfx -> audio_sfx role; both execute this same workflow JSON"
       },
       "status": "canonical_unified_audio_engine_with_logical_bgm_sfx_role_contracts_runtime_prompt_slots_required",
-      "input_placeholders": [],
       "replaces": "legacy_split_bgm_and_sfx_audio_routes",
       "role_contracts": {
         "audio_sfx": "audio_bgm_with_sfx/roles/audio_sfx.md",
         "audio_bgm": "audio_bgm_with_sfx/roles/audio_bgm.md",
         "machine_readable": "audio_bgm_with_sfx/roles/audio_role_contracts.json"
-      }
+      },
+      "placeholders": []
     }
-  ]
+  ],
+  "paths": {
+    "repository_root": "resolved from WORKFLOW_INDEX.json location",
+    "comfyui_url_env": "COMFYUI_URL",
+    "comfyui_url_default": "http://127.0.0.1:8188",
+    "comfyui_input_env": "COMFYUI_INPUT_DIR",
+    "comfyui_output_env": "COMFYUI_OUTPUT_DIR",
+    "runtime_dir_env": "WORKFLOW_RUNTIME_DIR",
+    "runtime_dir_default": ".runtime"
+  }
 }

@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "tested_at": "2026-09-02",
+  "comfyui": {
+    "repository": "https://github.com/Comfy-Org/ComfyUI",
+    "tested_commit": "95d755cd8107a72258d452b5d3657273d571f07d",
+    "api_url_env": "COMFYUI_URL",
+    "default_api_url": "http://127.0.0.1:8188"
+  },
+  "python": {
+    "requirements": "requirements.txt"
+  },
+  "external_tools": {
+    "ffmpeg": {
+      "required_for": [
+        "audio_bgm_with_sfx"
+      ],
+      "commands": [
+        "ffmpeg",
+        "ffprobe"
+      ]
+    }
+  },
+  "custom_nodes": [
+    {
+      "id": "comfyui-impact-pack",
+      "repository": "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git",
+      "commit": "429d0159ad429e64d2b3916e6e7be9c22d025c3c",
+      "classes": [
+        "BboxDetectorSEGS",
+        "SAMDetectorCombined",
+        "SAMLoader"
+      ],
+      "workflows": [
+        "char_expression"
+      ]
+    },
+    {
+      "id": "comfyui-impact-subpack",
+      "repository": "https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git",
+      "commit": "50c7b71a6a224734cc9b21963c6d1926816a97f1",
+      "classes": [
+        "UltralyticsDetectorProvider"
+      ],
+      "workflows": [
+        "char_expression"
+      ]
+    },
+    {
+      "id": "comfyui-rmbg",
+      "repository": "https://github.com/1038lab/ComfyUI-RMBG.git",
+      "commit": "58f1947a11567a9f8b707223185570850e773856",
+      "classes": [
+        "AILab_MaskEnhancer",
+        "BiRefNetRMBG"
+      ],
+      "managed_models": [
+        "BiRefNet-portrait"
+      ],
+      "workflows": [
+        "char_expression",
+        "char_alpha"
+      ]
+    }
+  ],
+  "model_files": [
+    {
+      "id": "nova-anime-xl-il-v19",
+      "destination": "checkpoints/novaAnimeXL_ilV190.safetensors",
+      "url": "https://civitai.com/api/download/models/2940478?fileId=2819621",
+      "bytes": 6939105596,
+      "sha256": "fa486caafc330f133605d3c18b418d183812f14946631c6544bfb28730db6d6f",
+      "required": true,
+      "license": "Civitai model-specific terms; commercial use is restricted to the options declared by the creator",
+      "license_url": "https://civitai.com/models/376130/nova-anime-xl",
+      "workflows": [
+        "char_base",
+        "char_expression",
+        "scene_background",
+        "scene_event_cg",
+        "scene_prop_cg",
+        "ui_system_alert_frame"
+      ]
+    },
+    {
+      "id": "xinsir-controlnet-union-sdxl-promax",
+      "destination": "controlnet/xinsir-controlnet-union-sdxl-1.0-promax.safetensors",
+      "url": "https://huggingface.co/hfmaster/models-moved/resolve/d22f46c4dc0316170be64fe54191626e6d6fcf55/sdxl/controlnet/xinsir-controlnet-union-sdxl-1.0-promax.safetensors",
+      "bytes": 2513342408,
+      "sha256": "9fae2e50cb431bfcbe05822b59ec2228df545ef27f711dea8949e9f4ed9f7cdc",
+      "required": true,
+      "license": "Verify the upstream Xinsir ControlNet Union SDXL license before redistribution",
+      "license_url": "https://huggingface.co/xinsir/controlnet-union-sdxl-1.0",
+      "workflows": [
+        "char_expression"
+      ]
+    },
+    {
+      "id": "hina-maybe-better-pose-xl-v5",
+      "destination": "loras/hinaMaybeBetterPoseXL_v5-NoobAI.safetensors",
+      "url": "https://huggingface.co/75dhsx/hinablue/resolve/3148212e4bda2c94d4f725f95baee88e965a8525/hinaMaybeBetterPoseXL_v5-NoobAI.safetensors",
+      "bytes": 243607576,
+      "sha256": "d5471f75c086593715dcce1eb86e99e24e4095cf78fc74039c3745a58275ca8a",
+      "required": true,
+      "license": "No explicit model-card license found; local evaluation only until rights are confirmed",
+      "license_url": "https://huggingface.co/75dhsx/hinablue",
+      "workflows": [
+        "scene_event_cg"
+      ]
+    },
+    {
+      "id": "face-yolov9c",
+      "destination": "ultralytics/bbox/face_yolov9c.pt",
+      "url": "https://huggingface.co/JCscrew/RisuAI_asset_generator/resolve/f6b575ddbc53e41f51599eda933ece2060e8178a/models/ultralytics/bbox/face_yolov9c.pt",
+      "bytes": 51648019,
+      "sha256": "d02fe493c31e1bbc6450f4dc6f1db86a02a59322ff1f6d318da0661d72ddd084",
+      "required": true,
+      "license": "PyTorch pickle model; source scan is caution-level and upstream license must be confirmed",
+      "license_url": "https://huggingface.co/JCscrew/RisuAI_asset_generator",
+      "workflows": [
+        "char_expression"
+      ]
+    },
+    {
+      "id": "sam-vit-b",
+      "destination": "sams/sam_vit_b_01ec64.pth",
+      "url": "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/sams/sam_vit_b_01ec64.pth",
+      "bytes": 375042383,
+      "sha256": "ec2df62732614e57411cdcf32a23ffdf28910380d03139ee0f4fcbe91eb8c912",
+      "required": true,
+      "license": "Apache-2.0 for Segment Anything; verify redistribution source terms",
+      "license_url": "https://github.com/facebookresearch/segment-anything",
+      "workflows": [
+        "char_expression"
+      ]
+    },
+    {
+      "id": "stable-audio-3-medium",
+      "destination": "checkpoints/stable_audio_3_medium.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/stable-audio-3/resolve/3932b754107ab08a741fecea41b9350a3c3c6e2f/checkpoints/stable_audio_3_medium.safetensors",
+      "bytes": 9222116660,
+      "sha256": "48d9c65e290e7bcd5194e0633bfc2424a59ee9683f5c2d58762d997b7d8ce0b5",
+      "required": true,
+      "license": "Stability AI Community License",
+      "license_url": "https://stability.ai/license",
+      "workflows": [
+        "audio_bgm_with_sfx"
+      ]
+    },
+    {
+      "id": "t5gemma-b-b-ul2",
+      "destination": "text_encoders/t5gemma_b_b_ul2.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/stable-audio-3/resolve/3932b754107ab08a741fecea41b9350a3c3c6e2f/text_encoders/t5gemma_b_b_ul2.safetensors",
+      "bytes": 1187264003,
+      "sha256": "1e1eba25be8872edb0d3c6335c6658fd6388e7b14b60da6e454e404cfcd8150e",
+      "required": true,
+      "license": "Stability AI Community License and applicable T5Gemma terms",
+      "license_url": "https://huggingface.co/Comfy-Org/stable-audio-3",
+      "workflows": [
+        "audio_bgm_with_sfx"
+      ]
+    },
+    {
+      "id": "qwen-3.5-2b-bf16",
+      "destination": "text_encoders/qwen3.5_2b_bf16.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Qwen3.5/resolve/988ba7a54068579a6e0bc618b38f4392cbbf42ab/text_encoders/qwen3.5_2b_bf16.safetensors",
+      "bytes": 4548221488,
+      "sha256": "aa33250c4fc64891ddfaba3a314fd9542ea371843c387178b425fbcc5ed680b1",
+      "required": true,
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/Comfy-Org/Qwen3.5",
+      "workflows": [
+        "audio_bgm_with_sfx"
+      ]
+    }
+  ],
+  "taxonomy": {
+    "id": "danbooru-taxonomy-26.05.23",
+    "destination": "danbooru-taxonomy.release.sqlite",
+    "url": "https://github.com/cksdnfas/danbooru-db-viewer/releases/download/26.05.23/danbooru-taxonomy.release.sqlite",
+    "bytes": 155131904,
+    "sha256": "392c1528e94cfa1f39838be6a4585718361af884d280f0b0050eab6211c85e38",
+    "license": "Database release from cksdnfas/danbooru-db-viewer; inspect source/data terms before redistribution",
+    "license_url": "https://github.com/cksdnfas/danbooru-db-viewer"
+  }
+}

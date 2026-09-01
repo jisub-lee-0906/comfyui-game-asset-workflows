@@ -6,13 +6,14 @@
 
 생성 결과는 곧바로 최종 게임 에셋이 아니라 QA/promote 전의 후보입니다. 실제 게임 리소스로 승격할지는 사용자 또는 agent의 artifact QA 이후 결정합니다.
 
-Windows workspace path:
-`E:\workspace\comfyui-game-asset-workflows`
+설치 위치는 고정하지 않습니다. `INSTALL.md`의 환경 변수(`COMFYUI_URL`, `COMFYUI_INPUT_DIR`, `COMFYUI_OUTPUT_DIR`, `WORKFLOW_RUNTIME_DIR`)로 현재 환경을 지정합니다. 모델·노드·taxonomy의 고정 버전과 SHA-256은 `dependencies/manifest.json`이 기준입니다.
 
-Hermes/Windows bash path:
-`E:/workspace/comfyui-game-asset-workflows`
+빠른 정적 검증:
 
-Legacy Linux-bridge source paths are historical reference only and should not be used for new work.
+```bash
+python -m unittest discover -s tests -v
+python scripts/workflow_pack.py validate
+```
 
 ## 현재 구조
 
@@ -115,14 +116,13 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 
 ## 생성 결과 저장 위치
 
-이 workflow pack 자체에는 생성 이미지/오디오를 저장하지 않습니다. ComfyUI의 `SaveImage.inputs.filename_prefix`에 따라 active Windows ComfyUI output directory 아래에 저장됩니다.
+이 workflow pack 자체에는 생성 이미지/오디오를 저장하지 않습니다. ComfyUI의 `SaveImage.inputs.filename_prefix`에 따라 active ComfyUI output directory 아래에 저장됩니다.
 
-현재 이 환경의 ComfyUI 경로:
+ComfyUI 경로는 환경 변수로 지정합니다.
 
-- Windows output root: `C:\Users\Desktop\Documents\ComfyUI\output`
-- Windows output root: `C:/Users/Desktop/Documents/ComfyUI/output`
-- Windows input root: `C:\Users\Desktop\Documents\ComfyUI\input`
-- Windows input root: `C:/Users/Desktop/Documents/ComfyUI/input`
+- Backend URL: `COMFYUI_URL`
+- Output root: `COMFYUI_OUTPUT_DIR`
+- Input root: `COMFYUI_INPUT_DIR`
 
 예를 들어 runtime에서 `filename_prefix`를 `<unique_run_folder>/scene_event_cg_scene`으로 패치하면 결과는 active output root 아래 `<unique_run_folder>/...`에 생성됩니다.
 
@@ -251,7 +251,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 - `WORKFLOW_INDEX.json`은 editable field, primary node, placeholder, observed default의 machine-readable 기준 문서입니다.
 - 각 workflow README는 간결한 운영 가이드로 유지합니다. 실험 이력이나 일시적인 튜닝 노트를 넣기 위해 수정하지 않습니다.
 
-최신 audit report는 현재 game project root의 `.analysis/` 아래에서 확인합니다. Windows 이관 후 active workspace 기준은 `E:\workspace\renpy-project`입니다.
+최신 검증 결과는 저장소의 `dependencies/canonical_hashes.json`, CI, 그리고 `python scripts/workflow_pack.py validate` 결과를 기준으로 합니다. 특정 게임 프로젝트의 `.analysis/` 경로는 이 pack의 portable 계약에 포함하지 않습니다.
 
 ## 현재 주의사항
 
@@ -262,3 +262,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 - `pose_variations`는 pose/action sprite 테스트에서 색감/의상/구도/해부학 drift가 커서 canonical pack에서 제거했습니다. 포즈/액션 CG는 `scene_event_cg`로 처리하고, dialogue sprite는 `char_base` same-seed outfit → `char_expression` → `char_alpha` 경로를 유지합니다.
 - 일부 README의 prompt 텍스트는 운영 가이드이며, `Positive prompt`/`Negative prompt`로 명시된 canonical block은 해당 workflow JSON과 동기화합니다. 실행 가능한 node/field 기준은 `WORKFLOW_INDEX.json`과 실제 JSON입니다.
 - 로컬 `danbooru-taxonomy.release.sqlite`는 README tag note의 primary 검증 기준입니다. DB에서 active/non-deprecated로 확인되거나 실제 생성물로 테스트된 태그가 아니라면, 기억이나 실패한 web fetch 기반으로 tag guidance를 추가하지 않습니다.
+
+## 라이선스
+
+이 저장소에서 직접 작성한 코드, 문서 및 workflow 정의는 [Apache License 2.0](LICENSE)에 따라 배포됩니다. 외부 모델, 데이터베이스 및 커스텀 노드는 각각의 upstream 라이선스를 따르므로 [LICENSES.md](LICENSES.md)의 구성요소별 상태를 함께 확인해야 합니다.

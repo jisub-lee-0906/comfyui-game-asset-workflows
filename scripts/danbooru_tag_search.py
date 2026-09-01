@@ -13,9 +13,9 @@ import argparse
 import csv
 import sqlite3
 import sys
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CSV = ROOT / "danbooru_tag.csv"

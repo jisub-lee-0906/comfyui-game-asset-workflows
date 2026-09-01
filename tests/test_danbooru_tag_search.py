@@ -33,8 +33,8 @@ class DanbooruTagSearchTests(unittest.TestCase):
             [sys.executable, str(SCRIPT), "--csv", str(self.csv_path), *args],
             cwd=ROOT,
             text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
+            check=False,
         )
 
     def test_csv_search_normalizes_spaces_and_finds_alias_matches(self):
@@ -137,8 +137,8 @@ class DanbooruTagSearchTests(unittest.TestCase):
             ],
             cwd=ROOT,
             text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("OK\tjpeg_artifacts", result.stdout)

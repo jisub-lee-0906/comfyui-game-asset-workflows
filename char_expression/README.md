@@ -5,7 +5,7 @@
 - input_requirement: source character image 필요
 - output: expression variant PNG
 - prompt_policy: `danbooru_sqlite+readme_wrapper`
-- editable_fields: 1.inputs.image, 6.inputs.text, 7.inputs.text, 13.inputs.seed, 13.inputs.denoise, 19.inputs.filename_prefix, 5.inputs.mask_blur, 5.inputs.mask_offset, 1000.inputs.model_name, 1002.inputs.threshold, 1002.inputs.crop_factor, 1003.inputs.detection_hint, 1003.inputs.threshold
+- editable_fields: 1.inputs.image, 6.inputs.text, 7.inputs.text, 13.inputs.seed, 13.inputs.steps, 13.inputs.cfg, 13.inputs.denoise, 19.inputs.filename_prefix, 5.inputs.mask_blur, 5.inputs.mask_offset, 1000.inputs.model_name, 1002.inputs.threshold, 1002.inputs.crop_factor, 1003.inputs.detection_hint, 1003.inputs.threshold
 
 운영 원칙:
 - README를 실행 계약으로 사용합니다.
@@ -19,7 +19,7 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, nude, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, {감정표현}, BREAK, depth_of_field, volumetric_lighting
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, arms_at_sides, {감정표현}, BREAK, depth_of_field, volumetric_lighting
 
 ```
 

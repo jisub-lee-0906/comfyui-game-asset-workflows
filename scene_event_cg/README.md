@@ -46,10 +46,10 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 기존 캐릭터 기반 event CG를 만들 때는 README 샘플을 그대로 복붙하지 말고, 먼저 프로젝트의 캐릭터 metadata sidecar를 읽습니다.
 
-현재 Windows workspace 예시:
+portable game project 예시:
 
 ```text
-E:/workspace/renpy-project/<game_slug>/docs/assets/characters/<character_id>.asset.json
+$GAME_ROOT/docs/assets/characters/<character_id>.asset.json
 ```
 
 조립 순서:
