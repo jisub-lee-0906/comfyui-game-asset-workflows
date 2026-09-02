@@ -125,6 +125,21 @@ class WorkflowContractTests(unittest.TestCase):
             .isdisjoint(positive | negative)
         )
 
+    def test_scene_background_defaults_encode_renpy_staging_contract(self):
+        graph = json.loads((ROOT / "scene_background/scene_background_workflow_api.json").read_text(encoding="utf-8"))
+        workflow = next(item for item in self.index["workflows"] if item["id"] == "scene_background")
+        defaults = workflow["fixed_defaults_observed"]
+        positive = {tag.strip() for tag in graph["3"]["inputs"]["text"].split(",")}
+        negative = {tag.strip() for tag in graph["4"]["inputs"]["text"].split(",")}
+
+        self.assertEqual((graph["5"]["inputs"]["width"], graph["5"]["inputs"]["height"]), (1024, 576))
+        self.assertTrue({"scenery", "no_humans", "wide_shot", "landscape", "depth_of_field"} <= positive)
+        self.assertNotIn("volumetric_lighting", positive)
+        self.assertTrue({"logo", "sign", "school_emblem"} <= negative)
+        self.assertEqual(defaults["renpy_display_size"], "1920x1080")
+        self.assertEqual(defaults["renpy_textbox_fraction"], 0.28)
+        self.assertEqual(defaults["renpy_background_scale"], 1.875)
+
     def test_canonical_hash_lock_matches_workflows(self):
         lock = json.loads((ROOT / "dependencies/canonical_hashes.json").read_text(encoding="utf-8"))
         expected_ids = {item["id"] for item in self.index["workflows"]}
