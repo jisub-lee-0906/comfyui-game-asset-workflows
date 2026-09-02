@@ -246,7 +246,11 @@
         "sampler": "euler_ancestral",
         "scheduler": "normal",
         "steps": 24,
-        "cfg": 5.5
+        "cfg": 5.5,
+        "renpy_display_size": "1920x1080",
+        "renpy_textbox_fraction": 0.28,
+        "renpy_background_scale": 1.875,
+        "renpy_qa_script": "scripts/make_renpy_background_preview.py"
       },
       "status": "canonical_template_but_prompt_placeholders_require_runtime_patch",
       "placeholders": [
