@@ -81,7 +81,51 @@ small plain smartphone on wooden tabletop, featureless empty black glass front, 
 * **재질 및 질감:** `dried_blood, blood`
 * **적용 예시:** `... object_focus, knife, kitchen_knife, blood, dried_blood, table, BREAK, depth_of_field ...`
 
-#### 3. 검증된 Danbooru SQLite 태그 메모
+#### 3. 검증된 단일 데이터 크리스털 패턴
+
+2026-09-02 Nova Anime XL A/B 테스트에서 일반 quality-first wrapper는 `crystal`을 여러 조각의 cluster로 만드는 경향이 있었습니다. 단일 소품이 중요한 경우 object-first compact shape를 사용합니다.
+
+```text
+single large faceted teal gemstone, upright crystal data core, one object only, fully visible,
+centered on a wooden classroom desk, clean silhouette,
+no_humans, still_life, object_focus, gem, crystal, glowing, transparent,
+reflective_surface, scratches, wooden_table, shadow, depth_of_field,
+futuristic visual novel story clue,
+masterpiece, best_quality, amazing_quality, very_aesthetic, high_resolution, ultra-detailed, newest
+```
+
+해당 소품의 추가 negative 예시:
+
+```text
+crystal_shards, duplicate, cropped, out_of_frame, close-up,
+cluster of crystals, multiple crystals, multiple objects, extra objects,
+text, fake_text, logo, label, box, book
+```
+
+- `crystal_shards`는 로컬 taxonomy에서 검증된 tag입니다.
+- `cluster of crystals`, `multiple crystals`, `one object only`는 정확한 Danbooru tag가 아니라 이 소품 class를 위한 짧은 semantic 제어 문구입니다.
+- object-first compact 테스트 3/3에서 단일 object가 생성되어 baseline의 1/3에서 개선됐습니다.
+- 결정 모양은 seed에 따라 다이아몬드형 gem, 절단된 data core, 구형 energy core로 drift합니다. 정확한 제품 설계가 아니라 story clue 후보 선택으로 운영합니다.
+
+#### 4. Ren'Py item cut-in / safe-area 계약
+
+- source generation: `1024x576` PNG
+- review display: `1920x1080` (정확한 1.875배 확대)
+- 기본 대사창: 화면 하단 `28%`
+- 핵심 소품 실루엣과 발광 중심은 `y < 0.72 * height`에서도 식별 가능해야 합니다.
+- 소품이 대사창과 일부 겹쳐도 종류·형태·스토리 단서가 유지되어야 합니다.
+- 최소 3개 seed를 비교하고 단일성, 잘림, 접촉 그림자, fake text를 각각 QA합니다.
+
+```bash
+python scripts/make_renpy_background_preview.py \
+  path/to/prop_candidate.png path/to/prop_renpy_preview.png \
+  --display-width 1920 --display-height 1080 \
+  --textbox-fraction 0.28
+```
+
+이 도구는 전체 화면 item cut-in 검토용입니다. 별도의 작은 UI 아이콘이나 inventory sprite가 필요하면 이 16:9 CG를 축소하지 말고 전용 투명 asset workflow를 사용해야 합니다.
+
+#### 5. 검증된 Danbooru SQLite 태그 메모
 
 출처: 로컬 Danbooru taxonomy SQLite tag oracle. 아래 태그들은 README에 적기 전에 DB에서 active/non-deprecated로 확인했습니다. 오브젝트/재질/카메라 태그를 사용하고, 스토리상 텍스트 artifact 테스트가 꼭 필요한 경우가 아니라면 읽을 수 있는 글자는 피합니다.
 
@@ -93,7 +137,7 @@ small plain smartphone on wooden tabletop, featureless empty black glass front, 
 
 소품 규칙: 편지/책/화면은 최종 텍스트를 ComfyUI 밖에서 합성할 계획이 아니라면 빈 디자인이나 읽을 수 없는 디자인을 우선합니다. `single_object`처럼 "단일 소품만"을 직접 뜻하는 Danbooru 태그는 현재 로컬 Danbooru taxonomy SQLite에서 정확 태그로 검증되지 않으므로, 단일 소품 구도는 `no_humans`, `still_life`, `object_focus`와 seed/settings/후보 선택으로 유도합니다. 소품이 잘리면 `close-up`처럼 과한 근접을 유도하는 태그를 줄입니다.
 
-#### 4. 운영 가이드
+#### 6. 운영 가이드
 
 - `key`는 단일 단서 소품 후보로 안정적인 편입니다.
 - `ring`은 단일 소품으로는 가능하지만 보석 장식이 커져 bracelet/ornamental object처럼 보일 수 있으므로 seed 후보를 여러 장 뽑습니다.
