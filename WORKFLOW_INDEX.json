@@ -25,7 +25,7 @@
       "readme": "char_base/README.md",
       "api": "char_base/char_base_workflow_api.json",
       "purpose": "Generate opaque base/source character images and same-seed outfit/costume variants from identity + outfit prompt tags.",
-      "output_type": "opaque character source or outfit-variant image, 1152x1536 by default",
+      "output_type": "opaque VN cowboy-shot character source or outfit-variant image, 1024x1280 by default",
       "requires_input_images": false,
       "primary_nodes": {
         "checkpoint": "1",
@@ -47,16 +47,16 @@
       ],
       "fixed_defaults_observed": {
         "checkpoint": "novaAnimeXL_ilV190.safetensors",
-        "width": 1152,
-        "height": 1536,
+        "width": 1024,
+        "height": 1280,
         "sampler": "euler_ancestral",
         "scheduler": "normal",
         "steps": 28,
         "cfg": 5.0,
         "seed": 260526204,
         "same_seed_outfit_route": "validated 2026-05-26; keep identity/framing tags and seed fixed, vary only outfit block + filename_prefix",
-        "default_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, medium_hair, straight_hair, blunt_bangs, brown_hair, brown_eyes, school_uniform, white_shirt, necktie, pleated_skirt, cardigan, grey_background",
-        "default_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, school_emblem"
+        "default_positive_prompt": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, (cowboy_shot:1.3), straight-on, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, medium_hair, straight_hair, blunt_bangs, brown_hair, brown_eyes, school_uniform, white_shirt, necktie, pleated_skirt, cardigan, grey_background",
+        "default_negative_prompt": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, full_body, feet, shoes, profile, three_quarter_view, cropped_arms"
       },
       "downstream": [
         "char_expression",
