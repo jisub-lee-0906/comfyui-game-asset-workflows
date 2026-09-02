@@ -140,6 +140,24 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertEqual(defaults["renpy_textbox_fraction"], 0.28)
         self.assertEqual(defaults["renpy_background_scale"], 1.875)
 
+    def test_scene_prop_defaults_encode_renpy_cut_in_contract(self):
+        graph = json.loads((ROOT / "scene_prop_cg/scene_prop_cg_workflow_api.json").read_text(encoding="utf-8"))
+        workflow = next(item for item in self.index["workflows"] if item["id"] == "scene_prop_cg")
+        defaults = workflow["fixed_defaults_observed"]
+        positive = {tag.strip() for tag in graph["3"]["inputs"]["text"].split(",")}
+        negative = {tag.strip() for tag in graph["4"]["inputs"]["text"].split(",")}
+
+        self.assertEqual((graph["5"]["inputs"]["width"], graph["5"]["inputs"]["height"]), (1024, 576))
+        self.assertTrue({"no_humans", "still_life", "object_focus", "depth_of_field"} <= positive)
+        self.assertTrue({"duplicate", "cropped", "out_of_frame", "fake_text", "logo", "label"} <= negative)
+        self.assertEqual(defaults["renpy_display_size"], "1920x1080")
+        self.assertEqual(defaults["renpy_textbox_fraction"], 0.28)
+        self.assertEqual(defaults["minimum_seed_candidates"], 3)
+        self.assertEqual(defaults["single_object_prompt_shape"], "object_first_compact")
+        qa_script = (ROOT / defaults["renpy_qa_script"]).resolve()
+        self.assertTrue(qa_script.is_relative_to(ROOT.resolve()))
+        self.assertTrue(qa_script.is_file())
+
     def test_canonical_hash_lock_matches_workflows(self):
         lock = json.loads((ROOT / "dependencies/canonical_hashes.json").read_text(encoding="utf-8"))
         expected_ids = {item["id"] for item in self.index["workflows"]}

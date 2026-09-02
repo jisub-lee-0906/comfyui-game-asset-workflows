@@ -376,7 +376,13 @@
         "scheduler": "normal",
         "steps": 30,
         "cfg": 5.2,
-        "default_subject": "brass_key"
+        "default_subject": "brass_key",
+        "renpy_display_size": "1920x1080",
+        "renpy_textbox_fraction": 0.28,
+        "renpy_background_scale": 1.875,
+        "renpy_qa_script": "scripts/make_renpy_background_preview.py",
+        "minimum_seed_candidates": 3,
+        "single_object_prompt_shape": "object_first_compact"
       },
       "status": "canonical_template",
       "placeholders": [
