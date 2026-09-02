@@ -19,13 +19,13 @@
 **Positive prompt:**
 
 ```text
-masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, cowboy_shot, standing, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, {캐릭터 특징(연령대, 헤어스타일, 머리길이, 머리색, 눈매, 눈색)}, {의상 디테일(의상 이름, 색상_의상종류)}, grey_background
+masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, medium_breasts, (cowboy_shot:1.3), straight-on, facing_viewer, looking_at_viewer, expressionless, closed_mouth, arms_at_sides, {캐릭터 특징(연령대, 헤어스타일, 머리길이, 머리색, 눈매, 눈색)}, {의상 디테일(의상 이름, 색상_의상종류)}, grey_background
 ```
 
 **Negative prompt:**
 
 ```text
-modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field
+modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, full_body, feet, shoes, profile, three_quarter_view, cropped_arms
 ```
 
 #### 2. Same-seed outfit variant 규칙
@@ -38,7 +38,7 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 
 고정하는 것:
 - 기준 후보와 동일한 시드값
-- `masterpiece`, `best_quality`, `amazing_quality`, `4k`, `very_aesthetic`, `high_resolution`, `ultra-detailed`, `absurdres`, `newest`, `1girl`, `solo`, `medium_breasts`, `cowboy_shot`, `standing`, `facing_viewer`, `looking_at_viewer`
+- `masterpiece`, `best_quality`, `amazing_quality`, `4k`, `very_aesthetic`, `high_resolution`, `ultra-detailed`, `absurdres`, `newest`, `1girl`, `solo`, `medium_breasts`, `(cowboy_shot:1.3)`, `straight-on`, `facing_viewer`, `looking_at_viewer`
 - `expressionless`, `closed_mouth`, `arms_at_sides`
 - 기준 후보와 동일한 캐릭터 특징
 
@@ -51,8 +51,20 @@ modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite,
 - 의상 slot에 표정, 카메라, 배경, 성격 단어를 섞지 않습니다.
 - 손 주변에 소품/가방이 생기면 먼저 `arms_at_sides`를 유지하고 seed 후보를 봅니다. 무리하게 negative를 넓히지 않습니다.
 - 어깨/다리 노출 태그(`bare_shoulders`, `bare_legs`)를 쓸 때는 의상 레이어 태그(`dress`, `shirt`, `skirt`, `gloves`)를 함께 명시합니다.
+- 같은 seed라도 해상도·구도·prompt tag가 바뀌면 의상 세부는 고정되지 않을 수 있습니다. `char_base`의 seed 고정은 완전한 identity/outfit lock이 아닙니다.
 
-#### 3. 의상 프롬프트 리스트 (canonical 예시)
+#### 3. 검증된 VN 카우보이 샷 기본값
+
+2026-09-02 로컬 Nova Anime XL IL v19 A/B 테스트에서 아래 조합을 확인했습니다.
+
+- 해상도: `1024x1280`
+- Positive framing: `(cowboy_shot:1.3), straight-on, facing_viewer, looking_at_viewer, arms_at_sides`
+- Negative framing: `full_body, feet, shoes, profile, three_quarter_view, cropped_arms`
+- 결과: 허벅지 중간 프레이밍, 정면 시선, 양팔·양손의 프레임 내 배치, 전신판 대비 얼굴 디테일 개선
+- `front_view`, `centered`, `symmetrical_composition`, `hands_visible`, `relaxed_hands`, `headroom`은 로컬 Danbooru taxonomy DB에서 미확인되었으므로 canonical framing tag로 사용하지 않습니다.
+- 의상 일관성은 이 framing 계약의 합격 조건이 아닙니다. 승인한 기준 이미지를 이후 `char_expression`과 `char_alpha`에 전달합니다.
+
+#### 4. Same-seed 의상 프롬프트 리스트 (canonical 예시)
 
 Positive prompt의 `{의상 디테일}` 자리에 아래 텍스트를 넣습니다.
 원칙: `{의상 이름, 색상_의상종류}` 중심으로 짧고 고정된 block을 우선 사용합니다.
@@ -95,7 +107,7 @@ witch, purple_cape, black_corset, long_skirt, pendant
 - 의상 block에는 표정/카메라/배경 tag를 넣지 않습니다.
 - 예시 목록 확장/수정은 소규모 QA(최소 same-seed 3~5장) 후 반영합니다.
 
-#### 4. 검증된 Danbooru SQLite 태그 메모
+#### 5. 검증된 Danbooru SQLite 태그 메모
 
 출처: 로컬 Danbooru taxonomy SQLite tag oracle. 아래 태그들은 runtime placeholder 선택지로만 사용하고, 태그를 더 넣기 위해 장황하게 prompt를 늘리지 않습니다.
 
@@ -107,7 +119,7 @@ witch, purple_cape, black_corset, long_skirt, pendant
 - 머리색: `black_hair`, `brown_hair`, `blonde_hair`, `pink_hair`, `blue_hair`, `white_hair`, `two-tone_hair`
 - 눈매: `tsurime`, `tareme`, `upturned_eyes`, `downturned_eyes`
 - 눈색: `brown_eyes`, `blue_eyes`, `green_eyes`, `red_eyes`, `purple_eyes`
-- 중립 구도: `cowboy_shot`, `standing`, `facing_viewer`, `looking_at_viewer`, `expressionless`, `closed_mouth`, `arms_at_sides`, `grey_background`
+- 중립 구도: `cowboy_shot`, `straight-on`, `facing_viewer`, `looking_at_viewer`, `expressionless`, `closed_mouth`, `arms_at_sides`, `grey_background`
 - 상의/카라: `shirt`, `white_shirt`, `blouse`, `sweater`, `cardigan`, `blazer`, `jacket`, `hoodie`, `collared_shirt`, `sailor_collar`
 - 소매: `long_sleeves`, `short_sleeves`, `sleeveless`
 - 하의: `skirt`, `pleated_skirt`, `plaid_skirt`, `shorts`, `pants`, `dress`

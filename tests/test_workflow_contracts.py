@@ -108,6 +108,23 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotRegex(prompt, r"(?:^|,\s*)nude(?:\s*,|$)")
         self.assertNotRegex(readme, r"(?:^|,\s*)nude(?:\s*,|$)")
 
+    def test_char_base_defaults_to_validated_vn_cowboy_framing(self):
+        graph = json.loads((ROOT / "char_base/char_base_workflow_api.json").read_text(encoding="utf-8"))
+        positive = {tag.strip() for tag in graph["3"]["inputs"]["text"].split(",")}
+        negative = {tag.strip() for tag in graph["4"]["inputs"]["text"].split(",")}
+
+        self.assertEqual(graph["5"]["inputs"]["width"], 1024)
+        self.assertEqual(graph["5"]["inputs"]["height"], 1280)
+        self.assertTrue(
+            {"(cowboy_shot:1.3)", "straight-on", "facing_viewer", "looking_at_viewer", "arms_at_sides"}
+            <= positive
+        )
+        self.assertTrue({"full_body", "feet", "shoes", "profile", "three_quarter_view", "cropped_arms"} <= negative)
+        self.assertTrue(
+            {"front_view", "centered", "symmetrical_composition", "hands_visible", "relaxed_hands", "headroom"}
+            .isdisjoint(positive | negative)
+        )
+
     def test_canonical_hash_lock_matches_workflows(self):
         lock = json.loads((ROOT / "dependencies/canonical_hashes.json").read_text(encoding="utf-8"))
         expected_ids = {item["id"] for item in self.index["workflows"]}

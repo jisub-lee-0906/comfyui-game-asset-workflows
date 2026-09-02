@@ -2,7 +2,7 @@
   "schema_version": 1,
   "generated_at": "2026-09-02",
   "workflows": {
-    "char_base": "76d5625652f7ff5f8ee607ecc4fa97b4ac17113b3456fd38a266fa0da896d0df",
+    "char_base": "16cca51a68816ab0462480e07bde66702e69df7afc1fd959793b2347dc3aece0",
     "char_expression": "8897b37a2c20ca092dc24c94b7cff892187c969fd69e4b9c0f64d800334e78db",
     "char_alpha": "7b62377240cbfef60dcb283ba64a49e88e8d3fc4f713ef5f53fef2edf1f6502b",
     "scene_background": "1a6691bf85c38be95ab4f1e5bd9c89cb1a4cc8b0cc14ae92751e9916907d89e3",
