@@ -89,7 +89,7 @@ python scripts/workflow_pack.py validate
 
 두 명령이 모두 성공해야 runtime 생성 단계로 진행합니다.
 
-모델·노드 설치 후 8개 canonical workflow를 실제로 순차 실행하는 저비용 smoke test:
+모델·노드 설치 후 7개 canonical workflow를 실제로 순차 실행하는 저비용 smoke test:
 
 ```bash
 python scripts/e2e_smoke.py \
@@ -98,7 +98,7 @@ python scripts/e2e_smoke.py \
   --output-root "$COMFYUI_OUTPUT_DIR"
 ```
 
-`char_base → char_expression → char_alpha`는 실제 생성 파일을 다음 workflow의 input으로 복사하고, 나머지 이미지·UI·오디오 workflow도 실행합니다. 성공 보고서는 `.runtime/e2e_<run-id>_report.json`에 저장됩니다.
+`char_base → char_expression → char_alpha`는 실제 생성 파일을 다음 workflow의 input으로 복사하고, 나머지 이미지·오디오 workflow도 실행합니다. 생성형 UI workflow는 포함하지 않습니다. 성공 보고서는 `.runtime/e2e_<run-id>_report.json`에 저장됩니다.
 
 ## 6. 안전한 runtime payload 생성
 

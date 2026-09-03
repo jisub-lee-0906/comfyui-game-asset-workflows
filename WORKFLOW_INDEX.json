@@ -1,6 +1,6 @@
 {
   "pack_name": "comfyui-game-asset-workflows",
-  "version": "2026-09-02-portable-contract-v2",
+  "version": "2026-09-03-seven-canonical-v1",
   "structure": "flat semantic workflow folders; each folder contains README.md and one canonical *_workflow_api.json",
   "numbered_folder_contract": "deprecated; do not assume old 01_* through 07_* folders exist",
   "agent_entrypoint": [
@@ -423,75 +423,6 @@
     },
     {
       "order": 7,
-      "id": "ui_system_alert_frame",
-      "folder": "ui_system_alert_frame",
-      "readme": "ui_system_alert_frame/README.md",
-      "api": "ui_system_alert_frame/ui_system_alert_frame_workflow_api.json",
-      "purpose": "Generate a textless red/ornate VN alert frame and verify short/long Korean text as a non-modal top-left Ren'Py overlay without covering protected character action. Cleanplates remain optional fallbacks.",
-      "output_type": "opaque 16:9 textless frame source, resized by Ren'Py to a 720x240 top-left notification panel; review-only until explicit approval",
-      "requires_input_images": false,
-      "primary_nodes": {
-        "checkpoint": "1",
-        "clip_last_layer": "2",
-        "positive_prompt": "3",
-        "negative_prompt": "4",
-        "latent_size": "5",
-        "sampler": "6",
-        "save": "8"
-      },
-      "editable_fields": [
-        "3.inputs.text",
-        "4.inputs.text",
-        "5.inputs.width",
-        "5.inputs.height",
-        "6.inputs.seed",
-        "6.inputs.steps",
-        "6.inputs.cfg",
-        "8.inputs.filename_prefix"
-      ],
-      "fixed_defaults_observed": {
-        "checkpoint": "novaAnimeXL_ilV190.safetensors",
-        "width": 1024,
-        "height": 576,
-        "sampler": "euler_ancestral",
-        "scheduler": "normal",
-        "steps": 30,
-        "cfg": 3.6,
-        "default_seed": 260604912,
-        "canonical_positive_prompt": "masterpiece, best quality, amazing quality, very aesthetic, absurdres, highres, newest, game_cg, visual_novel, border, outside_border, red_border, black_border, gold_border, corner, red_theme, black_theme, dark_background, black_background, no_humans",
-        "canonical_negative_prompt": "worst quality, low quality, bad quality, lowres, jpeg artifacts, blurry, bad anatomy, bad hands, missing fingers, extra fingers, extra digits, fewer digits, cropped, very displeasing, artist name, signature, watermark, text, fake_text, text_focus, english_text, korean_text, logo, label, caption, speech_bubble, dialogue_options, 1girl, 1boy, people, portrait, glowing_eye, animal, cat, scenery, indoors, outdoors, city, building, window_(computing), dialogue_box, icon_(computing), emblem, crest, magic_circle, runes, glyph, circle, red_circle, heart, halo, lens_flare, spotlight, gem, jewel, crystal, cross, medallion, box, paper, book, empty_picture_frame, picture_frame, photo_frame, painting, painting_(object)",
-        "renpy_display_size": "1920x1080",
-        "renpy_presentation_mode": "top_left_nonmodal",
-        "renpy_panel_size": [720, 240],
-        "renpy_panel_margin": [48, 48],
-        "renpy_panel_opacity": 245,
-        "renpy_short_text_qa": "미확인 에너지 감지",
-        "renpy_long_text_qa": "제3교실에서 미확인 데이터 코어가 감지되었습니다",
-        "renpy_preview_script": "ui_system_alert_frame/scripts/make_renpy_alert_preview.py",
-        "minimum_prompt_ab_distinct_seeds": 3,
-        "minimum_prompt_ab_total_renders": 6,
-        "prompt_ab_result": "The canonical corner/backdrop prompt produced 3/3 textless usable sources for seeds 9065001-9065003; the minimal prompt produced 2/3 because seed 9065002 introduced a central symbol. Keep the canonical prompt as default.",
-        "rendered_visual_qa_required": true,
-        "static_ci_establishes_visual_quality": false,
-        "qa_rule": "frame identity, central plate cleanliness, and outer ornament separation must be QA'd separately; avoid positive alert/warning/prohibition/icon trigger language; no baked text/logos/symbols/nameplates/central objects; do not promote smoke candidates to game/images/ui",
-        "pipeline_rule": "Use a clean canonical source directly when its center is empty. Apply deterministic V08-V10 cleanplates only when a source has medallions/ghosting, then run short/long Korean top-left overlay QA against an actual event CG.",
-        "best_current_variant_pattern": "Default seed 260604912 is a clean direct-source candidate. V09 remains the cleanplate fallback for long text when the generated center is dirty; do not cleanplate an already-clean source by habit."
-      },
-      "status": "canonical_textless_source_validated_with_top_left_short_long_korean_renpy_qa",
-      "companion_scripts": [
-        "ui_system_alert_frame/scripts/make_cleanplate_variants.py",
-        "ui_system_alert_frame/scripts/make_renpy_alert_preview.py"
-      ],
-      "templates": [
-        "ui_system_alert_frame/templates/renpy_screen_snippet.rpy"
-      ],
-      "references": [
-        "ui_system_alert_frame/references/qa_policy.md"
-      ],
-      "placeholders": []
-    },
-    {
-      "order": 8,
       "id": "audio_bgm_with_sfx",
       "folder": "audio_bgm_with_sfx",
       "readme": "audio_bgm_with_sfx/README.md",

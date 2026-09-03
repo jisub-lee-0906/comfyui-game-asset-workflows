@@ -78,8 +78,7 @@
         "char_expression",
         "scene_background",
         "scene_event_cg",
-        "scene_prop_cg",
-        "ui_system_alert_frame"
+        "scene_prop_cg"
       ]
     },
     {

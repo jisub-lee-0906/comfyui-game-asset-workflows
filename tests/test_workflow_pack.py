@@ -109,7 +109,7 @@ class WorkflowPackRuntimeTests(unittest.TestCase):
     def test_repository_validator_accepts_canonical_pack(self):
         report = validate_repository(ROOT)
         self.assertTrue(report["ok"], report)
-        self.assertEqual(report["workflow_count"], 8)
+        self.assertEqual(report["workflow_count"], 7)
 
     def test_repository_validator_rejects_index_paths_outside_root(self):
         with tempfile.TemporaryDirectory() as temp:
