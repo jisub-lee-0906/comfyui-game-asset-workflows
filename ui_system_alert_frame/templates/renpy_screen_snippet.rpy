@@ -1,22 +1,23 @@
-# Review-only Ren'Py screen snippet for ui_system_alert_frame candidates.
-# Copy/adapt into a target project only after an exact candidate is approved.
+# Review-only non-modal Ren'Py alert preview.
+# Copy/adapt only after an exact textless frame candidate is approved.
 
 screen ui_system_alert_frame_review(message, frame_image):
     zorder 100
-    modal True
+    modal False
 
-    add frame_image xalign 0.5 yalign 0.5
+    fixed:
+        xpos 48
+        ypos 48
+        xysize (720, 240)
 
-    frame:
-        xalign 0.5
-        yalign 0.5
-        xsize 780
-        ysize 230
-        background None
+        add frame_image:
+            xysize (720, 240)
+            alpha 0.96
 
         text message:
             xalign 0.5
             yalign 0.5
+            xmaximum 620
             textalign 0.5
             size 34
             color "#f6e8d0"
