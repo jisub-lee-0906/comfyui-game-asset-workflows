@@ -194,6 +194,48 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertTrue(qa_script.is_relative_to(ROOT.resolve()))
         self.assertTrue(qa_script.is_file())
 
+    def test_ui_alert_defaults_encode_textless_top_left_renpy_contract(self):
+        graph = json.loads(
+            (ROOT / "ui_system_alert_frame/ui_system_alert_frame_workflow_api.json").read_text(encoding="utf-8")
+        )
+        workflow = next(item for item in self.index["workflows"] if item["id"] == "ui_system_alert_frame")
+        defaults = workflow["fixed_defaults_observed"]
+        positive = {tag.strip() for tag in graph["3"]["inputs"]["text"].split(",")}
+        negative = {tag.strip() for tag in graph["4"]["inputs"]["text"].split(",")}
+
+        self.assertEqual((graph["5"]["inputs"]["width"], graph["5"]["inputs"]["height"]), (1024, 576))
+        self.assertTrue(
+            {"border", "outside_border", "corner", "red_border", "black_border", "gold_border", "no_humans"}
+            <= positive
+        )
+        self.assertTrue(
+            {"text", "fake_text", "logo", "label", "icon_(computing)", "emblem", "crest", "medallion"}
+            <= negative
+        )
+        self.assertEqual(defaults["canonical_positive_prompt"], graph["3"]["inputs"]["text"])
+        self.assertEqual(defaults["canonical_negative_prompt"], graph["4"]["inputs"]["text"])
+        self.assertEqual(defaults["default_seed"], graph["6"]["inputs"]["seed"])
+        self.assertEqual(defaults["cfg"], graph["6"]["inputs"]["cfg"])
+        self.assertNotIn("placeholder", graph["8"]["inputs"]["filename_prefix"])
+        self.assertEqual(defaults["renpy_display_size"], "1920x1080")
+        self.assertEqual(defaults["renpy_presentation_mode"], "top_left_nonmodal")
+        self.assertEqual(defaults["renpy_panel_size"], [720, 240])
+        self.assertEqual(defaults["renpy_panel_margin"], [48, 48])
+        self.assertEqual(defaults["minimum_prompt_ab_distinct_seeds"], 3)
+        self.assertEqual(defaults["minimum_prompt_ab_total_renders"], 6)
+        self.assertTrue(defaults["rendered_visual_qa_required"])
+        preview_script = (ROOT / defaults["renpy_preview_script"]).resolve()
+        self.assertTrue(preview_script.is_relative_to(ROOT.resolve()))
+        self.assertTrue(preview_script.is_file())
+        self.assertIn(defaults["renpy_preview_script"], workflow["companion_scripts"])
+        template = (ROOT / "ui_system_alert_frame/templates/renpy_screen_snippet.rpy").read_text(encoding="utf-8")
+        self.assertIn("modal False", template)
+        self.assertIn("xpos 48", template)
+        self.assertIn("ypos 48", template)
+        self.assertIn("xysize (720, 240)", template)
+        self.assertIn("alpha 0.96", template)
+        self.assertIn("xmaximum 620", template)
+
     def test_scene_prop_defaults_encode_renpy_cut_in_contract(self):
         graph = json.loads((ROOT / "scene_prop_cg/scene_prop_cg_workflow_api.json").read_text(encoding="utf-8"))
         workflow = next(item for item in self.index["workflows"] if item["id"] == "scene_prop_cg")
