@@ -22,10 +22,10 @@
         "2",
         0
       ],
-      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, 1girl, solo, mature_female, straight_hair, downturned_eyes, brown_hair, brown_eyes, school_uniform, white_shirt, brown_cardigan, blue_skirt, brown_pantyhose, auditorium, indoors, spotlight, depth_of_field"
+      "text": "masterpiece, best_quality, amazing_quality, 4k, very_aesthetic, high_resolution, ultra-detailed, absurdres, newest, scenery, 1girl, solo, medium_hair, straight_hair, blunt_bangs, black_hair, aqua_eyes, school_uniform, white_shirt, necktie, blue_jacket, pleated_skirt, upper_body, straight-on, facing_viewer, looking_at_viewer, surprised, open_mouth, holding_crystal, holding_gem, own_hands_together, hands_up, arms_up, crystal, gem, glowing, classroom, indoors, night, depth_of_field"
     },
     "_meta": {
-      "title": "Positive prompt: no-ref identity/outfit-first baseline (char_base no-composition style, 16:9 event cg)"
+      "title": "Positive prompt: face-safe upper-body crystal reveal validated at 16:9"
     }
   },
   "10": {
@@ -35,10 +35,10 @@
         "2",
         0
       ],
-      "text": "modern, recent, old, oldest, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, close-up, very_displeasing, sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, (worst_quality, bad_quality:1.2), shadow, depth_of_field, cowboy_shot, upper_body, full_body, standing, sitting, facing_viewer, looking_at_viewer, from_above, from_below, dutch_angle, classroom, chalkboard, blackboard, whiteboard"
+      "text": "modern, recent, old, oldest, cartoon, graphic, text, logo, sign, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured, long_body, lowres, bad_anatomy, bad_hands, missing_fingers, extra_digits, fewer_digits, cropped, out_of_frame, very_displeasing, (worst_quality, bad_quality:1.2), sketch, jpeg_artifacts, signature, watermark, username, conjoined, bad_ai-generated, full_body, wide_shot, cowboy_shot, profile, multiple_girls, crowd, reaching, outstretched_arm, outstretched_arms"
     },
     "_meta": {
-      "title": "Negative prompt: suppress quality failures plus composition-forcing camera/pose tags by default"
+      "title": "Negative prompt: block distant framing, text, crowd, and conflicting arm actions"
     }
   },
   "11": {
@@ -71,7 +71,7 @@
         "11",
         0
       ],
-      "seed": 260521401,
+      "seed": 9064003,
       "steps": 30,
       "cfg": 5.2,
       "sampler_name": "euler_ancestral",
@@ -79,7 +79,7 @@
       "denoise": 1.0
     },
     "_meta": {
-      "title": "KSampler: LoRA-enabled no-ref event CG baseline; cinematic tag sets are runtime beat-matched candidates"
+      "title": "KSampler: validated face-safe no-ref event CG seed; reroll at least three candidates"
     }
   },
   "13": {
@@ -102,10 +102,10 @@
         "13",
         0
       ],
-      "filename_prefix": "hermes_vn_scene_event_cg/no_ref_pose_lora_lia_academy_hall_seed260521401"
+      "filename_prefix": "game_asset/scene_event_cg/face_safe_crystal_reveal_seed9064003"
     },
     "_meta": {
-      "title": "Save final no-ref pose-LoRA upper-body white-serafuku event CG candidate"
+      "title": "Save face-safe upper-body crystal reveal candidate"
     }
   },
   "100": {

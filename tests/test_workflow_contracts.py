@@ -140,6 +140,60 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertEqual(defaults["renpy_textbox_fraction"], 0.28)
         self.assertEqual(defaults["renpy_background_scale"], 1.875)
 
+    def test_scene_event_defaults_encode_static_contract_for_rendered_visual_qa(self):
+        graph = json.loads((ROOT / "scene_event_cg/scene_event_cg_workflow_api.json").read_text(encoding="utf-8"))
+        workflow = next(item for item in self.index["workflows"] if item["id"] == "scene_event_cg")
+        defaults = workflow["fixed_defaults_observed"]
+        positive = {tag.strip() for tag in graph["9"]["inputs"]["text"].split(",")}
+        negative = {tag.strip() for tag in graph["10"]["inputs"]["text"].split(",")}
+
+        self.assertEqual((graph["11"]["inputs"]["width"], graph["11"]["inputs"]["height"]), (1024, 576))
+        self.assertTrue(
+            {
+                "upper_body",
+                "straight-on",
+                "facing_viewer",
+                "looking_at_viewer",
+                "holding_crystal",
+                "holding_gem",
+                "own_hands_together",
+                "hands_up",
+                "arms_up",
+            }
+            <= positive
+        )
+        self.assertTrue({"full_body", "wide_shot", "cowboy_shot", "profile", "text", "logo", "sign"} <= negative)
+        self.assertEqual(defaults["canonical_positive_prompt"], graph["9"]["inputs"]["text"])
+        self.assertEqual(defaults["canonical_negative_prompt"], graph["10"]["inputs"]["text"])
+        self.assertEqual(defaults["default_seed"], graph["12"]["inputs"]["seed"])
+        self.assertEqual(defaults["renpy_display_size"], "1920x1080")
+        self.assertEqual(defaults["renpy_textbox_fraction"], 0.28)
+        self.assertEqual(defaults["renpy_background_scale"], 1.875)
+        self.assertEqual(defaults["minimum_distinct_seeds_per_ab_variant"], 3)
+        self.assertEqual(defaults["minimum_total_ab_rendered_candidates"], 6)
+        self.assertEqual(defaults["critical_action_top_fraction"], 0.72)
+        self.assertAlmostEqual(
+            defaults["critical_action_top_fraction"],
+            1 - defaults["renpy_textbox_fraction"],
+        )
+        self.assertTrue(defaults["rendered_visual_qa_required"])
+        self.assertFalse(defaults["static_ci_establishes_visual_quality"])
+        for name, preset in defaults["recommended_action_presets"].items():
+            preset_tags = {tag.strip() for tag in preset.split(",")}
+            self.assertTrue(preset_tags.isdisjoint(negative), name)
+        experiments = defaults["optional_runtime_experiments"]
+        self.assertTrue(experiments["runtime_only"])
+        self.assertTrue(experiments["requires_negative_prompt_patch"])
+        experiment_tags = {
+            tag.strip()
+            for preset in experiments["presets"].values()
+            for tag in preset.split(",")
+        }
+        self.assertTrue({"cowboy_shot", "reaching"} <= experiment_tags)
+        qa_script = (ROOT / defaults["renpy_qa_script"]).resolve()
+        self.assertTrue(qa_script.is_relative_to(ROOT.resolve()))
+        self.assertTrue(qa_script.is_file())
+
     def test_scene_prop_defaults_encode_renpy_cut_in_contract(self):
         graph = json.loads((ROOT / "scene_prop_cg/scene_prop_cg_workflow_api.json").read_text(encoding="utf-8"))
         workflow = next(item for item in self.index["workflows"] if item["id"] == "scene_prop_cg")
