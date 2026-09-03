@@ -134,5 +134,5 @@ Ren'Py:
 - 손-소품 상호작용은 pose LoRA를 써도 seed에 따라 실패합니다.
 - 소품 형태 고정이 더 중요하면 `scene_prop_cg`로 별도 cut-in을 만들고 Ren'Py에서 연출합니다.
 - 배경의 구조적 일관성이 더 중요하면 `scene_background` 결과 위에 투명 캐릭터를 합성하는 경로를 사용합니다.
-- 가짜 UI와 문자는 이미지 생성에 맡기지 않고 `ui_system_alert_frame` 또는 Ren'Py overlay로 분리합니다.
+- 가짜 UI와 문자는 이미지 생성에 맡기지 않고 Ren'Py 기본 GUI 또는 screen overlay로 분리합니다.
 - 얼굴 보정은 원거리 구도를 정당화하는 기본 해법이 아닙니다. 먼저 인물 점유율을 확보하고, 보정은 별도 QA된 후처리로만 추가합니다.

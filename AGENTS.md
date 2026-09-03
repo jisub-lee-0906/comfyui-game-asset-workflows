@@ -24,7 +24,6 @@
 - `scene_background`
 - `scene_prop_cg`
 - `scene_event_cg`
-- `ui_system_alert_frame`
 - `audio_bgm_with_sfx`
 
 각 canonical API graph는 해당 folder 바로 아래의 `*_workflow_api.json`입니다.
@@ -40,7 +39,6 @@
 - 의상 변경, costume variant → `char_base` same-seed outfit route
 - 캐릭터 없는 VN 배경 → `scene_background`
 - 소품 CG, 단서 이미지, item cut-in → `scene_prop_cg`
-- VN 시스템 알림창, 경고/계약 알림 UI frame, Ren'Py text overlay용 textless message frame → `ui_system_alert_frame`
 - 장면 BGM, 배경음악, loopable music → `audio_bgm_with_sfx` engine + `audio_bgm` role
 - 문소리, 발소리, 마법 소리, 효과음, UI one-shot → `audio_bgm_with_sfx` engine + `audio_sfx` role
 
@@ -200,14 +198,6 @@ Windows ComfyUI는 공유 환경으로 취급합니다. 사용자 승인 없이 
 - duplicate object가 생겼는지
 - fake text/logo/UI가 생겼는지
 - 너무 과한 close-up이나 macro crop이 아닌지
-
-### UI / System alert frame
-
-- Ren'Py overlay용 중앙 readable plate가 비어 있고 어둡고 충분히 단순한지
-- 외곽 ornament가 중앙 plate를 침범하지 않고 분리되어 있는지
-- baked text/logo/symbol/nameplate/icon/emblem/object가 없는지
-- Korean sample text overlay preview에서 실제 문장이 읽히는지
-- 승인 전 `game/images/ui/`로 promote하지 않았는지
 
 ### Background
 

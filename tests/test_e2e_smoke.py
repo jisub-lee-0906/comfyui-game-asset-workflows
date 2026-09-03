@@ -20,7 +20,6 @@ class E2ESmokePlanTests(unittest.TestCase):
                 "scene_background",
                 "scene_event_cg",
                 "scene_prop_cg",
-                "ui_system_alert_frame",
                 "audio_bgm_with_sfx",
             },
         )

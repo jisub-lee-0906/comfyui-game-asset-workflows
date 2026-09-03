@@ -34,7 +34,6 @@ python scripts/workflow_pack.py validate
 | `scene_background` | 캐릭터 없는 16:9 VN 배경 생성. | `scene_background/scene_background_workflow_api.json` |
 | `scene_prop_cg` | 16:9 소품 / 단서 / item cut-in CG 생성. | `scene_prop_cg/scene_prop_cg_workflow_api.json` |
 | `scene_event_cg` | no-reference txt2img + pose LoRA로 16:9 character event CG 생성. 캐릭터/의상 일관성은 캐릭터 metadata anchor와 prompt tag로 유지합니다. | `scene_event_cg/scene_event_cg_workflow_api.json` |
-| `ui_system_alert_frame` | Textless red/ornate VN system alert frame 후보 생성. Ren'Py text overlay preview는 QA/통합 확인용이며, `scene_prop_cg`와 분리된 UI 전용 route입니다. | `ui_system_alert_frame/ui_system_alert_frame_workflow_api.json` |
 | `audio_bgm_with_sfx` | Stable Audio 3 기반 통합 BGM/SFX/One-shot 후보 생성. | `audio_bgm_with_sfx/audio_bgm_with_sfx_workflow_api.json` |
 
 ## AI agent 시작 지점
@@ -63,7 +62,6 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 | 의상 변경, costume variation이 필요함 | `char_base` | 없음 | 같은 seed와 identity/framing tag를 유지하고 outfit block만 바꾸는 route를 사용합니다. 기존 `char_outfit` source-image inpaint route는 backup으로 이동했습니다. |
 | 교실, 복도, 방, 거리 같은 VN 배경이 필요함 | `scene_background` | 없음 | 캐릭터 없는 16:9 배경을 생성합니다. |
 | 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | 16:9 단일 소품 후보를 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄입니다. |
-| VN 시스템 알림창, 경고/계약 알림 UI frame, textless message frame이 필요함 | `ui_system_alert_frame` | 없음 | 소품이 아니라 UI frame입니다. frame/ornament 제작이 1차 목표이고, Ren'Py overlay preview는 QA입니다. 중앙 plate와 외곽 ornament를 분리 QA하고, baked text/logo/symbol/nameplate/object는 reject합니다. |
 | 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_bgm` role로 사용합니다. prompt는 `instrumentation + musical form/rhythm + mood + short role`처럼 음악 정체성을 먼저 둡니다. raw MP3는 source 후보이며, Ren'Py용은 무음 trim + fade loop edit + OGG 변환 후 loop preview 청감 QA가 필요합니다. |
 | 문 열림, 발소리, 마법 crack 같은 짧은/중간/긴 효과음이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_sfx` role로 사용합니다. prompt는 짧은 positive 자연어 cue + 재질/음색 1~2개가 기본이며, 상황에 따라 `One-shot`/`SFX` mode와 duration을 조절합니다. trim/normalize와 listening QA가 필요합니다. |
 | 포즈나 액션이 있는 장면 일러스트가 필요함 | `scene_event_cg` | 없음 | `pose_variations`는 제거되었습니다. Dialogue sprite 재생성이 아니라 event CG로 처리합니다. 기존 캐릭터 기반이면 캐릭터 metadata anchor를 고정한 뒤 작은 staging/background/seed만 바꿉니다. |
@@ -109,8 +107,7 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 4. `scene_background` — 16:9 scene background를 만듭니다.
 5. `scene_prop_cg` — Ren'Py 연출용 16:9 prop/clue cut-in을 만듭니다.
 6. `scene_event_cg` — no-reference txt2img + pose LoRA로 full 16:9 event CG를 만듭니다. 캐릭터/의상 일관성은 metadata anchor와 prompt tag로 유지하며, 제거된 `pose_variations` sprite route 대신 특수 포즈/액션 illustration에 사용합니다.
-7. `ui_system_alert_frame` — textless VN system alert frame 후보를 만듭니다. 소품 CG와 분리하고, frame identity / 중앙 plate / 외곽 ornament / baked content를 별도로 QA합니다. Ren'Py overlay preview는 통합 QA입니다.
-8. `audio_bgm_with_sfx` — Stable Audio 3 기반 통합 route로 BGM/SFX/One-shot 후보를 만듭니다.
+7. `audio_bgm_with_sfx` — Stable Audio 3 기반 통합 route로 BGM/SFX/One-shot 후보를 만듭니다.
 
 이 폴더들은 필수 linear pipeline이 아니라 재사용 도구입니다. 현재 장면에 필요한 가장 작은 workflow를 선택합니다.
 
@@ -211,15 +208,6 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 - VN composition으로 사용 가능한지
 - 캐릭터를 세울 foreground/headroom 여유가 있는지
 
-### UI / System alert frame
-
-- red/ornate VN system alert frame으로 먼저 읽히는지
-- 중앙 plate가 깨끗하고 외곽 ornament와 분리되어 있는지
-- 외곽 ornament가 중앙 plate를 침범하지 않고 frame/border로 읽히는지
-- baked text/logo/symbol/nameplate/icon/emblem/object가 없는지
-- Korean sample text overlay preview에서 명백한 통합 blocker가 없는지
-- 승인 전 `game/images/ui/`로 promote하지 않았는지
-
 ### Transparent PNG
 
 - alpha edge
@@ -240,7 +228,7 @@ Workflow가 runnable하다는 것은 production-approved와 다릅니다.
 
 ## 고정 상태
 
-현재 canonical pack은 위에 적힌 8개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 16:9 `scene_event_cg`로 처리합니다.
+현재 canonical pack은 위에 적힌 7개 workflow 폴더로 의도적으로 제한합니다. `pose_variations`는 canonical pack에서 제거되었으므로, 포즈/액션이 필요한 경우 dialogue sprite 재생성이 아니라 16:9 `scene_event_cg`로 처리합니다.
 
 고정 전 audit 상태:
 

@@ -71,14 +71,6 @@ def build_smoke_edits(
             "6.inputs.cfg": 5.2,
             "8.inputs.filename_prefix": f"{prefix}/scene_prop_cg",
         },
-        "ui_system_alert_frame": {
-            "5.inputs.width": 768,
-            "5.inputs.height": 432,
-            "6.inputs.seed": 260604912,
-            "6.inputs.steps": 8,
-            "6.inputs.cfg": 3.6,
-            "8.inputs.filename_prefix": f"{prefix}/ui_system_alert_frame",
-        },
         "audio_bgm_with_sfx": {
             "52:31.inputs.value": "A short clean fantasy UI confirmation chime with bright bell attack and soft magical shimmer. Length: 5 seconds",
             "52:7.inputs.text": "voice, speech, lyrics",
@@ -154,13 +146,12 @@ def run_smoke(
         "scene_background",
         "scene_event_cg",
         "scene_prop_cg",
-        "ui_system_alert_frame",
         "audio_bgm_with_sfx",
     ):
         execute(workflow_id)
 
     report = {
-        "ok": len(results) == 8,
+        "ok": len(results) == 7,
         "run_id": run_id,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "workflows": results,
