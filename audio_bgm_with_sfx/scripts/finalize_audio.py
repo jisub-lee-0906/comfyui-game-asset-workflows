@@ -373,6 +373,16 @@ def parse_loudnorm_measurement(stderr: str) -> dict[str, str]:
         raise AudioToolError("ffmpeg loudnorm measurement is invalid JSON") from exc
 
 
+def finite_measurement_value(measurement: dict[str, str], name: str) -> float:
+    try:
+        value = float(measurement[name])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise AudioToolError(f"ffmpeg loudnorm measurement {name} is invalid") from exc
+    if not math.isfinite(value):
+        raise AudioFinalizeError(f"loudnorm measurement {name} is not finite")
+    return value
+
+
 def measure_loudness(
     source: Path, target_i: float, target_tp: float, *, filter_graph: str | None = None
 ) -> dict[str, str]:
@@ -420,17 +430,21 @@ def encode_bgm(
     loop_filter = (
         f"[0:a]atrim=start={start:.9f}:end={end:.9f},asetpts=PTS-STARTPTS,"
         "aformat=sample_rates=48000:channel_layouts=stereo,asplit=3[head][middle][tail];"
-        f"[head]atrim=start=0:end={args.crossfade:.9f},asetpts=PTS-STARTPTS[h];"
+        f"[head]atrim=start=0:end={args.crossfade:.9f},asetpts=PTS-STARTPTS,"
+        f"afade=t=in:st=0:d={args.crossfade:.9f}:curve=qsin[h];"
         f"[middle]atrim=start={args.crossfade:.9f}:end={middle_end:.9f},"
         "asetpts=PTS-STARTPTS[m];"
-        f"[tail]atrim=start={middle_end:.9f}:end={duration:.9f},asetpts=PTS-STARTPTS[t];"
-        f"[t][h]acrossfade=d={args.crossfade:.9f}:c1=qsin:c2=qsin[seam];"
+        f"[tail]atrim=start={middle_end:.9f}:end={duration:.9f},asetpts=PTS-STARTPTS,"
+        f"afade=t=out:st=0:d={args.crossfade:.9f}:curve=qsin[t];"
+        "[t][h]amix=inputs=2:duration=longest:normalize=0,asetpts=PTS-STARTPTS[seam];"
         "[seam][m]concat=n=2:v=0:a=1[loop]"
     )
     encode_peak_db = args.target_peak_db - peak_headroom_db
     measurement = measure_loudness(
         source, args.target_lufs, encode_peak_db, filter_graph=loop_filter
     )
+    for name in ("input_i", "input_lra", "input_tp", "input_thresh", "target_offset"):
+        finite_measurement_value(measurement, name)
     loudnorm = (
         f"loudnorm=I={args.target_lufs}:TP={encode_peak_db}:LRA=11:"
         f"measured_I={measurement['input_i']}:measured_LRA={measurement['input_lra']}:"
@@ -518,7 +532,7 @@ def write_metadata_temp(
     end: float,
     preview_temp: Path | None = None,
     preview_facts: dict[str, Any] | None = None,
-    output_qa: dict[str, float] | None = None,
+    output_qa: dict[str, float | None] | None = None,
 ) -> None:
     report = {
         "schema_version": 1,
@@ -550,7 +564,9 @@ def write_metadata_temp(
             "sha256": sha256_file(preview_temp),
             "ffprobe": preview_facts,
         }
-    path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(report, allow_nan=False, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def atomic_commit(pairs: list[tuple[Path, Path]], *, overwrite: bool) -> None:
@@ -646,7 +662,7 @@ def finalize(args: argparse.Namespace) -> None:
                         peak_headroom_db,
                     )
                     measurement = measure_loudness(output_temp, -20.0, args.target_peak_db)
-                    measured_true_peak = float(measurement["input_tp"])
+                    measured_true_peak = finite_measurement_value(measurement, "input_tp")
                     if measured_true_peak <= args.target_peak_db:
                         break
                     peak_headroom_db += measured_true_peak - args.target_peak_db + 0.1
@@ -670,7 +686,7 @@ def finalize(args: argparse.Namespace) -> None:
                     measurement = measure_loudness(
                         output_temp, args.target_lufs, args.target_peak_db
                     )
-                    measured_true_peak = float(measurement["input_tp"])
+                    measured_true_peak = finite_measurement_value(measurement, "input_tp")
                     if measured_true_peak <= args.target_peak_db:
                         break
                     peak_headroom_db += measured_true_peak - args.target_peak_db + 0.1
@@ -681,9 +697,15 @@ def finalize(args: argparse.Namespace) -> None:
                         f"{args.target_peak_db:.2f} dBTP after {attempt} attempts"
                     )
             output_facts = ffprobe_facts(output_temp)
+            try:
+                integrated_lufs = float(measurement["input_i"])
+            except (KeyError, TypeError, ValueError):
+                integrated_lufs = None
+            if integrated_lufs is not None and not math.isfinite(integrated_lufs):
+                integrated_lufs = None
             output_qa = {
-                "integrated_lufs": float(measurement["input_i"]),
-                "true_peak_dbtp": float(measurement["input_tp"]),
+                "integrated_lufs": integrated_lufs,
+                "true_peak_dbtp": measured_true_peak,
             }
             preview_facts = None
             if preview_temp:

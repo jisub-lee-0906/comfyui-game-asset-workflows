@@ -52,6 +52,24 @@ def make_wave(
         output.writeframes(samples)
 
 
+def make_tone_sequence_wave(
+    path: Path,
+    segments: list[tuple[float, float]],
+    rate: int = 44100,
+    amplitude: float = 0.15,
+) -> None:
+    samples = bytearray()
+    for duration, frequency in segments:
+        for frame in range(round(duration * rate)):
+            value = round(amplitude * 32767 * math.sin(2 * math.pi * frequency * frame / rate))
+            samples.extend(struct.pack("<h", value))
+    with wave.open(str(path), "wb") as output:
+        output.setnchannels(1)
+        output.setsampwidth(2)
+        output.setframerate(rate)
+        output.writeframes(samples)
+
+
 def make_transient_wave(path: Path, rate: int = 44100) -> None:
     frame_count = rate * 6
     samples = [round(4000 * math.sin(2 * math.pi * 997 * frame / rate)) for frame in range(frame_count)]
@@ -358,6 +376,86 @@ class AudioFinalizeTemporaryLifecycleTests(unittest.TestCase):
 
 
 class AudioFinalizeValidationTests(unittest.TestCase):
+    def test_bgm_rejects_non_finite_loudnorm_measurement_before_second_pass(self):
+        args = finalize_audio.build_parser().parse_args(
+            ["bgm", "--input", "source.wav", "--output", "loop.ogg", "--crossfade", "0.5"]
+        )
+        measurement = subprocess.CompletedProcess(
+            args=["ffmpeg"],
+            returncode=0,
+            stdout="",
+            stderr='''
+                {
+                    "input_i" : "-inf",
+                    "input_tp" : "-21.42",
+                    "input_lra" : "0.00",
+                    "input_thresh" : "-70.00",
+                    "output_i" : "-inf",
+                    "output_tp" : "-2.00",
+                    "output_lra" : "0.00",
+                    "output_thresh" : "-70.00",
+                    "normalization_type" : "linear",
+                    "target_offset" : "inf"
+                }
+            ''',
+        )
+
+        with (
+            mock.patch.object(finalize_audio, "run_tool", return_value=measurement) as run_tool,
+            self.assertRaisesRegex(
+                finalize_audio.AudioFinalizeError,
+                "loudnorm measurement input_i is not finite",
+            ),
+        ):
+            finalize_audio.encode_bgm(args, Path("source.wav"), 0.0, 4.0, Path("loop.ogg"))
+
+        run_tool.assert_called_once()
+
+    def test_bgm_requires_all_five_loudnorm_values_before_second_pass(self):
+        args = finalize_audio.build_parser().parse_args(
+            ["bgm", "--input", "source.wav", "--output", "loop.ogg", "--crossfade", "0.5"]
+        )
+        valid_measurement = {
+            "input_i": "-20.0",
+            "input_lra": "1.0",
+            "input_tp": "-2.0",
+            "input_thresh": "-30.0",
+            "target_offset": "0.0",
+        }
+
+        for name in valid_measurement:
+            for invalid_value in (None, "not-a-number"):
+                with self.subTest(name=name, invalid_value=invalid_value):
+                    measurement = dict(valid_measurement)
+                    if invalid_value is None:
+                        del measurement[name]
+                    else:
+                        measurement[name] = invalid_value
+                    with (
+                        mock.patch.object(
+                            finalize_audio, "measure_loudness", return_value=measurement
+                        ),
+                        self.assertRaisesRegex(
+                            finalize_audio.AudioToolError,
+                            rf"^ffmpeg loudnorm measurement {name} is invalid$",
+                        ),
+                    ):
+                        finalize_audio.encode_bgm(
+                            args, Path("source.wav"), 0.0, 4.0, Path("loop.ogg")
+                        )
+
+    def test_peak_measurement_requires_only_finite_input_tp(self):
+        measurement = {"input_i": "-inf", "target_offset": "inf", "input_tp": "-2.0"}
+
+        self.assertEqual(finalize_audio.finite_measurement_value(measurement, "input_tp"), -2.0)
+
+        for measurement in ({}, {"input_tp": "not-a-number"}):
+            with self.subTest(measurement=measurement), self.assertRaisesRegex(
+                finalize_audio.AudioToolError,
+                r"^ffmpeg loudnorm measurement input_tp is invalid$",
+            ):
+                finalize_audio.finite_measurement_value(measurement, "input_tp")
+
     def test_peak_retry_is_bounded_uses_snapshot_and_fails_without_final_output(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -949,7 +1047,11 @@ class AudioFinalizeIntegrationTests(unittest.TestCase):
             root = Path(temp)
             source = root / "source.wav"
             output = root / "loop.ogg"
-            make_wave(source, [(0.2, 0.1), (1.6, 0.02), (0.2, 0.4)])
+            frequencies = (330.0, 660.0, 990.0)
+            make_tone_sequence_wave(
+                source,
+                [(0.5, frequencies[0]), (3.0, frequencies[1]), (0.5, frequencies[2])],
+            )
 
             result = run_cli(
                 "bgm",
@@ -958,18 +1060,31 @@ class AudioFinalizeIntegrationTests(unittest.TestCase):
                 "--output",
                 str(output),
                 "--crossfade",
-                "0.2",
+                "0.5",
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
             pcm = decode_mono_pcm(output)
 
-            def rms(samples: list[int]) -> float:
-                return math.sqrt(sum(value * value for value in samples) / len(samples))
+            def dominant_frequency(start_seconds: float) -> float:
+                start = round(start_seconds * 48000)
+                samples = pcm[start : start + 4800]
+                powers: dict[float, float] = {}
+                for frequency in frequencies:
+                    real = sum(
+                        value * math.cos(2 * math.pi * frequency * frame / 48000)
+                        for frame, value in enumerate(samples)
+                    )
+                    imaginary = sum(
+                        value * math.sin(2 * math.pi * frequency * frame / 48000)
+                        for frame, value in enumerate(samples)
+                    )
+                    powers[frequency] = real * real + imaginary * imaginary
+                return max(powers, key=lambda frequency: powers[frequency])
 
-            seam_rms = rms(pcm[:2400])
-            middle_rms = rms(pcm[12000:14400])
-            self.assertGreater(seam_rms, middle_rms * 4)
+            self.assertEqual(dominant_frequency(0.05), frequencies[2])
+            self.assertEqual(dominant_frequency(0.35), frequencies[0])
+            self.assertEqual(dominant_frequency(0.65), frequencies[1])
 
     def test_bgm_hits_target_loudness_and_records_measured_output_qa(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -1054,6 +1169,36 @@ class AudioFinalizeIntegrationTests(unittest.TestCase):
             self.assertAlmostEqual(report["trim"]["end_seconds"], 0.6, delta=0.04)
             self.assertAlmostEqual(report["settings"]["fade_out_seconds"], 0.05)
             self.assertEqual(hashlib.sha256(source.read_bytes()).hexdigest(), source_hash)
+
+    def test_sub_400ms_sfx_keeps_finite_peak_and_writes_strict_json_metadata(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "source.wav"
+            output = root / "result.ogg"
+            metadata = root / "result.json"
+            make_wave(source, [(0.2, 0.15)])
+
+            result = run_cli(
+                "sfx",
+                "--input",
+                str(source),
+                "--output",
+                str(output),
+                "--metadata",
+                str(metadata),
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            measured = measure_loudness(output)
+            self.assertTrue(math.isfinite(measured["true_peak_dbtp"]))
+            self.assertLessEqual(measured["true_peak_dbtp"], -2.0)
+            report = json.loads(
+                metadata.read_text(encoding="utf-8"),
+                parse_constant=lambda value: self.fail(f"nonstandard JSON constant: {value}"),
+            )
+            self.assertIsNone(report["output"]["qa"]["integrated_lufs"])
+            self.assertTrue(math.isfinite(report["output"]["qa"]["true_peak_dbtp"]))
+            self.assertLessEqual(report["output"]["qa"]["true_peak_dbtp"], -2.0)
 
     def test_failure_preserves_existing_destinations_and_cleans_sibling_temps(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -1149,7 +1294,7 @@ class AudioFinalizeIntegrationTests(unittest.TestCase):
             output = root / "loop.ogg"
             preview = root / "preview.ogg"
             metadata = root / "loop.json"
-            make_wave(source, [(0.3, 0.0), (2.4, 0.12), (0.4, 0.0)])
+            make_wave(source, [(0.3, 0.0), (4.0, 0.12), (0.4, 0.0)])
 
             result = run_cli(
                 "bgm",
@@ -1172,12 +1317,12 @@ class AudioFinalizeIntegrationTests(unittest.TestCase):
             self.assertEqual(stream["channels"], 2)
             loop_duration = float(output_facts["format"]["duration"])
             preview_duration = float(preview_facts["format"]["duration"])
-            self.assertLess(loop_duration, 2.0)
+            self.assertAlmostEqual(loop_duration, 3.0, delta=0.08)
             self.assertAlmostEqual(preview_duration, loop_duration * 2, delta=0.12)
             report = json.loads(metadata.read_text(encoding="utf-8"))
             self.assertEqual(report["role"], "bgm")
             self.assertAlmostEqual(report["trim"]["start_seconds"], 0.3, delta=0.04)
-            self.assertAlmostEqual(report["trim"]["end_seconds"], 2.7, delta=0.05)
+            self.assertAlmostEqual(report["trim"]["end_seconds"], 4.3, delta=0.05)
             self.assertAlmostEqual(report["settings"]["crossfade_seconds"], 1.0)
             self.assertAlmostEqual(report["settings"]["target_lufs"], -20.0)
             self.assertEqual(
