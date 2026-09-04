@@ -76,6 +76,20 @@ class WorkflowContractTests(unittest.TestCase):
                 for node_id in workflow["primary_nodes"].values():
                     self.assertIn(node_id, graph)
 
+    def test_companion_scripts_are_safe_repository_relative_regular_files(self):
+        repository_root = ROOT.resolve()
+        for workflow in self.index["workflows"]:
+            for declared in workflow.get("companion_scripts", []):
+                with self.subTest(workflow=workflow["id"], script=declared):
+                    self.assertIsInstance(declared, str)
+                    relative = Path(declared)
+                    self.assertFalse(relative.is_absolute())
+                    self.assertNotIn("..", relative.parts)
+                    script = (ROOT / relative).resolve()
+                    self.assertTrue(script.is_relative_to(repository_root))
+                    self.assertTrue(script.is_file())
+                    self.assertFalse((ROOT / relative).is_symlink())
+
     def test_graph_references_are_valid_and_acyclic(self):
         for workflow in self.index["workflows"]:
             graph = json.loads((ROOT / workflow["api"]).read_text(encoding="utf-8"))
