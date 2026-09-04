@@ -491,6 +491,9 @@
         "audio_bgm": "audio_bgm_with_sfx/roles/audio_bgm.md",
         "machine_readable": "audio_bgm_with_sfx/roles/audio_role_contracts.json"
       },
+      "companion_scripts": [
+        "audio_bgm_with_sfx/scripts/finalize_audio.py"
+      ],
       "placeholders": []
     }
   ],

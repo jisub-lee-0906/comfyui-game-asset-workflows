@@ -62,8 +62,8 @@ AI agent가 이 pack으로 에셋을 생성하거나 문서를 점검할 때는 
 | 의상 변경, costume variation이 필요함 | `char_base` | 없음 | 같은 seed와 identity/framing tag를 유지하고 outfit block만 바꾸는 route를 사용합니다. 기존 `char_outfit` source-image inpaint route는 backup으로 이동했습니다. |
 | 교실, 복도, 방, 거리 같은 VN 배경이 필요함 | `scene_background` | 없음 | 캐릭터 없는 16:9 배경을 생성합니다. |
 | 소품 CG, 단서 이미지, item cut-in이 필요함 | `scene_prop_cg` | 없음 | 16:9 단일 소품 후보를 생성합니다. 전체 소품이 보여야 하면 과한 close-up/detail 태그를 줄입니다. |
-| 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_bgm` role로 사용합니다. prompt는 `instrumentation + musical form/rhythm + mood + short role`처럼 음악 정체성을 먼저 둡니다. raw MP3는 source 후보이며, Ren'Py용은 무음 trim + fade loop edit + OGG 변환 후 loop preview 청감 QA가 필요합니다. |
-| 문 열림, 발소리, 마법 crack 같은 짧은/중간/긴 효과음이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_sfx` role로 사용합니다. prompt는 짧은 positive 자연어 cue + 재질/음색 1~2개가 기본이며, 상황에 따라 `One-shot`/`SFX` mode와 duration을 조절합니다. trim/normalize와 listening QA가 필요합니다. |
+| 장면 BGM, 루프 가능한 음악, 대사용 배경음악이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_bgm` role로 사용합니다. prompt는 `instrumentation + musical form/rhythm + mood + short role`처럼 음악 정체성을 먼저 둡니다. raw MP3는 source 후보이며, `audio_bgm_with_sfx/scripts/finalize_audio.py bgm`으로 무음 trim + circular crossfade + OGG 변환 + 2회 loop preview를 만든 뒤 청감 QA합니다. |
+| 문 열림, 발소리, 마법 crack 같은 짧은/중간/긴 효과음이 필요함 | `audio_bgm_with_sfx` | 없음 | Stable Audio 3 기반 통합 engine을 `audio_sfx` role로 사용합니다. prompt는 짧은 positive 자연어 cue + 재질/음색 1~2개가 기본이며, 상황에 따라 `One-shot`/`SFX` mode와 duration을 조절합니다. `finalize_audio.py sfx`로 trailing silence trim/fade/peak normalize/OGG 변환 후 listening QA합니다. |
 | 포즈나 액션이 있는 장면 일러스트가 필요함 | `scene_event_cg` | 없음 | `pose_variations`는 제거되었습니다. Dialogue sprite 재생성이 아니라 event CG로 처리합니다. 기존 캐릭터 기반이면 캐릭터 metadata anchor를 고정한 뒤 작은 staging/background/seed만 바꿉니다. |
 
 중요한 용어 구분:

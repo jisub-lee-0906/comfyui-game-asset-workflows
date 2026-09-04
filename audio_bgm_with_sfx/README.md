@@ -26,6 +26,7 @@ Raw outputs are **review candidates**, not production assets. Approved Ren'Py in
 
 ```text
 audio_bgm_with_sfx/audio_bgm_with_sfx_workflow_api.json
+audio_bgm_with_sfx/scripts/finalize_audio.py
 audio_bgm_with_sfx/README.md
 ```
 
@@ -261,6 +262,19 @@ ffprobe -v error -show_entries format=duration,bit_rate,size:stream=codec_name,s
 ffmpeg -hide_banner -nostats -i <file> -af volumedetect -f null -
 ffmpeg -hide_banner -nostats -i <file> -af silencedetect=noise=-45dB:d=0.5 -f null -
 ```
+
+Approved candidates are finalized with the repository companion script. It never overwrites a destination unless `--overwrite` is explicit, writes through sibling temporary files, and can emit a JSON evidence sidecar.
+
+```bash
+python audio_bgm_with_sfx/scripts/finalize_audio.py bgm \
+  --input candidate.mp3 --output bgm_loop.ogg \
+  --preview bgm_loop_preview.ogg --metadata bgm_loop.json
+
+python audio_bgm_with_sfx/scripts/finalize_audio.py sfx \
+  --input candidate.mp3 --output sfx_final.ogg --metadata sfx_final.json
+```
+
+BGM defaults: `-45 dB` silence threshold, `0.25s` minimum silence, `1.0s` equal-power circular crossfade, `-20 LUFS`, `-2 dBTP`, stereo 48 kHz OGG, and optional two-loop preview. SFX defaults: trailing-silence trim, `50ms` fade-out, and a `-2 dBTP` ceiling in stereo 48 kHz OGG. The finalizer measures the primary final asset after each encode and, when needed, re-encodes it from one lossless source snapshot with additional headroom; it fails closed after four attempts if the requested ceiling is still exceeded. Metadata reports the measured ceiling value as `output.qa.true_peak_dbtp`. The optional BGM preview is a separately encoded two-loop listening-QA aid, not an independently measured or peak-enforced final asset. Use `--help` on the mode for threshold, duration, fade/crossfade, target, maximum-input-duration, and overwrite controls. Keep the raw source unchanged.
 
 QA expectations:
 
